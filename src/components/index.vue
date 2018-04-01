@@ -2,7 +2,7 @@
   <div>
     <el-col :span="24" class="top">
       <el-col :span="6" :offset="4" class="logo">
-        <div class="logo1"><img src="../assets/logo.png"></div>
+        <div class="logo1"><img src="../assets/img/logo.png"></div>
         <div class="logo2"><label>全国管理中心</label></div>
       </el-col>
       <el-col :span="4" :offset="10">
@@ -14,7 +14,7 @@
         <div class="NavMenu">
           <ul>
             <router-link to="/orders"><li>订单管理</li></router-link>
-            <router-link to="/dome1"><li>会员管理</li></router-link>
+            <router-link to="/dome"><li>会员管理</li></router-link>
             <router-link to="/dome2"><li>基础资料</li></router-link>
             <router-link to="/dome3"><li>财务管理</li></router-link>
             <router-link to="/dome4"><li>平台设置</li></router-link>
