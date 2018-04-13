@@ -1,0 +1,270 @@
+<template>
+  <div>
+    <div>
+      <div class="cr-top">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goIndex">平台设置</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goIndex6">代理商</span></el-breadcrumb-item>
+          <el-breadcrumb-item>门店</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="cr-top1">
+        <div>
+          <el-cascader
+            placeholder="试试搜索：浙江"
+            :options="options"
+            filterable
+            change-on-select
+            clearable
+          ></el-cascader>
+          <el-button type="primary">查询</el-button>
+        </div>
+        <el-button type="primary" @click="dialogVisible = true">添加门店<i class="el-icon-plus"></i></el-button>
+      </div>
+      <div>
+        <el-table
+          :data="tableData"
+          style="width: 100%">
+          <el-table-column
+            type="selection"
+            width="100">
+          </el-table-column>
+          <el-table-column
+            prop="date"
+            label="状态">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="名称">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="区域">
+          </el-table-column>
+          <el-table-column label="操作" width="300">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="primary" @click="dialogVisible1 = true ">查看详情
+              </el-button>
+              <el-button
+                size="mini"
+                type="mini">订单管理
+              </el-button>
+              <el-button
+                size="mini"
+                type="danger">禁用门店
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div style="text-align: center;margin: 5% 0 5% 0;">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="1000">
+        </el-pagination>
+      </div>
+    </div>
+    <el-dialog
+      title="添加代理商"
+      :visible.sync="dialogVisible"
+      width="40%"
+      :before-close="handleClose">
+      <el-form label-width="100px">
+        <el-form-item label="账户名 :">
+          <el-input type="age" v-model="value1" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="密码 :">
+          <el-input type="age" v-model="value2" placeholder="请输入部门"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码 :">
+          <el-input type="age" v-model="value3" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话 :">
+          <el-input type="age" v-model="value4" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="所属地区 :">
+          <el-cascader
+            placeholder="试试搜索：浙江"
+            :options="options"
+            filterable
+            change-on-select
+            clearable
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="门店地址 :">
+          <el-input type="age" v-model="value4" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="营业时间 :">
+          <el-time-picker
+            is-range
+            arrow-control
+            v-model="value5"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            placeholder="选择时间范围">
+          </el-time-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="查看详情"
+      :visible.sync="dialogVisible1"
+      width="40%"
+      :before-close="handleClose">
+      <div class="vipyw">
+        <div></div>
+        消费次数
+      </div>
+      <div class="viptable">
+        <el-table
+          :data="tableData"
+          stripe
+          border
+          style="width: 100%">
+          <el-table-column
+            prop="date"
+            label="次数">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="人数">
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="vipyw">
+        <div></div>
+        消费金额
+      </div>
+      <div class="viptable">
+        <el-table
+          :data="tableData"
+          stripe
+          border
+          style="width: 100%">
+          <el-table-column
+            prop="date"
+            label="次数">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="人数">
+          </el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible1 = false">取 消</el-button>
+    <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+  import "@/assets/js/city-data"
+
+
+  export default {
+
+    data() {
+      return {
+        options: CityInfo,
+        radio: '1',
+        value1: '',
+        value2: '',
+        value3: '',
+        value4: '',
+        value5: '',
+        dialogVisible: false,
+        dialogVisible1:false,
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }]
+      }
+    },
+    methods: {
+      goIndex() {
+        this.$router.go(0);
+      },
+      goIndex6() {
+        this.$emit('goIndex6', true);
+      },
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {
+          });
+      },
+    },
+  }
+</script>
+
+<style scoped>
+  .cr-top {
+    margin-bottom: 3%;
+  }
+
+  .el-breadcrumb {
+    font-size: 18px;
+  }
+
+  .el-checkbox__label {
+    font-size: 16px;
+  }
+
+  .el-checkbox {
+    margin-left: 30px;
+  }
+
+  .cr-top1 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3%;
+  }
+
+  .vipyw {
+    border-bottom: 1px solid rgb(20, 190, 240);
+    width: 20%;
+    display: flex;
+    color: rgb(20, 190, 240);
+    font-weight: bolder;
+    margin-bottom: 3%;
+    letter-spacing: 1px;
+  }
+
+  .vipyw div {
+    width: 25px;
+    height: 25px;
+    background: rgb(20, 190, 240);
+    margin: 0 5% -1px 0;
+  }
+
+  .viptable {
+    margin-bottom: 3%;
+  }
+</style>

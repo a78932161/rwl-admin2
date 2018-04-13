@@ -1,14 +1,6 @@
 <template>
   <div>
-    <el-col :span="24" class="top">
-      <el-col :span="6" :offset="4" class="logo">
-        <div class="logo1"><img src="../../../../assets/img/logo.png"></div>
-        <div class="logo2"><label>全国管理中心</label></div>
-      </el-col>
-      <el-col :span="4" :offset="10">
-        <el-button type="text" class="logo3">注销</el-button>
-      </el-col>
-    </el-col>
+    <top></top>
     <el-col :span="24" class="o-container">
       <el-col :span="4" :offset="3" class="o-aside">
         <div class="o-aside-l">
@@ -31,42 +23,17 @@
 </template>
 
 <script>
+  import top from '@/assets/vue/top'
 
+  export default {
+    components:{
+      top,
+    },
+  }
 </script>
 
 <style scoped>
-  .top {
-    height: 50px;
-    border-bottom: 1px solid rgb(20, 190, 240);
-    display: flex;
-    align-items: center;
-    margin: 0 0 30px 0;
-  }
 
-  .logo {
-    display: flex;
-  }
-
-  .logo1 {
-    margin: 0 10px 0 0;
-  }
-
-  .logo1 img {
-    width: 200px;
-    height: 30px;
-
-  }
-
-  .logo2 {
-    color: rgb(20, 190, 240);
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin: 5px 0 0 0;
-  }
-
-  .logo3 {
-    font-size: 16px;
-  }
   .o-aside{
     text-align: center;
   }
@@ -81,9 +48,8 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-
-
+    align-items: left;
+    margin-left: 30%;
   }
 
   .NavMenu a {

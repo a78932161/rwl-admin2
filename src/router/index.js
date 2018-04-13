@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '@/components/index'
+import home from '@/components/home'
+import a404 from '@/components/404'
+import login from '@/components/login'
 import orders from '@/components/orders/orders'
 import orderIndex from'@/components/orders/orderCenter/orderCenter-Laundry/index'
 import newLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/new'
@@ -25,30 +27,98 @@ import cancelFurniture  from'@/components/orders/orderCenter/orderCenter-Furnitu
 import endFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/end'
 import newFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/new'
 import sentFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/sent'
-
 import mallIndex  from'@/components/orders/orderCenter/orderCenter-Mall/index'
 import cancelMall from'@/components/orders/orderCenter/orderCenter-Mall/cancel'
 import endMall from'@/components/orders/orderCenter/orderCenter-Mall/end'
 import newMall  from'@/components/orders/orderCenter/orderCenter-Mall/new'
 import sentMall  from'@/components/orders/orderCenter/orderCenter-Mall/sent'
-
-
+import vip  from'@/components/vipManage/index'
+import balance  from'@/components/vipManage/balance'
+import userOrders  from'@/components/vipManage/userOrders'
+import details  from'@/components/vipManage/details'
+import financial  from'@/components/Financial/index'
+import clearing  from'@/components/Financial/clearing'
+import clearingds  from'@/components/Financial/clearingds'
+import settings  from'@/components/Settings/index'
+import basic  from '@/components/basic/index'
+import  basicLaundry from '@/components/basic/laundry'
+import  basicFurniture from '@/components/basic/furniture'
+import  basicMall from '@/components/basic/mall'
+import  basicDesigner from '@/components/basic/designer'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'index',
-      component: index,
+      path:'/',
+      name:'',
+      redirect:'home'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: home,
       children:[
         {
           path: '/orders',
           name: 'orders',
           component: orders,
+        },
+        {
+          path: '/vip',
+          name: 'vip',
+          component: vip,
+        },
+        {
+          path: '/financial',
+          name: 'financial',
+          component: financial,
+        },
+        {
+          path: '/settings',
+          name: 'settings',
+          component: settings,
+        },
+        {
+          path:'/basic',
+          name:'basic',
+          component:basic,
         }
+
       ]
+    },
+    {
+      path: '/clearing',
+      name: 'clearing',
+      component: clearing,
+    },
+    {
+      path: '/clearingds',
+      name: 'clearingds',
+      component: clearingds,
+    },
+
+
+    {
+      path: '/balance',
+      name: 'balance',
+      component: balance,
+    },
+    {
+      path: '/userOrders',
+      name: 'userOrders',
+      component: userOrders,
+    },
+    {
+      path: '/details',
+      name: 'details',
+      component: details,
     },
     {
       path: '/designerIndex',
@@ -197,6 +267,31 @@ export default new Router({
           component: sentMall,
         },
       ]
+    },
+    {
+      path: '/basicLaundry',
+      name: 'basicLaundry',
+      component: basicLaundry,
+    },
+    {
+      path: '/basicFurniture',
+      name: 'basicFurniture',
+      component: basicFurniture,
+    },
+    {
+      path:'/basicMall',
+      name:'basicMall',
+      component:basicMall,
+    },
+    {
+      path:'/basicDesigner',
+      name:'basicDesigner',
+      component:basicDesigner,
+    },
+    {
+      path: '*',
+      name: '404',
+      component: a404
     },
   ]
 })

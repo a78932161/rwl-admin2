@@ -142,7 +142,7 @@
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 5% 0;
+    margin: 0 0 3% 0;
   }
 
   .ord-content1 {
