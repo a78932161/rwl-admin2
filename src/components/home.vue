@@ -33,7 +33,11 @@
       return{
 
       }
-    }
+    },
+    methods:{
+
+    },
+
   }
 </script>
 

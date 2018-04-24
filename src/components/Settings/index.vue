@@ -11,7 +11,7 @@
         <el-button type="primary" @click="goRecharge">充值奖励</el-button>
         <el-button type="primary" @click="goCommission">提成机制</el-button>
         <el-button type="primary" @click="goAdminer">管理员</el-button>
-        <el-button type="primary" @click="goProblem">常见问题</el-button>
+        <el-button type="primary" @click="goProblem">更多编辑</el-button>
       </div>
     </div>
     <recharge v-show="isRecharge" @goIndex1="goIndex1"></recharge>
@@ -19,7 +19,6 @@
     <problem v-show="isProblem" @goIndex2="goIndex2"></problem>
     <adminer v-show="isAdminer" @goIndex4="goIndex4"></adminer>
   </div>
-
 </template>
 
 <script>

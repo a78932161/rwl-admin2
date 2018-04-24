@@ -37,9 +37,7 @@
       </div>
       <div class="ord-content2">
         <div>
-          <el-button type="primary" @click="goAccount">账号管理</el-button>
-        </div>
-        <div>
+          <el-button type="primary" @click="goAccount" style="margin-right: 3%">账号管理</el-button>
           <el-button type="primary" @click="goclearing">商户结算</el-button>
         </div>
       </div>
@@ -138,7 +136,7 @@
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 5% 0;
+    margin: 0 0 7% 0;
   }
 
   .ord-content1 {

@@ -14,8 +14,8 @@
       </div>
     </div>
     <psw v-show="isPsw" @goIndex1="goIndex1"></psw>
-    <character v-show="isCharacter" @goIndex2="goIndex2" @goIndex3="goIndex3"></character>
-    <agents v-show="isAgents" @goIndex5="goIndex5" @goIndex6="goIndex6"></agents>
+    <character v-if="isCharacter" @goIndex2="goIndex2" @goIndex3="goIndex3"></character>
+    <agents v-if="isAgents" @goIndex5="goIndex5" @goIndex6="goIndex6"></agents>
   </div>
 
 </template>

@@ -11,7 +11,6 @@ import endLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/end'
 import hangLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/hang'
 import inboundLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/inbound'
 import outLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/out'
-import returnLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/return'
 import sentLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/sent'
 import designerIndex  from'@/components/orders/orderCenter/orderCenter-Designer/index'
 import newDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/new'
@@ -20,7 +19,6 @@ import endDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/e
 import hangDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/hang'
 import inboundDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/inbound'
 import outDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/out'
-import returnDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/return'
 import sentDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/sent'
 import furnitureIndex  from'@/components/orders/orderCenter/orderCenter-Furniture/index'
 import cancelFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/cancel'
@@ -151,11 +149,6 @@ export default new Router({
           component: outDesigner,
         },
         {
-          path: '/returnDesigner',
-          name: 'returnDesigner',
-          component: returnDesigner,
-        },
-        {
           path: '/sentDesigner',
           name: 'sentDesigner',
           component: sentDesigner,
@@ -196,11 +189,6 @@ export default new Router({
           path: '/outLaundry',
           name: 'outLaundry',
           component: outLaundry,
-        },
-        {
-          path: '/returnLaundry',
-          name: 'returnLaundry',
-          component: returnLaundry,
         },
         {
           path: '/sentLaundry',

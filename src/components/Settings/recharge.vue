@@ -18,72 +18,48 @@
         ></el-cascader>
         <el-button type="primary">查询</el-button>
       </div>
-      <div>
-        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
-      </div>
 
     </div>
     <div>
       <el-table
-        :data="tableData"
+        :data="money"
         stripe
         border
         style="width: 100%">
         <el-table-column
-          prop="date"
-          label="充值金额">
+          prop="payMoney"
+          label="充值金额(元)">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="奖励金额">
+          prop="rewardMoney"
+          label="奖励金额(元)">
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button
-              size="mini" @click="dialogVisible1 = true">编辑
-            </el-button>
-            <el-button
-              size="mini"
-              type="danger">删除
+              size="mini" type="primary" @click="uplist(scope.row)">编辑
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+
     <el-dialog
-      title="添加奖励金额"
+      title="编辑奖励金额"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
-      <el-form label-width="80px">
-        <el-form-item label="充值金额 :">
-          <el-input type="age" v-model="value1"  placeholder="请输入金额"></el-input>
+      <el-form label-width="120px" :model="tableList" :rules="rules">
+        <el-form-item label="充值金额(元) :" prop="value1">
+          <el-input v-model.number="tableList.value1" placeholder="请输入金额"></el-input>
         </el-form-item>
-        <el-form-item label="奖励金额 :">
-          <el-input type="age" v-model="value2" placeholder="请输入金额"></el-input>
+        <el-form-item label="奖励金额(元) :" prop="value2">
+          <el-input v-model.number="tableList.value2" placeholder="请输入金额"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="编辑奖励金额"
-      :visible.sync="dialogVisible1"
-      width="30%"
-      :before-close="handleClose">
-      <el-form label-width="80px">
-        <el-form-item label="充值金额 :">
-          <el-input type="age" v-model="value3" placeholder="请输入金额"></el-input>
-        </el-form-item>
-        <el-form-item label="奖励金额 :">
-          <el-input type="age" v-model="value4" placeholder="请输入金额"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible1 = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+    <el-button type="primary" @click="uplist1()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -92,37 +68,90 @@
 
 <script>
   import "@/assets/js/city-data"
+  import {getreward, upreward} from "@/components/api/settings";
 
   export default {
     data() {
+      let oldprice = (rule, value, callback) => {
+        if (/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value) === false) {
+          callback(new Error('必须是正数'));
+        } else {
+          callback();
+        }
+      };
+
       return {
         options: CityInfo,
-        value1: '',
-        value2: '',
-        value3: '',
-        value4: '',
+        tableList: [{
+          value1: '',
+          value2: '',
+        }],
         dialogVisible: false,
-        dialogVisible1: false,
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        key: '',
+        money: [{
+          key: '',
+          payMoney: '',
+          rewardMoney: '',
+        }],
+
+        rules: {
+          value1: [
+            {required: true, message: '金额不能为空'},
+            {validator: oldprice, trigger: 'blur'},
+          ],
+          value2: [
+            {required: true, message: '金额不能为空'},
+            {validator: oldprice, trigger: 'blur'},
+          ],
+        },
       }
     },
     methods: {
+      getlsit() {
+        getreward().then((res) => {
+          res.data.data.forEach((res1) => {
+            res1.payMoney = res1.payMoney / 100;
+            res1.rewardMoney = res1.rewardMoney / 100;
+          });
+          this.money = res.data.data;
+        })
+      },
+      uplist(row) {
+        this.dialogVisible = true;
+        this.key = '';
+        this.key = row.key;
+        this.tableList.value1 = row.payMoney;
+        this.tableList.value2 = row.rewardMoney;
+      },
+      uplist1() {
+
+        if (this.tableList.value1 && this.tableList.value2) {
+          let a = {
+            key: this.key,
+            payMoney: this.tableList.value1 * 100,
+            rewardMoney: this.tableList.value2 * 100,
+          };
+          let b = {
+            key: this.key,
+          };
+          upreward(b, a).then((res) => {
+            this.dialogVisible = false;
+            this.getlsit();
+            this.$message({
+              message: '修改成功!',
+              type: 'success'
+            });
+          })
+        } else {
+          this.$message({
+            message: '请填写完整!',
+            type: 'warning'
+          });
+        }
+
+      },
+
+
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -131,12 +160,13 @@
           .catch(_ => {
           });
       },
-      goIndex1(){
+      goIndex1() {
         this.$emit('goIndex1', true);
-
       }
     },
-
+    mounted() {
+      this.getlsit();
+    }
   }
 </script>
 

@@ -11,7 +11,6 @@
           <router-link to="/sentLaundry"><span>|</span>已派订单</router-link>
           <router-link to="/inboundLaundry"><span>|</span>已入站</router-link>
           <router-link to="/hangLaundry"><span>|</span>已上挂</router-link>
-          <router-link to="/returnLaundry"><span>|</span>送还订单</router-link>
           <router-link to="/endLaundry"><span>|</span>完结订单</router-link>
           <router-link to="/outLaundry"><span>|</span>超时订单</router-link>
           <router-link to="/cancelLaundry"><span>|</span>取消订单</router-link>

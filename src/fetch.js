@@ -5,7 +5,7 @@ import {Loading, Message} from 'element-ui'
 /*import store from '../store'*/
 
 var  loadinginstace;
-let baseURL='https://www.embracex.com/gcsweixin/shop';
+let baseURL='http://rtest.rwlai.cn/rwlmall/rwlmall/';
 let URL=window.location.origin;
 let URL1='';
 if(window.location.pathname!=='/'){

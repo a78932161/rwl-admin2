@@ -42,7 +42,7 @@
   export default {
     data() {
       return {
-        a: 10,
+        a:10,
         options: CityInfo,
       }
     },

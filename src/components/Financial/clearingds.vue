@@ -26,56 +26,57 @@
             </el-table-column>
             <el-table-column
               prop="name"
-              label="商品数量">
+              label="撤单总数">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="收入总额">
+              label="退款总数">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="充值总额">
+              label="收衣总数">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="导卡总额">
+              label="洗衣收入">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="退款总额">
+              label="小让商城收入">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="洗衣">
+              label="小让家具收入">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="高端洗护">
+              label="高端洗护收入">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="小让家具">
+              label="微信支付">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="订单商城">
+              label="余额支付">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="商户收入">
+              label="支付宝">
             </el-table-column>
             <el-table-column
               prop="name"
-              label="平台佣金">
+              label="代理商收入">
             </el-table-column>
             <el-table-column
-              fixed="right"
-              label="操作"
-              width="80">
-              <template slot-scope="scope">
-                <el-button type="text" size="small" >详情</el-button>
-              </template>
+              prop="name"
+              label="平台收入">
             </el-table-column>
+            <el-table-column
+              prop="name"
+              label="物流收入">
+            </el-table-column>
+
           </el-table>
         </div>
         <div style="text-align: center;margin: 5% 0 5% 0;">
@@ -133,19 +134,19 @@
         },
         tableData: [{
           date: '2016-05-02',
-          name: '王小虎',
+          name: '10',
           address: '上海市普陀区金沙江路 1518 弄'
         }, {
           date: '2016-05-04',
-          name: '王小虎',
+          name: '20',
           address: '上海市普陀区金沙江路 1517 弄'
         }, {
           date: '2016-05-01',
-          name: '王小虎',
+          name: '30',
           address: '上海市普陀区金沙江路 1519 弄'
         }, {
           date: '2016-05-03',
-          name: '王小虎',
+          name: '50',
           address: '上海市普陀区金沙江路 1516 弄'
         }],
       }

@@ -3,7 +3,7 @@
     <div class="re-top">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><span @click="goIndex3">平台设置</span> </el-breadcrumb-item>
+        <el-breadcrumb-item><span @click="goIndex3">平台设置</span></el-breadcrumb-item>
         <el-breadcrumb-item>提成机制</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -18,10 +18,6 @@
         ></el-cascader>
         <el-button type="primary">查询</el-button>
       </div>
-      <div>
-        <el-button type="primary" @click="dialogVisible = true">添加</el-button>
-      </div>
-
     </div>
     <div>
       <el-table
@@ -30,74 +26,49 @@
         border
         style="width: 100%">
         <el-table-column
-          prop="date"
+          prop="key"
           label="类目">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="代理商">
+          prop="agent"
+          label="代理商(%)">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="物流众包">
+          prop="express"
+          label="物流(%)">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="平台">
+          prop="platform"
+          label="平台(%)">
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button
-              size="mini" @click="dialogVisible1 = true">编辑
-            </el-button>
-            <el-button
-              size="mini"
-              type="danger">删除
+              size="mini" type="primary" @click="qaq(scope.row)">编辑
             </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <el-dialog
-      title="添加奖励金额"
+      title="修改提成比例"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
-      <el-form label-width="80px">
-        <el-form-item label="代理商 :">
-          <el-input type="age" v-model="value1"  placeholder="请输入比例"></el-input>
+      <el-form label-width="120px" :model="tableList"  :rules="rules">
+        <el-form-item label="代理商(%) :" prop="value1">
+          <el-input v-model="tableList.value1" placeholder="请输入比例"></el-input>
         </el-form-item>
-        <el-form-item label="物流众包 :">
-          <el-input type="age" v-model="value2"  placeholder="请输入比例"></el-input>
+        <el-form-item label="物流众包(%) :" prop="value2">
+          <el-input v-model="tableList.value2" placeholder="请输入比例"></el-input>
         </el-form-item>
-        <el-form-item label="平台 :">
-          <el-input type="age" v-model="value3"  placeholder="请输入比例"></el-input>
+        <el-form-item label="平台(%) :" prop="value3">
+          <el-input v-model="tableList.value3" placeholder="请输入比例"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="添加奖励金额"
-      :visible.sync="dialogVisible1"
-      width="30%"
-      :before-close="handleClose">
-      <el-form label-width="80px">
-        <el-form-item label="代理商 :">
-          <el-input type="age" v-model="value4" placeholder="请输入比例"></el-input>
-        </el-form-item>
-        <el-form-item label="物流众包 :">
-          <el-input type="age" v-model="value5"  placeholder="请输入比例"></el-input>
-        </el-form-item>
-        <el-form-item label="平台 :">
-          <el-input type="age" v-model="value6"  placeholder="请输入比例"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible1 = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
+    <el-button type="primary" @click="qaq1()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -106,39 +77,64 @@
 
 <script>
   import "@/assets/js/city-data"
+  import {getCommission, upCommission} from "@/components/api/settings";
 
   export default {
     data() {
+      let oldprice = (rule, value, callback) => {
+        if (/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value) === false) {
+          callback(new Error('必须是正数'));
+        } else {
+          callback();
+        }
+      };
       return {
         options: CityInfo,
-        value1: '',
-        value2: '',
-        value3: '',
-        value4: '',
-        value5: '',
-        value6: '',
+        tableList: [{
+          value1: '',
+          value2: '',
+          value3: '',
+        }],
         dialogVisible: false,
         dialogVisible1: false,
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        rules: {
+          value1: [
+            { required: true, message: '比例不能为空'},
+            {validator: oldprice, trigger: 'blur'},
+          ],
+          value2: [
+            { required: true, message: '比例不能为空'},
+            {validator: oldprice, trigger: 'blur'},
+          ],
+          value3: [
+            { required: true, message: '比例不能为空'},
+            {validator: oldprice, trigger: 'blur'},
+          ],
+        },
+
+
       }
     },
     methods: {
+      getlsit() {
+        getCommission().then((res) => {
+          console.log(res.data.data);
+          res.data.data.forEach((res1) => {
+            if (res1.key == 'commissionMall') {
+              res1.key = '小让商城';
+            } else if (res1.key == 'commissionHighLaundry') {
+              res1.key = '高端洗护';
+            } else if (res1.key == 'commissionFurniture') {
+              res1.key = '小让家具';
+            } else if (res1.key == 'commissionLaundry') {
+              res1.key = '洗衣';
+            }
+
+          });
+          this.tableData = res.data.data;
+        })
+      },
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -147,11 +143,60 @@
           .catch(_ => {
           });
       },
-      goIndex3(){
+      goIndex3() {
         this.$emit('goIndex3', true);
       },
-    },
+      qaq(row) {
+        this.dialogVisible = true;
+        this.key = '';
+        this.key = row.key;
+        this.tableList.value1 = row.agent;
+        this.tableList.value2 = row.express;
+        this.tableList.value3 = row.platform;
+      },
+      qaq1() {
+        if (this.key == '小让商城') {
+          this.key = 'commissionMall';
+        } else if (this.key == '高端洗护') {
+          this.key = 'commissionHighLaundry';
+        } else if (this.key == '小让家具') {
+          this.key = 'commissionFurniture';
+        } else if (this.key == '洗衣') {
+          this.key = 'commissionLaundry';
+        }
 
+        if(this.tableList.value1 && this.tableList.value2 && this.tableList.value3){
+          let a = {
+            key: this.key,
+            agent: this.tableList.value1,
+            express: this.tableList.value2,
+            platform: this.tableList.value3,
+          };
+          let b = {
+            key: this.key,
+          };
+          upCommission(b, a).then((res) => {
+            this.dialogVisible = false;
+            this.getlsit();
+            this.$message({
+              message: '修改成功!',
+              type: 'success'
+            });
+          })
+        }else{
+          this.$message({
+            message: '请填写完整!',
+            type: 'warning'
+          });
+        }
+
+
+
+      }
+    },
+    mounted() {
+      this.getlsit();
+    }
   }
 </script>
 

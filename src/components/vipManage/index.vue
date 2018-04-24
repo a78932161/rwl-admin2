@@ -37,11 +37,13 @@
       </div>
       <div class="ord-content2">
         <el-button type="primary" class="ord-content2-bt" @click="gostatistics">会员统计</el-button>
-        <el-button type="primary" @click="goConsumption">消费统计</el-button>
+        <el-button type="primary" class="ord-content2-bt" @click="goConsumption">消费统计</el-button>
+        <el-button type="primary" @click="goOpinion">意见反馈</el-button>
       </div>
     </div>
     <statistics v-show="isStatistics"></statistics>
     <consumption v-show="isConsumption"></consumption>
+    <opinion v-show="isOpinion" @goIndex="goIndex"></opinion>
   </div>
 </template>
 
@@ -49,20 +51,24 @@
   import "@/assets/js/city-data"
   import statistics from '@/components/vipManage/statistics'
   import consumption from '@/components/vipManage/consumption'
+  import opinion from '@/components/vipManage/opinion'
+
 
   export default {
 
     components: {
       statistics,
-      consumption
+      consumption,
+      opinion
     },
     data() {
       return {
         showFlag: true,
         options: CityInfo,
-        value1: '',
         isStatistics:false,
         isConsumption:false,
+        isOpinion:false,
+        value1: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -100,7 +106,15 @@
       goConsumption(){
         this.showFlag=false;
         this.isConsumption=true;
-      }
+      },
+      goOpinion(){
+        this.showFlag=false;
+        this.isOpinion=true;
+      },
+      goIndex(data){
+        this.showFlag=data;
+        this.isOpinion=false;
+      },
     }
   }
 </script>

@@ -19,7 +19,7 @@
         ></el-cascader>
         <el-button type="primary">查询</el-button>
       </div>
-      <el-radio v-model="radio" label="1" border @change="qaq" >新增代理商</el-radio>
+      <el-radio v-model="radio" label="1" border @change="qaq">新增代理商</el-radio>
       <el-radio v-model="radio" label="2" border >新增角色</el-radio>
       <el-button type="primary" @click="dialogVisible= true">添加新角色<i class="el-icon-plus"></i></el-button>
     </div>
@@ -175,7 +175,6 @@
 
 <script>
   import "@/assets/js/city-data"
-
   const cityOptions = ['A01-省市', 'A02-洗衣', 'A05-小让商城', 'A06-高端洗护','A08-小让家具','A09-订单分析'];
   const cityOptions1= ['B01-全部会员','B02-已消费会员','B03-未消费会员','B04-已储值会员','B05-消费统计'];
   const cityOptions2= ['C01-洗衣设置','C02-小让家具设置','C03-小让商城设置','C04-高端洗护设置','C05-广告设置'];
@@ -188,7 +187,7 @@
     data() {
       return {
         options: CityInfo,
-        radio: '2',
+        radio: this.$store.state.radio1,
         dialogVisible: false,
         dialogVisible1: false,
         dialogVisible2:false,
@@ -297,9 +296,11 @@
         this.isIndeterminate4 = checkedCount > 0 && checkedCount < this.cities4.length;
       },
       qaq(){
+        this.$store.commit('changeRadio1','1');
         this.$emit('goIndex3',true);
+        console.log(this.$store.state.radio1);
       }
-    },
+    }
 
   }
 </script>

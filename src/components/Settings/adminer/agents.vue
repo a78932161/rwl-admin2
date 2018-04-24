@@ -22,9 +22,9 @@
           <el-button type="primary">查询</el-button>
         </div>
         <el-radio v-model="radio" label="1" border>新增代理商</el-radio>
-        <el-radio v-model="radio" label="2" border @change="qaq">新增角色</el-radio>
-        <el-button type="primary" @click="dialogVisible= true">添加代理商<i class="el-icon-plus"></i></el-button>
-      </div>
+      <el-radio v-model="radio" label="2" border @change="qaq">新增角色</el-radio>
+      <el-button type="primary" @click="dialogVisible= true">添加代理商<i class="el-icon-plus"></i></el-button>
+    </div>
       <div>
         <el-table
           :data="tableData"
@@ -132,7 +132,7 @@
     data() {
       return {
         options: CityInfo,
-        radio: '1',
+        radio: this.$store.state.radio1,
         value1: '',
         value2: '',
         value3: '',
@@ -183,8 +183,11 @@
           });
       },
       qaq() {
+        this.$store.commit('changeRadio1','2');
         this.$emit('goIndex6', true);
+        console.log(this.$store.state.radio1);
       },
+
       handleChange(value) {
         console.log(value);
         this.cities = [];
@@ -203,7 +206,6 @@
       goStore(){
         this.isStore=true;
         this.showFlag2=false;
-
       }
     },
 

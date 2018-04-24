@@ -54,8 +54,8 @@
     data() {
       return {
         form: {
-          username: '123456',
-          password: '123456'
+          username: 'admin',
+          password: '1'
         },
         rules1: {
           username: [
@@ -75,7 +75,8 @@
           let data = {username: this.form.username, password: this.form.password};
           loginApi(data).then(res => {
             if (res.status === 200) {
-              setToken(res.headers['x-auth-token'])
+              setToken(res.headers['x-auth-token']);
+              this.$router.push({path: '/home'});
             }
           });
         }else{
