@@ -4,14 +4,11 @@
       <div class="ord-top">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>会员管理</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goIndex1">会员管理</span></el-breadcrumb-item>
+          <el-breadcrumb-item>会员统计</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="ord-content">
-        <div class="ord-content1">
-          <el-input placeholder="请输入内容"></el-input>
-          <el-button type="primary">查询</el-button>
-        </div>
         <div>
           <el-date-picker
             v-model="value1"
@@ -36,19 +33,20 @@
         </div>
       </div>
       <div class="ord-content2">
-        <el-button type="primary" @click="goList">全部会员<br>{{a}}</el-button>
-        <el-button type="primary">已消费会员<br>{{a}}</el-button>
-        <el-button type="primary">未消费会员<br>{{a}}</el-button>
-        <el-button type="primary">已储蓄会员<br>{{a}}</el-button>
+        <el-button type="primary" @click="goList(3)">全部会员<br>{{listData.allCount}}</el-button>
+        <el-button type="primary" @click="goList(1)">已消费会员<br>{{listData.consumeCount}}</el-button>
+        <el-button type="primary" @click="goList(0)">未消费会员<br>{{listData.unConsumeCount}}</el-button>
+        <el-button type="primary" @click="goList(2)">已储蓄会员<br>{{listData.depositCount}}</el-button>
       </div>
     </div>
-    <vip-list v-show="isList"></vip-list>
+    <vip-list v-if="isList"></vip-list>
   </div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
   import VipList from "@/components/vipManage/vipList"
+  import {vipNumber} from "@/components/api/vipss";
 
   export default {
     components: {
@@ -85,17 +83,32 @@
         },
         options: CityInfo,
         value1: '',
-        a: 10,
-        showFlag:true,
-        isList:false,
+
+        showFlag: true,
+        isList: false,
+        listData: [],
       }
     },
     methods: {
-      goList(){
-        this.showFlag=false;
-        this.isList=true;
+      getList() {
+        vipNumber().then((res) => {
+          console.log(res);
+          this.listData = res.data.data;
+        })
+      },
+
+      goList(index) {
+        this.$store.state.vipId = index;
+        this.showFlag = false;
+        this.isList = true;
+      },
+      goIndex1() {
+        this.$emit('goIndex1', true);
       }
 
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -113,7 +126,7 @@
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 10% 0;
+    margin: 0 0 8% 0;
   }
 
   .ord-content1 {
@@ -122,12 +135,11 @@
   }
 
   .ord-content2 {
-    text-align: center;
+    display: flex;
+    justify-content: space-around;
   }
 
-  .ord-content2-bt {
-    margin: 0 50px 0 0;
-  }
+
 
   .ord-content2 button {
     width: 180px;

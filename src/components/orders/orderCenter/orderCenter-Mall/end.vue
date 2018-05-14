@@ -22,7 +22,7 @@
         <el-button type="primary" disabled>已派订单</el-button>
         <el-button type="primary">完结订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
-        <el-button type="primary">导出订单</el-button>
+        <el-button type="primary" @click="daochu">导出订单</el-button>
       </div>
     </div>
     <div>
@@ -164,6 +164,9 @@
         this.page = val;
         this.getMallList();
       },
+      daochu() {
+        window.location.href = 'http://rtest.rwlai.cn/rwlmall/rwlmall/mallorder/export?status=5';
+      }
     },
     mounted() {
       this.getMallList();

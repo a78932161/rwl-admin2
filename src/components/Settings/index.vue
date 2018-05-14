@@ -14,10 +14,10 @@
         <el-button type="primary" @click="goProblem">更多编辑</el-button>
       </div>
     </div>
-    <recharge v-show="isRecharge" @goIndex1="goIndex1"></recharge>
-    <commission v-show="isCommission" @goIndex3="goIndex3"></commission>
-    <problem v-show="isProblem" @goIndex2="goIndex2"></problem>
-    <adminer v-show="isAdminer" @goIndex4="goIndex4"></adminer>
+    <recharge v-if="isRecharge" @goIndex1="goIndex1"></recharge>
+    <commission v-if="isCommission" @goIndex3="goIndex3"></commission>
+    <problem v-if="isProblem" @goIndex2="goIndex2"></problem>
+    <adminer v-if="isAdminer" @goIndex4="goIndex4"></adminer>
   </div>
 </template>
 
@@ -91,7 +91,8 @@
   }
 
   .ord-content2 {
-    text-align: center;
+    display: flex;
+    justify-content: space-around;
   }
 
   .ord-content2 button {

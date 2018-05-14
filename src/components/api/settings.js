@@ -35,3 +35,34 @@ export function upCommission(id,data) {
   })
 }
 
+export function upPsw(data) {
+  return axios({
+    url: "/role/modifypassword",
+    method: "post",
+    params:data,
+  })
+}
+
+
+export function getproblem(data) {
+  return axios({
+    url: "/platformtext/findbytype",
+    method: "post",
+    params:data,
+  })
+}
+export function addproblem(data) {
+  return axios({
+    url: "/platformtext/save",
+    method: "post",
+    data,
+  })
+}
+export function upproblem(data) {
+  return axios({
+    url: "/platformtext/update",
+    method: "post",
+    params:data,
+  })
+}
+

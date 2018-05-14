@@ -38,110 +38,219 @@
     <div class="ord-content2">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="120px"
                class="demo-ruleForm">
-        <el-form-item label="转账类型 :" prop="resource">
-          <el-radio-group v-model="ruleForm.resource">
-            <el-radio label="导卡"></el-radio>
-            <el-radio label="退款"></el-radio>
-          </el-radio-group>
+        <el-form-item label="转账类型 :">
+          <el-radio v-model="radio" label="1">导卡</el-radio>
+          <el-radio v-model="radio" label="2">退款</el-radio>
         </el-form-item>
-        <el-form-item label="莫好克卡号 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="会员卡类型 :" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-            <el-option label="折扣卡" value="shanghai"></el-option>
-            <el-option label="无折扣卡" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="充值金额 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="实际存转金额 :" prop="name">
-          <label>$0.00</label>
-        </el-form-item>
-        <el-form-item label="持卡人姓名 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="持卡人手机 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="注册手机号 :" prop="name">
-          <el-input v-model="ruleForm.name" style="width: 70%"></el-input>
-          <el-button type="primary">读取</el-button>
-        </el-form-item>
-        <el-form-item label="备注 :" prop="desc">
-          <el-input type="textarea" v-model="ruleForm.desc" :autosize="{ minRows: 4, maxRows: 6}"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">确认转存</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
+        <div v-show="isRadio">
+          <el-form-item label="莫好克卡号 :" prop="cardId">
+            <el-input v-model="ruleForm.cardId"></el-input>
+          </el-form-item>
+          <el-form-item label="会员卡类型 :" prop="cardType">
+            <el-select v-model="ruleForm.cardType" placeholder="请选择卡类型" style="width: 100%" clearable>
+              <el-option label="折扣卡" value="折扣卡"></el-option>
+              <el-option label="无折扣卡" value="无折扣卡"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="充值金额 :" prop="money">
+            <el-input v-model="ruleForm.money"></el-input>
+          </el-form-item>
+          <el-form-item label="实际存转金额 :">
+            <label>¥{{ruleForm.money}}</label>
+          </el-form-item>
+          <el-form-item label="持卡人姓名 :" prop="name">
+            <el-input v-model="ruleForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="持卡人手机 :" prop="phone">
+            <el-input v-model="ruleForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="注册手机号 :" prop="userPhone">
+            <el-input v-model="ruleForm.userPhone" style="width: 70%"></el-input>
+            <el-button type="primary" @click="getVipId">读取</el-button>
+          </el-form-item>
+          <el-form-item class="hyxx" label="会员信息 :">
+            <div><label>会员 I D : {{yhxx.number}}</label></div>
+            <div><label>注册时间 : {{yhxx.createtime}}</label></div>
+            <div><label>绑定手机 : {{yhxx.phone}}</label></div>
+            <div><label>现有余额 : {{yhxx.balance}}</label></div>
+          </el-form-item>
+          <el-form-item label="备注 :" prop="remark">
+            <el-input type="textarea" v-model="ruleForm.remark" :autosize="{ minRows: 4, maxRows: 6}"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')">确认转存</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </div>
+        <div v-show="isRadio1">
+          <el-form-item label="充值金额 :" prop="money">
+            <el-input v-model="ruleForm.money"></el-input>
+          </el-form-item>
+          <el-form-item label="实际存转金额 :">
+            <label>¥{{ruleForm.money}}</label>
+          </el-form-item>
+          <el-form-item label="姓名 :" prop="name">
+            <el-input v-model="ruleForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="手机 :" prop="phone">
+            <el-input v-model="ruleForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="注册手机号 :" prop="userPhone">
+            <el-input v-model="ruleForm.userPhone" style="width: 70%"></el-input>
+            <el-button type="primary" @click="getVipId">读取</el-button>
+          </el-form-item>
+          <el-form-item class="hyxx" label="会员信息 :">
+            <div><label>会员 I D : {{yhxx.number}}</label></div>
+            <div><label>注册时间 : {{yhxx.createtime}}</label></div>
+            <div><label>绑定手机 : {{yhxx.phone}}</label></div>
+            <div><label>现有余额 : {{yhxx.balance}}</label></div>
+          </el-form-item>
+          <el-form-item label="备注 :" prop="remark">
+            <el-input type="textarea" v-model="ruleForm.remark" :autosize="{ minRows: 4, maxRows: 6}"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm1()">确认退款</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
-    <div class="ord-content3">
-      <div><label>转存记录</label></div>
-      <div style="text-align: right;">
-        <label>转存记录查询 :</label>
-        <el-input placeholder="请输入内容" style="width: 52%"></el-input>
-        <el-button type="primary">查询</el-button>
+    <div v-show="isRadio">
+      <div class="ord-content3">
+        <div><label>导卡记录</label></div>
+        <div style="text-align: right;">
+          <label>导卡记录查询 :</label>
+          <el-input placeholder="请输入手机号" style="width: 52%" v-model="phone"></el-input>
+          <el-button type="primary" @click="phoneRefund">查询</el-button>
+        </div>
+      </div>
+      <div class="ord-content3">
+        <el-table
+          border
+          :data="tableData"
+          style="width: 100%">
+          <el-table-column
+            prop="createtime"
+            label="日期">
+          </el-table-column>
+          <el-table-column
+            prop="transferPeople"
+            label="操作人">
+          </el-table-column>
+          <el-table-column
+            prop="cardId"
+            label="转出卡号">
+          </el-table-column>
+          <el-table-column
+            prop="money"
+            label="转存金额">
+          </el-table-column>
+          <el-table-column
+            prop="userNumber"
+            label="转入账号">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名">
+          </el-table-column>
+          <el-table-column
+            prop="remark"
+            label="备注">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="godetail(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div style="text-align: center;margin: 5% 0 5% 0;">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          @current-change="handleCurrentChange"
+          :page-size="5"
+          :total="total">
+        </el-pagination>
       </div>
     </div>
-    <div class="ord-content3">
-      <el-table
-        border
-        :data="tableData"
-        style="width: 100%">
-        <el-table-column
-          prop="date"
-          label="日期">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="操作人">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="转出卡号">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="转存金额">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="转入账号">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名">
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="备注">
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="100">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="godetail">详情</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <div v-show="isRadio1">
+      <div class="ord-content3">
+        <div><label>退款记录</label></div>
+        <div style="text-align: right;">
+          <label>退款记录查询 :</label>
+          <el-input placeholder="请输入手机号" style="width: 52%" v-model="phone1"></el-input>
+          <el-button type="primary" @click="phoneRefund">查询</el-button>
+        </div>
+      </div>
+      <div class="ord-content3">
+        <el-table
+          border
+          :data="tableData1"
+          style="width: 100%">
+          <el-table-column
+            prop="createtime"
+            label="日期">
+          </el-table-column>
+          <el-table-column
+            prop="transferPeople"
+            label="操作人">
+          </el-table-column>
+          <el-table-column
+            prop="money"
+            label="转存金额">
+          </el-table-column>
+          <el-table-column
+            prop="userNumber"
+            label="转入账号">
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="姓名">
+          </el-table-column>
+          <el-table-column
+            prop="remark"
+            label="备注">
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="100">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="godetail1(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div style="text-align: center;margin: 5% 0 5% 0;">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          @current-change="handleCurrentChange1"
+          :page-size="5"
+          :total="total1">
+        </el-pagination>
+      </div>
     </div>
-    <div style="text-align: center;margin: 5% 0 5% 0;">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000">
-      </el-pagination>
-    </div>
+
+
   </div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
-
+  import {
+    addRecharge,
+    getAll,
+    getphone,
+    addRefund,
+    getRefund,
+    findRecharge,
+    findRefund
+  } from "@/components/api/financialdk";
 
   export default {
     components: {},
@@ -178,81 +287,263 @@
         value1: '',
         a: 10,
         showFlag: true,
+        radio: '1',
+        isRadio: true,
+        isRadio1: false,
+        total: 10,
+        total1: 10,
+        size: 5,
+        size1: 5,
+        page: 1,
+        page1: 1,
+        phone: '',
+        phone1: '',
         ruleForm: {
+          cardId: '',
+          cardType: '',
+          money: 0,
           name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          phone: '',
+          userPhone: '',
+          remark: '',
         },
         rules: {
           name: [
             {required: true, message: '请输入活动名称', trigger: 'blur'},
-            {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
           ],
-          region: [
-            {required: true, message: '请选择活动区域', trigger: 'change'}
+          cardId: [
+            {required: true, message: '请输入卡号', trigger: 'blur'},
           ],
-          date1: [
-            {type: 'date', required: true, message: '请选择日期', trigger: 'change'}
+          cardType: [
+            {required: true, message: '请选择卡类型', trigger: 'change'}
           ],
-          date2: [
-            {type: 'date', required: true, message: '请选择时间', trigger: 'change'}
-          ],
-          type: [
-            {type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change'}
-          ],
+
           resource: [
-            {required: true, message: '请选择活动资源', trigger: 'change'}
+            {required: true, message: '请选择转账类型', trigger: 'change'}
           ],
-          desc: [
-            {required: true, message: '请填写活动形式', trigger: 'blur'}
+          money: [
+            {required: true, message: '请输入充值金额', trigger: 'blur'},
+          ],
+
+          phone: [
+            {required: true, message: '请输入手机号', trigger: 'blur'},
+          ],
+          userPhone: [
+            {required: true, message: '请输入手机号', trigger: 'blur'},
+          ],
+          remark: [
+            {required: true, message: '请填写备注', trigger: 'blur'}
           ]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        tableData1: [],
+        yhxx: [],
       }
     },
     methods: {
+      getList() {
+        if (this.isRadio === true) {
+          if(this.phone){
+            let a = {
+              phone: this.phone,
+            };
+            findRecharge(a).then((res) => {
+              if (res.data.data.content.length>0) {
+                res.data.data.content.forEach((value) => {
+                  value.createtime = this.getLocalTime(value.createtime);
+                  value.money = value.money / 100;
+                });
+                this.total = res.data.data.totalElements;
+                this.tableData = res.data.data.content;
+              }else{
+                this.$message({
+                  message: '该手机号无记录!',
+                  type: 'warning'
+                });
+              }
+            });
+          }else{
+            let a = {
+              size: this.size,
+              page: this.page
+            };
+            getAll(a).then((res) => {
+              res.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.money = value.money / 100;
+              });
+              this.total = res.data.data.totalElements;
+              this.tableData = res.data.data.content;
+            })
+          }
+
+        } else if (this.isRadio1 === true) {
+          if (this.phone1) {
+            let a = {
+              phone: this.phone1,
+            };
+            findRefund(a).then((res) => {
+              if (res.data.data.content.length>0) {
+                res.data.data.content.forEach((value) => {
+                  value.createtime = this.getLocalTime(value.createtime);
+                  value.money = value.money / 100;
+                });
+                this.total1 = res.data.data.totalElements;
+                this.tableData1 = res.data.data.content;
+              }else{
+                this.$message({
+                  message: '该手机号无记录!',
+                  type: 'warning'
+                });
+              }
+            });
+
+          } else {
+            let b = {
+              size: this.size1,
+              page: this.page1
+            };
+            getRefund(b).then((res1) => {
+              res1.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.money = value.money / 100;
+              });
+              this.total1 = res1.data.data.totalElements;
+              this.tableData1 = res1.data.data.content;
+            })
+          }
+        }
+      },
+      getVipId() {
+        let a = {
+          phone: this.ruleForm.userPhone,
+        };
+        getphone(a).then((res) => {
+          if (res.data.code === 1) {
+            this.$message({
+              showClose: true,
+              message: '注册人手机号不存在!',
+              type: 'warning'
+            });
+          } else {
+            res.data.data.createtime = this.getLocalTime(res.data.data.createtime);
+            res.data.data.balance = res.data.data.balance / 100;
+            this.yhxx = res.data.data;
+          }
+        })
+      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.ruleForm.money = this.ruleForm.money * 100;
+            addRecharge(this.ruleForm).then((res) => {
+              if (res.data.code === 1) {
+                this.$message({
+                  showClose: true,
+                  message: '注册人手机号不存在!',
+                  type: 'warning'
+                });
+              } else {
+                this.resetForm('ruleForm');
+                this.getList();
+                this.$message({
+                  showClose: true,
+                  message: '充值成功!',
+                  type: 'success'
+                });
+              }
+            })
           } else {
-            console.log('error submit!!');
+            this.$message({
+              showClose: true,
+              message: '请填写完整!',
+              type: 'warning'
+            });
             return false;
           }
         });
       },
+      submitForm1() {
+        if (this.ruleForm.money || this.ruleForm.name || this.ruleForm.phone || this.ruleForm.userPhone || this.ruleForm.remark) {
+          this.ruleForm.money = this.ruleForm.money * 100;
+          addRefund(this.ruleForm).then((res) => {
+            if (res.data.code === 1) {
+              this.$message({
+                showClose: true,
+                message: '注册人手机号不存在!',
+                type: 'warning'
+              });
+            } else {
+              this.resetForm('ruleForm');
+              this.getList();
+              this.$message({
+                showClose: true,
+                message: '充值成功!',
+                type: 'success'
+              });
+            }
+          })
+        } else {
+          this.$message({
+            showClose: true,
+            message: '请填写完整!',
+            type: 'warning'
+          });
+          return false;
+        }
+
+      },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+        this.yhxx = [];
       },
-      godetail() {
+      godetail(row) {
+        this.$store.state.rechargeId = row.id;
+        this.$store.state.refundId = '';
         this.$emit('mmp', true);
       },
-      gofinancial(){
+      godetail1(row) {
+        this.$store.state.refundId = row.id;
+        this.$store.state.rechargeId = '';
+        this.$emit('mmp', true);
+      },
+      gofinancial() {
         this.$emit('mmp1', true);
-      }
+      },
+      getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
+      handleCurrentChange1(val) {
+        this.page1 = val;
+        this.getList();
+      },
+      phoneRefund() {
+        this.getList();
+      },
     },
+    mounted() {
+      this.getList();
+    },
+    watch: {
+      radio(newValue, oldValue) {
+        if (newValue === '1') {
+          this.isRadio = true;
+          this.isRadio1 = false;
+          this.resetForm('ruleForm');
+        } else if (newValue === '2') {
+          this.isRadio1 = true;
+          this.isRadio = false;
+          this.getList();
+          this.resetForm('ruleForm');
+        }
 
+
+      }
+    }
 
   }
 </script>
@@ -289,4 +580,5 @@
     justify-content: space-between;
     align-items: center;
   }
+
 </style>

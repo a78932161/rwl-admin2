@@ -79,7 +79,6 @@
           callback();
         }
       };
-
       return {
         options: CityInfo,
         tableList: [{

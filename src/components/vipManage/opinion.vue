@@ -19,26 +19,17 @@
           end-placeholder="结束日期"
           :picker-options="pickerOptions2">
         </el-date-picker>
-      </div>
-      <div>
-        <el-cascader
-          placeholder="试试搜索：浙江"
-          :options="options"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="inquire">查询</el-button>
       </div>
     </div>
     <div>
       <el-table
         :data="tableData"
-        border
+        borderd
         stripe
         style="width: 100%">
         <el-table-column
-          prop="date"
+          prop="number"
           label="会员ID">
         </el-table-column>
         <el-table-column
@@ -46,27 +37,41 @@
           label="姓名">
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="createtime"
           label="反馈时间">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="content"
           label="反馈内容">
         </el-table-column>
       </el-table>
+    </div>
+    <div style="text-align: center;margin: 5% 0 5% 0;">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :page-size="5"
+        :total="total">
+      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
+  import {feedback} from "@/components/api/vipss";
 
   export default {
     name: "opinion",
     data() {
       return {
         options: CityInfo,
-        value1:'',
+        value1: '',
+        page: 1,
+        size: 5,
+        total: 10,
+
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -94,29 +99,57 @@
             }
           }]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: []
       }
     },
     methods: {
+      getList() {
+        if (this.value1) {
+          let a = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+            size: this.size,
+            page: this.page,
+          };
+          feedback(a).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data.content;
+            this.tableData.forEach((value)=>{
+              value.createtime=this.getLocalTime(value.createtime);
+            });
+            this.total = res.data.data.totalElements;
+          })
+        } else {
+          let a = {
+            size: this.size,
+            page: this.page,
+          };
+          feedback(a).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data.content;
+            this.tableData.forEach((value)=>{
+              value.createtime=this.getLocalTime(value.createtime);
+            });
+            this.total = res.data.data.totalElements;
+          })
+        }
+      },
       goIndex() {
         this.$emit('goIndex', true);
-      }
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
+      inquire() {
+        this.getList();
+      },
+      getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
+      },
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -129,9 +162,10 @@
   .el-breadcrumb {
     font-size: 18px;
   }
-  .onContent{
+
+  .onContent {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-bottom: 3%;
   }
 </style>

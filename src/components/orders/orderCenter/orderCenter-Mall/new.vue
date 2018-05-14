@@ -8,26 +8,28 @@
         <el-breadcrumb-item>新订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-<inquire @orderData="orderData"></inquire>
+    <inquire @orderData="orderData"></inquire>
     <div class="ord-content5">
       <div>
-      <el-cascader
-        placeholder="试试搜索：门店"
-        :options="options"
-        filterable
-        change-on-select
-        clearable
-      ></el-cascader>
-      <el-button type="primary" >立即派送</el-button>
+        <el-select v-model="value" clearable placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button type="primary" @click="distribution">立即派送</el-button>
         <el-button type="primary" disabled>已派订单</el-button>
         <el-button type="primary" disabled>完结订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
-        <el-button type="primary" >导出订单</el-button>
+        <el-button type="primary" @click="daochu">导出订单</el-button>
       </div>
     </div>
     <div>
       <el-table
         :data="tableData"
+        @selection-change="handleSelectChange"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -86,10 +88,11 @@
 </template>
 
 <script>
-  import {getmall,InvalidMall} from "@/components/api/ordermall";
+  import {getmall, InvalidMall, deliveryMall,distributionMall} from "@/components/api/ordermall";
   import inquire from '@/assets/vue/inquire'
+
   export default {
-    components:{
+    components: {
       inquire
     },
     data() {
@@ -98,7 +101,8 @@
         size: 5,
         total: 10,
         tableData: [],
-        options:[],
+        options: [],
+        value: '',
       }
     },
     methods: {
@@ -144,6 +148,15 @@
             status: 0,
           };
           this.$store.commit('getieData', this.inquire);
+        });
+        deliveryMall().then((res) => {
+          res.data.data.forEach((value) => {
+            let a = {
+              value: value.id,
+              label: value.name
+            };
+            this.options.push(a);
+          });
         })
       },
       orderData(data) {
@@ -187,12 +200,50 @@
           });
         });
       },
-
+      daochu() {
+        window.location.href = 'http://rtest.rwlai.cn/rwlmall/rwlmall/mallorder/export?status=0';
+      },
+      distribution() {
+        console.log(this.mutipleSelection);
+        console.log(this.value);
+        let idData = [];
+        if (this.mutipleSelection && this.value) {
+          this.mutipleSelection.forEach((value) => {
+            idData.push(value.id);
+          });
+          let a = {
+            orderid: idData.join(','),
+            storeid: this.value,
+          };
+          distributionMall(a).then((res) => {
+            this.getMallList();
+            this.$message({
+              message: '派送成功',
+              type: 'success'
+            });
+          })
+        } else {
+          this.$message({
+            message: '请选择需要派送的订单或选择门店',
+            type: 'warning'
+          });
+        }
+      },
+      handleSelectChange(selection) {
+        this.mutipleSelection = selection;
+        let ids = [];
+        this.mutipleSelection.map((item) => {
+          ids.push(item.id)
+        });
+        return ids;
+      },
     },
-    mounted() {
-      this.getMallList();
 
-    }
+  mounted()
+  {
+    this.getMallList();
+
+  }
   }
 </script>
 
@@ -205,17 +256,21 @@
     margin: 0 0 3% 0;
     text-align: center;
   }
+
   .ord-content5 button {
     width: 100px;
     height: 50px;
   }
+
   .demo-table-expand {
     font-size: 0;
   }
+
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
   }
+
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;

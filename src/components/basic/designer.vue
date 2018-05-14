@@ -405,8 +405,10 @@
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
-      ipchange(){
-          this.tableList.date=this.tableList.date.getTime();
+      ipchange() {
+        if(this.isadd1===true){
+          this.tableList.date = this.tableList.date.getTime();
+        }
       }
     },
     computed: {

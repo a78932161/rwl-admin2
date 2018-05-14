@@ -103,7 +103,7 @@
     methods: {
       getMallList() {
         let a = {
-          status: 1,
+          status: 4,
           page: this.page,
           size: this.size,
         };
@@ -162,6 +162,9 @@
         this.page = val;
         this.getMallList();
       },
+      daochu() {
+        window.location.href = 'http://rtest.rwlai.cn/rwlmall/rwlmall/mallorder/export?status=4';
+      }
     },
     mounted() {
       this.getMallList();

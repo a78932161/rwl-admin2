@@ -12,7 +12,7 @@
     </el-col>
 
     <el-col :span="17" :offset="4" class="el1">
-      <el-steps :active="2" align-center finish-status="success">
+      <el-steps :active="active" align-center>
         <el-step title="新订单" description="这是一段很长很长很长的描述性文字"></el-step>
         <el-step title="派单" description="这是一段很长很长很长的描述性文字"></el-step>
         <el-step title="收单" description="这是一段很长很长很长的描述性文字"></el-step>
@@ -30,32 +30,33 @@
             <el-input placeholder="请输入内容" size="mini" style="width: 40%"></el-input>
             <el-button type="primary" size="mini">确定</el-button>
           </div>
-          <div><label>注册电话 : </label></div>
-          <div><label>预约单号 : </label></div>
-          <div><label>用户名 : </label></div>
-          <div><label>联系电话 : </label></div>
-          <div><label>用户留言 : </label></div>
-          <div><label>物流入站备注 : </label></div>
-          <div><label>省市区 : </label></div>
-          <div><label>收衣地址 : </label></div>
-          <div><label>预约时间 : </label></div>
-          <div><label>衣物总数 : </label></div>
-          <div><label>订单价格 : </label></div>
-          <div><label>付款方式 : </label></div>
-          <div><label>付款状态 : </label></div>
-          <div><label>服务类型 : </label></div>
+          <div><label>注册电话 : {{xqData.phone}}</label></div>
+          <div><label>预约单号 : {{xqData.number}}</label></div>
+          <div><label>用户名 : {{xqData.name}}</label></div>
+          <div><label>联系电话 : {{xqData.phone}}</label></div>
+          <div><label>用户留言 : {{xqData.remark}} </label></div>
+          <div><label>物流入站备注 : {{}}</label></div>
+          <div><label>省市区 : {{xqData.province}}{{xqData.city}}{{xqData.area}}</label></div>
+          <div><label>收衣地址 : {{xqData.address}}</label></div>
+          <div><label>预约时间 : {{xqData.deliveryDate}}</label></div>
+          <div><label>衣物总数 : {{}}</label></div>
+          <div><label>订单价格 : {{xqData.amount}}</label></div>
+          <div><label>付款方式 : {{xqData.payMode}}</label></div>
+          <div><label>付款状态 : {{xqData.payStatus}}</label></div>
+          <div><label>服务类型 : {{xqData.type}}</label></div>
           <div><label>收单人员 : </label></div>
           <div><label>服务商户 : </label></div>
         </div>
       </el-col>
-
       <el-col :span="11" :offset="1">
         <div class="el3">
           <div class="el3-1">已收衣物</div>
           <div class="el3-2">
-            <div class="el3-2-1">
-              <div style="width:150px;height:150px;background: #8cc5ff" @click="goDetails"></div>
-              <label>物品名称1</label>
+            <div class="el3-2-1" v-for="data in imgData" @click="goDetails">
+                <img style="width:150px;height:150px" :src="data.src">
+              <div>
+                <label>{{data.name}}</label>
+              </div>
             </div>
           </div>
         </div>
@@ -66,15 +67,63 @@
 
 <script>
   import top from '@/assets/vue/top'
+  import {getfinid, getfinid1, getfinid2} from "@/components/api/vipss";
 
   export default {
-    components:{
+    components: {
       top,
     },
-    methods:{
-      goDetails(){
-        this.$router.push('details')
+    data() {
+      return {
+        listData: [],
+        xqData: [],
+        imgData:[],
+        active:0,
+        imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
       }
+    },
+    methods: {
+      getList() {
+        let a = this.$route.query.id;
+        if (a.substr(a.length - 2, 2) == '03') {
+          let b = {
+            orderid: a,
+          };
+          getfinid(b).then((res) => {
+            console.log(res);
+            this.listData = res.data.data.items;
+            this.listData.forEach((value)=>{
+              value.laundryProduct.logo=`${this.imgUrl}${value.laundryProduct.logo}`;
+              this.imgData.push({src:value.laundryProduct.logo,id:value.laundryProduct.id,name:value.laundryProduct.name});
+            });
+            console.log(this.listData);
+            this.xqData =res.data.data;
+            this.active=res.data.data.status;
+          })
+
+        } else if (a.substr(a.length - 2, 2) == '10') {
+          let b = {
+            orderid: a,
+          };
+          getfinid1(b).then((res) => {
+            console.log(res);
+
+          })
+        } else if (a.substr(a.length - 2, 2) == '13') {
+          let b = {
+            orderid: a,
+          };
+          getfinid2(b).then((res) => {
+            console.log(res);
+          })
+        }
+      },
+      goDetails() {
+        this.$router.push('details');
+      }
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -86,33 +135,10 @@
     font-size: 18px;
   }
 
-  .top {
-    height: 50px;
-    border-bottom: 1px solid rgb(20, 190, 240);
-    display: flex;
-    align-items: center;
-    margin: 0 0 30px 0;
-  }
-
-  .logo {
-    display: flex;
-  }
-
-  .logo1 {
-    margin: 0 10px 0 0;
-  }
-
   .logo1 img {
     width: 200px;
     height: 30px;
 
-  }
-
-  .logo2 {
-    color: rgb(20, 190, 240);
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin: 5px 0 0 0;
   }
 
   .vipTop {
@@ -164,12 +190,12 @@
 
   .el3-2 {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 
   .el3-2-1 {
     text-align: center;
-    width: 150px;
+
   }
 </style>

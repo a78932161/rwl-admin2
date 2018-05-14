@@ -8,17 +8,18 @@
         <el-breadcrumb-item>新订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-<inquire @orderData="orderData"></inquire>
+    <inquire @orderData="orderData"></inquire>
     <div class="ord-content5">
       <div>
-        <el-cascader
-          placeholder="试试搜索：门店"
-          :options="options"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary">立即派送</el-button>
+        <el-select v-model="value" clearable placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button type="primary" @click="distribution">立即派送</el-button>
         <el-button type="primary" disabled>已派订单</el-button>
         <el-button type="primary" disabled>入站订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
@@ -27,6 +28,7 @@
     <div>
       <el-table
         :data="tableData"
+        @selection-change="handleSelectChange"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -90,10 +92,11 @@
 
 <script>
 
-  import {getFurniture,InvalidFurniture} from "@/components/api/orderfurniture";
+  import {getFurniture, InvalidFurniture, deliveryFurniture,distributionFurniture} from "@/components/api/orderfurniture";
   import inquire from '@/assets/vue/inquire'
+
   export default {
-    components:{
+    components: {
       inquire
     },
     data() {
@@ -102,7 +105,8 @@
         size: 5,
         total: 10,
         tableData: [],
-        options:[],
+        options: [],
+        value: '',
       }
     },
     methods: {
@@ -148,7 +152,20 @@
             status: 0,
           };
           this.$store.commit('getieData', this.inquire);
+          this.tableData=res.data.data.content;
+        });
+        deliveryFurniture().then((res) => {
+          console.log(res);
+          res.data.data.forEach((value) => {
+            let a = {
+              value: value.id,
+              label: value.name
+            };
+            this.options.push(a);
+          });
+          console.log(this.options);
         })
+
       },
       orderData(data) {
         console.log(data);
@@ -190,6 +207,40 @@
             message: '已取消'
           });
         });
+      },
+      distribution() {
+        console.log(this.mutipleSelection);
+        console.log(this.value);
+        let idData=[];
+        if (this.mutipleSelection && this.value) {
+          this.mutipleSelection.forEach((value) => {
+            idData.push(value.id);
+          });
+          let a = {
+            orderid:idData.join(','),
+            storeid:this.value,
+          };
+          distributionFurniture(a).then((res) => {
+            this.getFurnitureList();
+            this.$message({
+              message: '派送成功',
+              type: 'success'
+            });
+          })
+        }else{
+          this.$message({
+            message: '请选择需要派送的订单或选择门店',
+            type: 'warning'
+          });
+        }
+      },
+      handleSelectChange(selection) {
+        this.mutipleSelection = selection;
+        let ids = [];
+        this.mutipleSelection.map((item) => {
+          ids.push(item.id)
+        });
+        return ids;
       },
     },
     mounted() {

@@ -13,7 +13,7 @@
     </el-col>
 
     <el-col :span="17" :offset="4" class="el1">
-      <el-steps :active="2" align-center finish-status="success">
+      <el-steps :active="2" align-center>
         <el-step title="新订单" description="这是一段很长很长很长的描述性文字"></el-step>
         <el-step title="派单" description="这是一段很长很长很长的描述性文字"></el-step>
         <el-step title="收单" description="这是一段很长很长很长的描述性文字"></el-step>

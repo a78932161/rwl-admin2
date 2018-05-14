@@ -71,7 +71,7 @@
                 v-model="tableList.date"
                 type="datetime"
                 style="width: 40%"
-                @change="ipchange"
+                @blur="ipchange"
                 placeholder="选择日期时间">
               </el-date-picker>
               <label>产品的有效日期不能早于创建当天的o点</label>
@@ -405,7 +405,9 @@
         this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
       ipchange() {
-        this.tableList.date = this.tableList.date.getTime();
+        if(this.isadd1===true){
+          this.tableList.date = this.tableList.date.getTime();
+        }
       }
     },
     computed: {

@@ -103,6 +103,7 @@
           });
         }
         this.$emit('orderData',this.orderData);
+
       }
     },
     computed: {

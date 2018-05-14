@@ -1,152 +1,221 @@
 <template>
-<div>
-  <div class="ord-top">
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item ><span @click="aa()">订单管理</span></el-breadcrumb-item>
-      <el-breadcrumb-item>订单分析</el-breadcrumb-item>
-    </el-breadcrumb>
-  </div>
-  <div class="ord-content">
-    <div class="ord-content1">
+  <div>
+    <div class="ord-top">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item><span @click="aa()">订单管理</span></el-breadcrumb-item>
+        <el-breadcrumb-item>订单分析</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="ord-content">
+      <div class="ord-content1">
+        <div>
+          <el-date-picker
+            v-model="value1"
+            type="daterange"
+            align="left"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions2">
+          </el-date-picker>
+        </div>
+      </div>
       <div>
-        <el-date-picker
-          v-model="value1"
-          type="daterange"
-          align="center"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions2">
-        </el-date-picker>
+        <el-cascader
+          placeholder="试试搜索：浙江"
+          :options="options"
+          filterable
+          change-on-select
+          clearable
+          @change="cascader"
+        ></el-cascader>
+        <el-button type="primary" @click="search">查询</el-button>
       </div>
     </div>
-    <div>
-      <el-cascader
-        placeholder="试试搜索：浙江"
-        :options="options"
-        filterable
-        change-on-select
-        clearable
-      ></el-cascader>
-      <el-button type="primary">查询</el-button>
+    <div class="ord-content2">
+      <el-table
+        :data="tableData"
+        show-summary
+        stripe
+        :summary-method="getSummaries"
+        style="width: 100%">
+        <el-table-column
+          prop="category"
+          label="类目"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="orderCount"
+          label="订单数">
+        </el-table-column>
+        <el-table-column
+          prop="unitPrice"
+          label="单价均价">
+        </el-table-column>
+        <el-table-column
+          prop="number"
+          label="商品数量">
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="110">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="goOrder(scope.row)">查看详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
-  <div class="ord-content2">
-    <el-table
-      :data="tableData6"
-      show-summary
-      stripe
-      :summary-method="getSummaries"
-      style="width: 100%">
-      <el-table-column
-        prop="id"
-        label="类目"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="订单数">
-      </el-table-column>
-      <el-table-column
-        prop="amount1"
-        label="单价均价">
-      </el-table-column>
-      <el-table-column
-        prop="amount2"
-        label="商品数量">
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="110">
-        <template slot-scope="scope">
-          <el-button  type="text" size="small">查看详情</el-button>
-        </template>
-      </el-table-column>
-
-    </el-table>
-  </div>
-</div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
-    export default {
-      data() {
-        return {
-          options: CityInfo,
-          tableData6: [{
-            id: '12987122',
-            name: '王小虎',
-            amount1: '234',
-            amount2: '3.2',
-            amount3: 10
+  import {analysis} from "@/components/api/order";
+
+  export default {
+    data() {
+      return {
+        options: CityInfo,
+        tableData: [],
+        value1: '',
+        balance: 0,
+        Wechat: 0,
+        province: '',
+        city: '',
+        zone: '',
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
           }, {
-            id: '12987123',
-            name: '王小虎',
-            amount1: '165',
-            amount2: '4.43',
-            amount3: 12
-          }],
-          value1: '',
-          pickerOptions2: {
-            shortcuts: [{
-              text: '最近一周',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                picker.$emit('pick', [start, end]);
-              }
-            }, {
-              text: '最近一个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                picker.$emit('pick', [start, end]);
-              }
-            }, {
-              text: '最近三个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                picker.$emit('pick', [start, end]);
-              }
-            }]
-          },
-        }
-      },
-      methods: {
-        getSummaries(param) {
-          const { columns} = param;
-          const sums = [];
-          columns.forEach((column, index) => {
-            if (index === 0) {
-              sums[index] = '支付类型';
-              return;
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
             }
-            if(index === 1){
-              sums[index] = '微信支付:';
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
             }
-            if(index === 2){
-              sums[index] = '余额支付:';
-            }
-            if(index === 3){
-              sums[index] = '支付宝支付:';
-            }
+          }]
+        },
+      }
+    },
+    methods: {
+      getList() {
+        this.balance = 0;
+        this.Wechat = 0;
+        if (this.value1 && this.province && this.city && this.zone) {
+          let b = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+            province: this.province,
+            city: this.city,
+            area: this.zone,
+          };
+          analysis(b).then((res) => {
+            console.log(res);
+            res.data.data.forEach((value) => {
+              this.balance += value.balancePay;
+              this.Wechat += value.weChatPay;
+            });
+            this.tableData = res.data.data;
           });
 
-          return sums;
-        },
-        aa(){
-          this.$router.go(0)
-        },
+        } else {
+          let a = new Date();
+          let b = {
+            starttime: 0,
+            endtime: a.getTime(),
+          };
+          analysis(b).then((res) => {
+            console.log(res);
+            res.data.data.forEach((value) => {
+              this.balance += value.balancePay;
+              this.Wechat += value.weChatPay;
+            });
+            this.tableData = res.data.data;
+          });
+        }
       },
-    }
+
+      getSummaries(param) {
+        const {columns} = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '支付类型';
+            return;
+          }
+          if (index === 1) {
+            sums[index] = '微信支付:' + this.Wechat;
+          }
+          if (index === 2) {
+            sums[index] = '余额支付:' + this.balance;
+          }
+        });
+
+        return sums;
+      },
+      aa() {
+        this.$emit('goIndex1', true);
+      },
+      search() {
+        this.getList();
+      },
+      cascader(value) {
+        this.options.forEach((value1) => {
+          if (value[0] == value1.value) {
+            value1.children.forEach((value2) => {
+              if (value[1] == value2.value) {
+                value2.children.forEach((value3) => {
+                  if (value[2] == value3.value) {
+                    this.province = value1.label;
+                    this.city = value2.label;
+                    this.zone = value3.label;
+                  }
+                })
+              }
+            })
+          }
+        });
+      },
+      goOrder(row){
+        console.log(row);
+        switch (row.category) {
+          case "普通洗护":
+            this.$router.push('newLaundry');
+            break;
+          case "高端洗护":
+            this.$router.push('newDesigner');
+            break;
+          case "家具":
+            this.$router.push('newFurniture');
+            break;
+          case "商城":
+            this.$router.push('newMall');
+            break;
+        }
+      },
+    },
+    mounted() {
+      this.getList();
+    },
+  }
 </script>
 
 <style scoped>

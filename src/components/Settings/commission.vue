@@ -120,19 +120,20 @@
       getlsit() {
         getCommission().then((res) => {
           console.log(res.data.data);
-          res.data.data.forEach((res1) => {
-            if (res1.key == 'commissionMall') {
-              res1.key = '小让商城';
-            } else if (res1.key == 'commissionHighLaundry') {
-              res1.key = '高端洗护';
-            } else if (res1.key == 'commissionFurniture') {
-              res1.key = '小让家具';
-            } else if (res1.key == 'commissionLaundry') {
-              res1.key = '洗衣';
-            }
-
-          });
-          this.tableData = res.data.data;
+          if(es.data.data){
+            res.data.data.forEach((res1) => {
+              if (res1.key == 'commissionMall') {
+                res1.key = '小让商城';
+              } else if (res1.key == 'commissionHighLaundry') {
+                res1.key = '高端洗护';
+              } else if (res1.key == 'commissionFurniture') {
+                res1.key = '小让家具';
+              } else if (res1.key == 'commissionLaundry') {
+                res1.key = '洗衣';
+              }
+            });
+            this.tableData = res.data.data;
+          }
         })
       },
       handleClose(done) {

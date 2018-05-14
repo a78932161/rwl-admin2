@@ -140,6 +140,8 @@
                 break;
             }
           });
+          this.total = res.data.data.totalElements;
+          this.tableData=res.data.data.content;
           this.inquire = {
             page: this.page,
             size: this.size,

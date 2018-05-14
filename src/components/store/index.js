@@ -4,16 +4,19 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const state = {
-  count:1,
-  radio1:'2',
-  ieData:[],
+  count: 1,
+  radio1: '2',
+  ieData: [],
+  rechargeId: '',
+  refundId: '',
+  vipId:0,
 };
-const mutations={
-  changeRadio1(state,n){
-    state.radio1=n;
+const mutations = {
+  changeRadio1(state, n) {
+    state.radio1 = n;
   },
-  getieData(state,n){
-    state.ieData=n;
+  getieData(state, n) {
+    state.ieData = n;
   }
 
 };

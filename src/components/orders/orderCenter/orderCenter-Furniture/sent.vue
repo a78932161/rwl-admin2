@@ -108,11 +108,12 @@
     methods: {
       getFurnitureList() {
         let a = {
-          status: 1,
+          status: 4,
           page: this.page,
           size: this.size,
         };
         getFurniture(a).then((res) => {
+          console.log(res);
           res.data.data.content.forEach((value) => {
             value.items = value.items.length + '件';
             value.createtime = this.getLocalTime(value.createtime);
@@ -146,7 +147,7 @@
             page: this.page,
             size: this.size,
             type: 3,
-            status: 1,
+            status: 4,
           };
           this.$store.commit('getieData', this.inquire);
         })
@@ -171,7 +172,6 @@
     },
     mounted() {
       this.getFurnitureList();
-
     }
   }
 </script>

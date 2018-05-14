@@ -8,14 +8,7 @@
       </el-breadcrumb>
     </div>
     <div class="ord-content">
-      <div class="ord-content1">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">查询</el-button>
-      </div>
-      <div class="ord-content3">
-        <label class="ord-content3-l">昨天订单:<b>{{a}}</b>单</label>
-        <label>今天订单:<b>{{a}}</b>单</label>
-      </div>
+
       <div>
         <el-cascader
           placeholder="试试搜索：浙江"
@@ -28,27 +21,43 @@
       </div>
     </div>
     <div class="ord-content4">
-      <el-button type="primary" @click="goLaundry">洗衣<br>{{a}}</el-button>
-      <el-button type="primary" @click="goDesigner">高端洗护<br>{{a}}</el-button>
-      <el-button type="primary" @click="goFurniture">小让家具<br>{{a}}</el-button>
-      <el-button type="primary" @click="goMall">小让商城<br>{{a}}</el-button>
+      <el-button type="primary" @click="goLaundry">洗衣<br>{{items.洗衣}}</el-button>
+      <el-button type="primary" @click="goDesigner">高端洗护<br>{{items.高端洗护}}</el-button>
+      <el-button type="primary" @click="goFurniture">小让家具<br>{{items.家具}}</el-button>
+      <el-button type="primary" @click="goMall">小让商城<br>{{items.商城}}</el-button>
     </div>
   </div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
+  import {orderNumber} from "@/components/api/order";
 
   export default {
     data() {
       return {
-        a:10,
+        a: 10,
         options: CityInfo,
+        items: [],
+        value1:'',
       }
     },
     methods: {
+      getList() {
+        let a = new Date();
+        let b = {
+          starttime: a.getTime() - 3600 * 1000 * 24,
+          endtime: a.getTime(),
+        };
+        orderNumber(b).then((res) => {
+          this.items = res.data.data;
+        })
+      },
+
+
+
       aa() {
-        this.$router.go(0)
+        this.$emit('goIndex',true);
       },
       goLaundry() {
         this.$router.push('/newLaundry');
@@ -62,6 +71,9 @@
       goMall() {
         this.$router.push('/newMall');
       }
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -79,7 +91,7 @@
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 10% 0;
+    margin: 0 0 8% 0;
   }
 
   .ord-content1 {
@@ -96,7 +108,8 @@
   }
 
   .ord-content4 {
-    text-align: center;
+    display: flex;
+    justify-content: space-around;
   }
 
   .ord-content4 button {

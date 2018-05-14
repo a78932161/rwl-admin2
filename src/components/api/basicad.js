@@ -11,7 +11,7 @@ export function getAd(data) {
 
 export function upAd(id, data) {
   return axios({
-    url: "/advertisement/findbytype",
+    url: "/advertisement/update",
     method: "post",
     data: data,
     params: id

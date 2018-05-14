@@ -25,6 +25,7 @@ import cancelFurniture  from'@/components/orders/orderCenter/orderCenter-Furnitu
 import endFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/end'
 import newFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/new'
 import sentFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/sent'
+import shipFurniture  from '@/components/orders/orderCenter/orderCenter-Furniture/ship'
 import mallIndex  from'@/components/orders/orderCenter/orderCenter-Mall/index'
 import cancelMall from'@/components/orders/orderCenter/orderCenter-Mall/cancel'
 import endMall from'@/components/orders/orderCenter/orderCenter-Mall/end'
@@ -226,6 +227,11 @@ export default new Router({
           path: '/sentFurniture',
           name: 'sentFurniture',
           component: sentFurniture,
+        },
+        {
+          path: '/shipFurniture',
+          name: 'shipFurniture',
+          component: shipFurniture,
         },
       ]
     },

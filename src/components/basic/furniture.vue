@@ -59,27 +59,42 @@
               <el-upload
                 action="http://rtest.rwlai.cn/rwlmall/rwlmall/file/uploadimage"
                 list-type="picture-card"
-                :limit="5"
+                :limit="10"
                 :headers="headers"
                 :on-preview="handlePictureCardPreview"
                 :on-change="handleChange"
                 :on-remove="handleRemove"
                 :before-upload="beforeAvatarUpload"
                 :on-exceed="handleExceed"
-                :file-list="fileList"
-              >
+                :file-list="fileList">
                 <i class="el-icon-plus"></i>
               </el-upload>
               <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
               </el-dialog>
             </el-form-item>
+            <el-form-item label="商品轮播图 :">
+              <el-upload
+                action="http://rtest.rwlai.cn/rwlmall/rwlmall/file/uploadimage"
+                list-type="picture-card"
+                :limit="5"
+                :headers="headers"
+                :on-preview="handlePictureCardPreview"
+                :on-change="handleChange1"
+                :on-remove="handleRemove1"
+                :before-upload="beforeAvatarUpload"
+                :on-exceed="handleExceed1"
+                :file-list="fileList1">
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog>
+            </el-form-item>
+
+
             <el-form-item label="商品描述标题 :" prop="heading">
               <el-input placeholder="请输入名称" v-model="tableList.heading" style="width: 40%;"></el-input>
-            </el-form-item>
-            <el-form-item label="商品描述详情 :" prop="standard">
-              <el-input type="textarea" v-model="tableList.standard" placeholder="请输入名称" style="width: 40%;"
-                        :autosize="{ minRows: 4, maxRows: 8}"></el-input>
             </el-form-item>
 
             <el-form-item label="商品库存数目 :" prop="stock">
@@ -181,9 +196,12 @@
         goodsId: {},
         category: '',
         fileList: [],
+        fileList1: [],
         imgList: [],
+        imgList1: [],
         imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
         imgay: [],
+        imgay1: [],
         list: [
           {name: '家具类', value: '1'},
         ],
@@ -194,8 +212,8 @@
           price: '',
           logo: '',
           image: '',
+          sowingMap: '',
           heading: '',
-          standard: '',
           stock: '',
           date: '',
           sort: '',
@@ -228,9 +246,7 @@
           heading: [
             {required: true, message: '请输入标题', trigger: 'blur'}
           ],
-          standard: [
-            {required: true, message: '请输入描述', trigger: 'blur'}
-          ]
+
 
         },
 
@@ -275,19 +291,18 @@
       goodsAdd() {
         if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.heading || this.tableList.standard) {
+          this.tableList.heading) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
-
           let a = {
             name: this.tableList.name,
             old_price: this.tableList.old_price * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgList.toString(),
+            sowingMap: this.imgList1.toString(),
             heading: this.tableList.heading,
-            standard: this.tableList.standard,
             stock: this.tableList.stock,
             date: this.tableList.date.getTime(),
             sort: this.tableList.stock,
@@ -306,8 +321,8 @@
             price: '',
             logo: '',
             image: '',
+            sowingMap: '',
             heading: '',
-            standard: '',
             stock: '',
             date: '',
             sort: '',
@@ -325,19 +340,18 @@
       goodsAdd1() {
         if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.heading || this.tableList.standard) {
+          this.tableList.heading) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
-
           let a = {
             name: this.tableList.name,
             old_price: this.tableList.old_price * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgay.toString(),
+            sowingMap: this.imgay1.toString(),
             heading: this.tableList.heading,
-            standard: this.tableList.standard,
             stock: this.tableList.stock,
             date: this.tableList.date,
             sort: this.tableList.stock,
@@ -395,6 +409,19 @@
             });
             console.log(this.imgay);
           }
+          this.fileList1 = [];
+          this.imgay1 = [];
+          this.imgList1 = [];
+          if (res.data.data.sowingMap) {
+            this.fileList1 = this.tpjq(res.data.data.sowingMap);
+            this.fileList1.forEach((res) => {
+              let c = this.imgUrl.length;
+              let d = res.url.substring(c);
+              this.imgay1.push(d);
+            });
+            console.log(this.imgay1);
+          }
+
           if (this.tableList.logo) {
             this.tableList.logo = `${this.imgUrl}${this.tableList.logo}`;
           }
@@ -432,7 +459,6 @@
           let c = this.imgUrl.length;
           d = file.url.substring(c);//还有问题有两种情况
         }
-
         Array.prototype.remove = function (val) {
           let index = this.indexOf(val);
           if (index > -1) {
@@ -448,13 +474,39 @@
         if (this.imgList.length !== 0) {
           this.imgList.remove(file.response.data);
         }
-
         console.log(this.imgay);
       },
+      handleRemove1(file) {
+        console.log(file.url);
+        let d = '';
+        if (file.url.indexOf(this.imgUrl) > -1) {
+          let c = this.imgUrl.length;
+          d = file.url.substring(c);
+        }
+        Array.prototype.remove = function (val) {
+          let index = this.indexOf(val);
+          if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        if (file.response === undefined && file.url !== '') {
+          this.imgay1.remove(d);
+        }
+        else {
+          this.imgay1.remove(d);
+        }
+        if (this.imgList1.length !== 0) {
+          this.imgList1.remove(file.response.data);
+        }
+        console.log(this.imgay1);
+      },
+
+
       handlePictureCardPreview(file) {
         this.dialogImageUrl = `${this.imgUrl}${file.response.data}`;
         this.dialogVisible = true;
       },
+
       handleChange(file) {
         if (file.response != undefined) {
           if (this.isadd == true) {
@@ -463,7 +515,16 @@
             this.imgay.push(file.response.data);
             console.log(this.imgay);
           }
-
+        }
+      },
+      handleChange1(file) {
+        if (file.response != undefined) {
+          if (this.isadd == true) {
+            this.imgList1.push(file.response.data);
+          } else {
+            this.imgay1.push(file.response.data);
+            console.log(this.imgay1);
+          }
         }
       },
 
@@ -479,6 +540,9 @@
         return isJPG && isLt2M;
       },
       handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      handleExceed1(files, fileList) {
         this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
       tpjq(qaq) {
@@ -501,7 +565,9 @@
         this.tableList.logo = `${this.imgUrl}${res.data}`;
       },
       ipchange() {
-        this.tableList.date = this.tableList.date.getTime();
+        if (this.isadd1 === true) {
+          this.tableList.date = this.tableList.date.getTime();
+        }
       }
     },
     computed: {

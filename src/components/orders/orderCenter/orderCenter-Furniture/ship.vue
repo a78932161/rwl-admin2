@@ -4,8 +4,8 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">小让商城</el-breadcrumb-item>
-        <el-breadcrumb-item>取消订单</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders' }">小让家具</el-breadcrumb-item>
+        <el-breadcrumb-item>已派订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <inquire @orderData="orderData"></inquire>
@@ -19,10 +19,9 @@
           clearable
         ></el-cascader>
         <el-button type="primary" disabled>立即派送</el-button>
-        <el-button type="primary" disabled>已派订单</el-button>
-        <el-button type="primary" disabled>完结订单</el-button>
-        <el-button type="primary">取消订单</el-button>
-        <el-button type="primary" @click="daochu">导出订单</el-button>
+        <el-button type="primary">已派订单</el-button>
+        <el-button type="primary" disabled>入站订单</el-button>
+        <el-button type="primary" disabled>取消订单</el-button>
       </div>
     </div>
     <div>
@@ -44,11 +43,17 @@
               <el-form-item label="预约时间">
                 <span>{{ props.row.shopId }}</span>
               </el-form-item>
+              <el-form-item label="套餐选择">
+                <span>{{ props.row.items }}</span>
+              </el-form-item>
               <el-form-item label="已付金额">
                 <span>{{ props.row.amount }}</span>
               </el-form-item>
+
               <el-form-item style="display: flex; justify-content:center;width:100%">
                 <el-button type="primary">查看详情</el-button>
+                <el-button type="primary">取消订单</el-button>
+                <el-button type="primary">派给顺丰</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -85,11 +90,10 @@
 
 <script>
 
-  import {getmall, daochuMall} from "@/components/api/ordermall";
+  import {getFurniture} from "@/components/api/orderfurniture";
   import inquire from '@/assets/vue/inquire'
-
   export default {
-    components: {
+    components:{
       inquire
     },
     data() {
@@ -98,17 +102,18 @@
         size: 5,
         total: 10,
         tableData: [],
-        options: [],
+        options:[],
       }
     },
     methods: {
-      getMallList() {
+      getFurnitureList() {
         let a = {
-          status: 6,
+          status: 1,
           page: this.page,
           size: this.size,
         };
-        getmall(a).then((res) => {
+        getFurniture(a).then((res) => {
+          console.log(res);
           res.data.data.content.forEach((value) => {
             value.items = value.items.length + '件';
             value.createtime = this.getLocalTime(value.createtime);
@@ -136,13 +141,13 @@
                 break;
             }
           });
-          this.total = res.data.data.totalElements;
           this.tableData = res.data.data.content;
+          this.total = res.data.data.totalElements;
           this.inquire = {
             page: this.page,
             size: this.size,
-            type: 4,
-            status: 6,
+            type: 3,
+            status: 1,
           };
           this.$store.commit('getieData', this.inquire);
         })
@@ -162,14 +167,12 @@
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.page = val;
-        this.getMallList();
+        this.getFurnitureList();
       },
-      daochu() {
-        window.location.href = 'http://rtest.rwlai.cn/rwlmall/rwlmall/mallorder/export?status=6';
-      }
     },
     mounted() {
-      this.getMallList();
+      this.getFurnitureList();
+
     }
   }
 </script>

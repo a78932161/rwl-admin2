@@ -113,6 +113,7 @@
           size: this.size,
         };
         getFurniture(a).then((res) => {
+          console.log(res);
           res.data.data.content.forEach((value) => {
             value.items = value.items.length + '件';
             value.createtime = this.getLocalTime(value.createtime);
@@ -140,6 +141,8 @@
                 break;
             }
           });
+          this.total = res.data.data.totalElements;
+          this.tableData = res.data.data.content;
           this.inquire = {
             page: this.page,
             size: this.size,

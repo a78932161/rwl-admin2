@@ -11,9 +11,9 @@
           </el-breadcrumb>
         </div>
         <el-card class="vipInfo">
-          <div><label>姓名 :</label></div>
-          <div><label>会员ID :</label></div>
-          <div><label>手机 :11111111111</label></div>
+          <div><label>姓名: {{name}}</label></div>
+          <div><label>ID: {{id}}</label></div>
+          <div><label>手机: {{phone}}</label></div>
         </el-card>
 
       </el-col>
@@ -23,21 +23,19 @@
           stripe
           style="width: 100%">
           <el-table-column
-            prop="date"
-            label="时间"
-            width="180">
+            prop="time"
+            label="时间">
           </el-table-column>
           <el-table-column
-            prop="name"
-            label="类目"
-            width="180">
+            prop="category"
+            label="类目">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="money"
             label="金额">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="balance"
             label="账号余额">
           </el-table-column>
           <el-table-column
@@ -45,7 +43,9 @@
             label="操作"
             width="110">
             <template slot-scope="scope">
-              <el-button  type="text" size="small" @click="goUserOrders" >查看详情</el-button>
+              <el-button type="text" size="small" v-if="scope.row.category=='消费'" @click="goUserOrders(scope.row)">
+                查看详情
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -53,7 +53,8 @@
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="1000">
+            @current-change="handleCurrentChange"
+            :total="total">
           </el-pagination>
         </div>
       </el-col>
@@ -63,35 +64,71 @@
 
 <script>
   import top from '@/assets/vue/top'
+  import {getvip1, getrecords} from "@/components/api/vipss";
+
   export default {
-    components:{
+    components: {
       top,
     },
     data() {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        name: '',
+        id: '',
+        phone: '',
+        size: 5,
+        page: 1,
+        total: 10,
       }
     },
-    methods:{
-      goUserOrders(){
-        this.$router.push('userOrders')
-      }
+    methods: {
+      getList() {
+        let a = {
+          userid: this.$route.query.id,
+        };
+        getvip1(a).then((res) => {
+          this.name = res.data.data.name;
+          this.id = res.data.data.number;
+          this.phone = res.data.data.phone;
+        });
+        getrecords(a).then((res1) => {
+          res1.data.data.forEach((value) => {
+            value.time = this.getLocalTime(value.time);
+            value.balance = value.balance / 100;
+            value.money = value.money / 100;
+          });
+          this.total = res1.data.data.length;
+          let arr = res1.data.data;
+          let currentArr = [];
+          let page = this.size;
+          let currentPage = this.page;
+          let StartNum = (currentPage - 1) * page;
+          let EndNum = currentPage * page;
+          for (let i = StartNum; i < EndNum; i++) {
+            if (!arr[i]) {
+              break;
+            }
+            currentArr.push(arr[i]);
+          }
+          this.tableData = currentArr;//显示的数据
+          console.log(this.tableData);
+        })
+      },
+      goUserOrders(row) {
+        console.log(row.orderId);
+        let a = row.orderId;
+        this.$router.push({name: 'userOrders', query: {id: a}});
+      },
+      getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -103,37 +140,16 @@
     font-size: 18px;
   }
 
-  .top {
-    height: 50px;
-    border-bottom: 1px solid rgb(20, 190, 240);
-    display: flex;
-    align-items: center;
-    margin: 0 0 30px 0;
-  }
-
-  .logo {
-    display: flex;
-  }
-
-  .logo1 {
-    margin: 0 10px 0 0;
-  }
-
   .logo1 img {
     width: 200px;
     height: 30px;
 
   }
 
-  .logo2 {
-    color: rgb(20, 190, 240);
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin: 5px 0 0 0;
-  }
-  .vipAside{
+  .vipAside {
 
   }
+
   .vipTop {
     margin: 0 0 10% 0;
   }
@@ -141,13 +157,12 @@
   .vipInfo {
     width: 80%;
     padding: 5px;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 40px;
-
   }
 
   .vipMain {
-  margin: 2% 0 0 0;
+    margin: 2% 0 0 0;
 
   }
 </style>

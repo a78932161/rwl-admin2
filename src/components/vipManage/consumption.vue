@@ -215,7 +215,7 @@
         this.isCdl=true;
       },
       goIndex(){
-        this.$router.go(0);
+        this.$emit('goIndex2',true);
       },
       goIndex1(data){
         this.isDiv=data;

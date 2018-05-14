@@ -15,3 +15,20 @@ export function InvalidFurniture(data) {
     params:data
   })
 }
+
+export function deliveryFurniture(data) {
+  return axios({
+    url: "/store/findall",
+    method: "post",
+    params:data
+  })
+}
+
+export function distributionFurniture(data) {
+  return axios({
+    url: "/furnitureorder/delivery",
+    method: "post",
+    params:data
+  })
+}
+

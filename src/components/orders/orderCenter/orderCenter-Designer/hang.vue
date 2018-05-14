@@ -96,7 +96,6 @@
     },
     data() {
       return {
-
         page: 1,
         size: 5,
         total: 10,

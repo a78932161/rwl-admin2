@@ -15,3 +15,26 @@ export function InvalidMall(data) {
     params:data
   })
 }
+
+export function deliveryMall(data) {
+  return axios({
+    url: "/store/findall",
+    method: "post",
+    params:data
+  })
+}
+
+export function daochuMall(data) {
+  return axios({
+    url: "/mallorder/export",
+    method: "post",
+    params:data
+  })
+}
+export function distributionMall(data) {
+  return axios({
+    url: "/mallorder/delivery",
+    method: "post",
+    params:data
+  })
+}

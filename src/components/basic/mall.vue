@@ -59,25 +59,43 @@
               <el-upload
                 action="http://rtest.rwlai.cn/rwlmall/rwlmall/file/uploadimage"
                 list-type="picture-card"
-                :limit="5"
+                :limit="10"
                 :headers="headers"
                 :on-preview="handlePictureCardPreview"
                 :on-change="handleChange"
                 :on-remove="handleRemove"
                 :before-upload="beforeAvatarUpload"
                 :on-exceed="handleExceed"
-                :file-list="fileList"
-              >
+                :file-list="fileList">
                 <i class="el-icon-plus"></i>
               </el-upload>
               <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
               </el-dialog>
             </el-form-item>
-            <el-form-item label="商品描述标题 :" prop="heading">
-              <el-input placeholder="请输入名称" v-model="tableList.heading" style="width: 40%;"></el-input>
+            <el-form-item label="商品轮播图 :">
+              <el-upload
+                action="http://rtest.rwlai.cn/rwlmall/rwlmall/file/uploadimage"
+                list-type="picture-card"
+                :limit="5"
+                :headers="headers"
+                :on-preview="handlePictureCardPreview"
+                :on-change="handleChange1"
+                :on-remove="handleRemove1"
+                :before-upload="beforeAvatarUpload"
+                :on-exceed="handleExceed1"
+                :file-list="fileList1">
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog>
             </el-form-item>
-            <el-form-item label="商品描述详情 :" prop="standard">
+            <el-form-item label="商品规格 :" prop="productParameters">
+              <el-input placeholder="商品规格" v-model="tableList.productParameters" style="width: 40%"></el-input>
+            </el-form-item>
+
+            <el-form-item label="产品参数 :" prop="standard">
               <el-input type="textarea" v-model="tableList.standard" placeholder="请输入名称" style="width: 40%;"
                         :autosize="{ minRows: 4, maxRows: 8}"></el-input>
             </el-form-item>
@@ -115,7 +133,7 @@
 <script>
   import top from '@/assets/vue/top'
   import {getToken} from '@/auth'
-  import {mallselect, mallAdd, mallUp, mallId} from "@/components/api/basicmall";
+  import {mallselect, mallAdd, mallUp, mallId, mallhelf} from "@/components/api/basicmall";
 
 
   export default {
@@ -174,9 +192,12 @@
         goodsId: {},
         category: '',
         fileList: [],
+        fileList1: [],
         imgList: [],
+        imgList1: [],
         imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
         imgay: [],
+        imgay1: [],
         list: [
           {name: '生活用品类', value: '1'},
           {name: '服务类', value: '2'},
@@ -190,11 +211,11 @@
           price: '',
           logo: '',
           image: '',
-          heading: '',
           standard: '',
           stock: '',
           date: '',
           sort: '',
+          productParameters: '',
           status: 1,
         },
         rules: {
@@ -221,13 +242,12 @@
           date: [
             {type: 'date', required: true, message: '请选择时间', trigger: 'change'}
           ],
-          heading: [
-            {required: true, message: '请输入标题', trigger: 'blur'}
-          ],
           standard: [
-            {required: true, message: '请输入描述', trigger: 'blur'}
-          ]
-
+            {required: true, message: '请输入参数', trigger: 'blur'}
+          ],
+          productParameters: [
+            {required: true, message: '请输入规格', trigger: 'blur'}
+          ],
         },
 
 
@@ -261,6 +281,7 @@
             status: 1,
           };
           this.fileList = [];
+          this.fileList1 = [];
           this.isadd = true;
           this.isadd1 = false;
           this.resetForm('tableList');
@@ -271,7 +292,7 @@
       goodsAdd() {
         if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.heading || this.tableList.standard) {
+          this.tableList.standard || this.tableList.productParameters) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
@@ -282,11 +303,12 @@
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgList.toString(),
-            heading: this.tableList.heading,
-            standard: this.tableList.standard,
+            productParameters: this.tableList.standard,
+            sowingMap: this.imgList1.toString(),
+            standard:this.tableList.productParameters,
             stock: this.tableList.stock,
             date: this.tableList.date.getTime(),
-            sort: this.tableList.stock,
+            sort: this.tableList.sort,
             category: this.category,
             status: 1,
           };
@@ -303,14 +325,16 @@
             price: '',
             logo: '',
             image: '',
-            heading: '',
             standard: '',
+            productParameters: '',
             stock: '',
             date: '',
             sort: '',
             status: 1,
-          }
-
+          };
+          this.resetForm('tableList');
+          this.fileList1 = [];
+          this.fileList = [];
         } else {
           this.$message({
             message: '请填写完整!',
@@ -321,22 +345,22 @@
       goodsAdd1() {
         if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.heading || this.tableList.standard) {
+          this.tableList.standard || this.tableList.productParameters) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
-
           let a = {
             name: this.tableList.name,
             old_price: this.tableList.old_price * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgay.toString(),
-            heading: this.tableList.heading,
-            standard: this.tableList.standard,
+            sowingMap: this.imgay1.toString(),
+            productParameters: this.tableList.standard,
+            standard:this.tableList.productParameters,
             stock: this.tableList.stock,
             date: this.tableList.date,
-            sort: this.tableList.stock,
+            sort: this.tableList.sort,
             category: this.category,
             status: this.tableList.status,
           };
@@ -344,7 +368,7 @@
             productid: this.tableList.id,
           };
           mallUp(b, a).then((res) => {
-            this.goodsSelect();
+            this.goodsSelect(this.category);
             this.$message({
               message: '修改成功!',
               type: 'success'
@@ -363,7 +387,6 @@
         let a = {
           category: category,
         };
-
         mallselect(a).then((res) => {
           console.log(res);
           this.title = res.data.data;
@@ -380,6 +403,7 @@
         let a = {
           number: item1.number
         };
+
         mallId(a).then((res) => {
           this.resetForm('tableList');
           this.tableList = res.data.data;
@@ -395,9 +419,21 @@
               let d = res.url.substring(c);
               this.imgay.push(d);
             });
-            console.log(this.imgay);
           }
-          if(this.tableList.logo){
+          this.fileList1 = [];
+          this.imgay1 = [];
+          this.imgList1 = [];
+          if (res.data.data.sowingMap) {
+            this.fileList1 = this.tpjq(res.data.data.sowingMap);
+            this.fileList1.forEach((res) => {
+              let c = this.imgUrl.length;
+              let d = res.url.substring(c);
+              this.imgay1.push(d);
+            });
+            console.log(this.imgay1);
+          }
+
+          if (this.tableList.logo) {
             this.tableList.logo = `${this.imgUrl}${this.tableList.logo}`;
           }
 
@@ -417,7 +453,7 @@
         let a = {
           productid: this.tableList.id
         };
-        shelf(a).then((res) => {
+        mallhelf(a).then((res) => {
           if (res.data.msg == '成功') {
             this.goodsUp(this.goodsId.index1, this.goodsId.item1);
             this.$message({
@@ -432,9 +468,8 @@
         let d = '';
         if (file.url.indexOf(this.imgUrl) > -1) {
           let c = this.imgUrl.length;
-          d = file.url.substring(c);//还有问题狂怒有两种情况
+          d = file.url.substring(c);
         }
-
         Array.prototype.remove = function (val) {
           let index = this.indexOf(val);
           if (index > -1) {
@@ -453,6 +488,31 @@
 
         console.log(this.imgay);
       },
+      handleRemove1(file) {
+        console.log(file.url);
+        let d = '';
+        if (file.url.indexOf(this.imgUrl) > -1) {
+          let c = this.imgUrl.length;
+          d = file.url.substring(c);
+        }
+        Array.prototype.remove = function (val) {
+          let index = this.indexOf(val);
+          if (index > -1) {
+            this.splice(index, 1);
+          }
+        };
+        if (file.response === undefined && file.url !== '') {
+          this.imgay1.remove(d);
+        }
+        else {
+          this.imgay1.remove(d);
+        }
+        if (this.imgList1.length !== 0) {
+          this.imgList1.remove(file.response.data);
+        }
+        console.log(this.imgay1);
+      },
+
       handlePictureCardPreview(file) {
         this.dialogImageUrl = `${this.imgUrl}${file.response.data}`;
         this.dialogVisible = true;
@@ -468,7 +528,16 @@
 
         }
       },
-
+      handleChange1(file) {
+        if (file.response != undefined) {
+          if (this.isadd == true) {
+            this.imgList1.push(file.response.data);
+          } else {
+            this.imgay1.push(file.response.data);
+            console.log(this.imgay1);
+          }
+        }
+      },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
@@ -481,11 +550,13 @@
         return isJPG && isLt2M;
       },
       handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      handleExceed1(files, fileList) {
         this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
       handleAvatarSuccess(res, file) {
         this.tableList.logo = `${this.imgUrl}${res.data}`;
-
       },
       tpjq(qaq) {
         let img = qaq;

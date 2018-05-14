@@ -8,17 +8,18 @@
         <el-breadcrumb-item>新订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-<inquire @orderData="orderData"></inquire>
+    <inquire @orderData="orderData"></inquire>
     <div class="ord-content5">
       <div>
-      <el-cascader
-        placeholder="试试搜索：门店"
-        :options="options"
-        filterable
-        change-on-select
-        clearable
-      ></el-cascader>
-      <el-button type="primary" >立即派送</el-button>
+        <el-select v-model="value" clearable placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button type="primary" @click="distribution">立即派送</el-button>
         <el-button type="primary" disabled>已派订单</el-button>
         <el-button type="primary" disabled>入站订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
@@ -27,6 +28,7 @@
     <div>
       <el-table
         :data="tableData"
+        @selection-change="handleSelectChange"
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -52,7 +54,7 @@
               <el-form-item style="display: flex; justify-content:center;width:100%">
                 <el-button type="primary">查看详情</el-button>
                 <el-button type="primary" @click="quxiao(props.row)">取消订单</el-button>
-                <el-button type="primary">派给顺丰</el-button>
+                <el-button type="primary" @click="delivery(props.row)">派给顺丰</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -89,20 +91,21 @@
 
 <script>
 
-  import {getlaundry,Invalidlaundry} from "@/components/api/orderLaundry";
+  import {getlaundry, Invalidlaundry, storelaundry, deliverylaundry,distributionlaundry} from "@/components/api/orderLaundry";
   import inquire from '@/assets/vue/inquire'
+
   export default {
-    components:{
+    components: {
       inquire
     },
     data() {
       return {
-
+        value: '',
         page: 1,
         size: 5,
         total: 10,
         tableData: [],
-        options:[],
+        options: [],
         cascader: [],
         province: '',
         city: '',
@@ -154,7 +157,19 @@
             status: 0,
           };
           this.$store.commit('getieData', this.inquire);
+        });
+        storelaundry().then((res) => {
+          console.log(res);
+          res.data.data.forEach((value) => {
+            let a = {
+              value: value.id,
+              label: value.name
+            };
+            this.options.push(a);
+          });
+          console.log(this.options);
         })
+
       },
       orderData(data) {
         console.log(data);
@@ -172,27 +187,6 @@
       },
       getLocalTime(nS) {
         return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
-      },
-      area(value) {
-        console.log(value);
-        this.options.forEach((value1) => {
-          if (value[0] == value1.value) {
-            this.province = value1.label;
-            value1.children.forEach((value2) => {
-              this.city = value2.label;
-              if (value[1] == value2.value) {
-                value2.children.forEach((value3) => {
-                  if (value[2] == value3.value) {
-                    this.zone = value3.label;
-                  }
-                })
-              }
-            })
-          }
-        });
-        console.log(this.province);
-        console.log(this.city);
-        console.log(this.zone);
       },
       quxiao(row) {
         this.$confirm('此操作将永久取消订单, 是否继续?', '提示', {
@@ -215,9 +209,68 @@
           this.$message({
             type: 'info',
             message: '已取消'
+          })
+        })
+      },
+      delivery(row) {
+        this.$confirm('此操作将会派顺丰过来, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let a = {
+            orderid: row.id,
+            storeid: row.storeid,
+          };
+          deliverylaundry(a).then((res) => {
+            console.log(res);
+          });
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
           });
         });
-      }
+      },
+      distribution() {
+        console.log(this.mutipleSelection);
+        console.log(this.value);
+        let idData = [];
+        if (this.mutipleSelection && this.value) {
+          this.mutipleSelection.forEach((value) => {
+            idData.push(value.id);
+          });
+          let a = {
+            orderid: idData.join(','),
+            storeid: this.value,
+          };
+          distributionlaundry(a).then((res) => {
+            this.getLaundryList();
+            this.$message({
+              message: '派送成功',
+              type: 'success'
+            });
+          })
+        } else {
+          this.$message({
+            message: '请选择需要派送的订单或选择门店',
+            type: 'warning'
+          });
+        }
+      },
+      handleSelectChange(selection) {
+        this.mutipleSelection = selection;
+        let ids = [];
+        this.mutipleSelection.map((item) => {
+          ids.push(item.id)
+        });
+        return ids;
+      },
+
     },
     mounted() {
       this.getLaundryList();
@@ -235,18 +288,20 @@
     text-align: center;
   }
 
-
   .ord-content5 button {
     width: 100px;
     height: 50px;
   }
+
   .demo-table-expand {
     font-size: 0;
   }
+
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
   }
+
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;

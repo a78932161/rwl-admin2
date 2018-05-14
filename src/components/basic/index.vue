@@ -15,7 +15,7 @@
         <el-button type="primary" @click="goDesigner">高端洗护</el-button>
       </div>
     </div>
-    <ads v-show="isAds" @gojczl="gojczl"></ads>
+    <ads v-if="isAds" @gojczl="gojczl"></ads>
 
   </div>
 </template>

@@ -7,43 +7,14 @@
           <el-breadcrumb-item>财务管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <div class="ord-content">
-        <div class="ord-content1">
-          <el-input placeholder="请输入内容"></el-input>
-          <el-button type="primary">查询</el-button>
-        </div>
-        <div>
-          <el-date-picker
-            v-model="value1"
-            type="daterange"
-            align="center"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions2">
-          </el-date-picker>
-        </div>
-        <div>
-          <el-cascader
-            placeholder="试试搜索：浙江"
-            :options="options"
-            filterable
-            change-on-select
-            clearable
-          ></el-cascader>
-          <el-button type="primary">查询</el-button>
-        </div>
-      </div>
+
       <div class="ord-content2">
-        <div>
-          <el-button type="primary" @click="goAccount" style="margin-right: 3%">账号管理</el-button>
+          <el-button type="primary" @click="goAccount" >账号管理</el-button>
           <el-button type="primary" @click="goclearing">商户结算</el-button>
-        </div>
       </div>
     </div>
-    <account v-show="isAccount" @mmp="godetails" @mmp1="godetails1"></account>
-    <Details v-show="isDetails" @mp="godetails1" @mp1="godetails2"></Details>
+    <account v-if="isAccount" @mmp="godetails" @mmp1="godetails1"></account>
+    <Details v-if="isDetails" @mp="godetails1" @mp1="godetails2"></Details>
   </div>
 </template>
 
@@ -129,14 +100,14 @@
   }
 
   .ord-top {
-    margin: 0 0 3% 0;
+    margin-bottom: 15%;
     text-align: center;
   }
 
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 7% 0;
+    margin: 0 0 11% 0;
   }
 
   .ord-content1 {
@@ -145,12 +116,13 @@
   }
 
   .ord-content2 {
-    text-align: center;
-    line-height: 100px;
+    display: flex;
+    justify-content: space-around;
+
   }
 
   .ord-content2 button {
-    width: 180px;
+    width: 250px;
     height: 80px;
     font-size: 24px;
     letter-spacing: 2px;

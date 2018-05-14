@@ -7,43 +7,15 @@
           <el-breadcrumb-item>会员管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <div class="ord-content">
-        <div class="ord-content1">
-          <el-input placeholder="请输入内容"></el-input>
-          <el-button type="primary">查询</el-button>
-        </div>
-        <div>
-          <el-date-picker
-            v-model="value1"
-            type="daterange"
-            align="center"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions2">
-          </el-date-picker>
-        </div>
-        <div>
-          <el-cascader
-            placeholder="试试搜索：浙江"
-            :options="options"
-            filterable
-            change-on-select
-            clearable
-          ></el-cascader>
-          <el-button type="primary">查询</el-button>
-        </div>
-      </div>
       <div class="ord-content2">
         <el-button type="primary" class="ord-content2-bt" @click="gostatistics">会员统计</el-button>
         <el-button type="primary" class="ord-content2-bt" @click="goConsumption">消费统计</el-button>
         <el-button type="primary" @click="goOpinion">意见反馈</el-button>
       </div>
     </div>
-    <statistics v-show="isStatistics"></statistics>
-    <consumption v-show="isConsumption"></consumption>
-    <opinion v-show="isOpinion" @goIndex="goIndex"></opinion>
+    <statistics v-if="isStatistics" @goIndex1="goIndex1"></statistics>
+    <consumption v-if="isConsumption" @goIndex2="goIndex2"></consumption>
+    <opinion v-if="isOpinion" @goIndex="goIndex"></opinion>
   </div>
 </template>
 
@@ -115,6 +87,14 @@
         this.showFlag=data;
         this.isOpinion=false;
       },
+      goIndex1(data){
+        this.showFlag=data;
+        this.isStatistics=false;
+      },
+      goIndex2(data){
+        this.showFlag=data;
+        this.isConsumption=false;
+      },
     }
   }
 </script>
@@ -125,20 +105,16 @@
   }
 
   .ord-top {
-    margin: 0 0 3% 0;
+    margin-bottom: 15%;
     text-align: center;
   }
 
   .ord-content {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 10% 0;
+    margin: 0 0 8% 0;
   }
 
-  .ord-content1 {
-    display: flex;
-    width: 30%;
-  }
 
   .ord-content2 {
     text-align: center;

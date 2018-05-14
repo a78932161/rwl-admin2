@@ -10,17 +10,17 @@
     </div>
     <div style="width: 50%;margin: auto">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="账户名 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="账户名 :" prop="username">
+          <el-input v-model="ruleForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="新密码 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="新密码 :" prop="password">
+          <el-input v-model="ruleForm.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码 :" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
+        <el-form-item label="确认密码 :" prop="dbPassword">
+          <el-input v-model="ruleForm.dbPassword"  type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">修改密码</el-button>
           <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -30,42 +30,37 @@
 </template>
 
 <script>
+  import {upPsw} from "@/components/api/settings";
+
   export default {
     data() {
+      let psw = (rule, value, callback) => {
+        if  (value !== this.ruleForm.password) {
+          callback(new Error('两次密码不一样!'));
+        }
+        else {
+          callback();
+        }
+      };
+
+
       return {
         ruleForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          username:'',
+          password:'',
+          dbPassword:'',
         },
         rules: {
-          name: [
-            {required: true, message: '请输入活动名称', trigger: 'blur'},
-            {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+          username: [
+            {required: true, message: '请输入账号', trigger: 'blur'},
           ],
-          region: [
-            {required: true, message: '请选择活动区域', trigger: 'change'}
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
           ],
-          date1: [
-            {type: 'date', required: true, message: '请选择日期', trigger: 'change'}
+          dbPassword: [
+            {required: true, message: '请再次输入密码', trigger: 'blur'},
+            {validator: psw, trigger: 'blur'}
           ],
-          date2: [
-            {type: 'date', required: true, message: '请选择时间', trigger: 'change'}
-          ],
-          type: [
-            {type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change'}
-          ],
-          resource: [
-            {required: true, message: '请选择活动资源', trigger: 'change'}
-          ],
-          desc: [
-            {required: true, message: '请填写活动形式', trigger: 'blur'}
-          ]
         }
       };
     },
@@ -73,9 +68,30 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            let a={
+              username:this.username,
+              password:this.password,
+            };
+            upPsw(a).then((res)=>{
+              console.log(res);
+              if(res.data.code===1){
+                this.$message({
+                  message: '用户名或密码错误!',
+                  type: 'warning'
+                });
+              }else{
+                this.$message({
+                  message: '修改成功!',
+                  type: 'success'
+                });
+              }
+
+            })
           } else {
-            console.log('error submit!!');
+            this.$message({
+              message: '请填写完整!',
+              type: 'warning'
+            });
             return false;
           }
         });

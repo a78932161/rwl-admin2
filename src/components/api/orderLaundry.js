@@ -23,4 +23,26 @@ export function outlaundry(data) {
   })
 }
 
+export function storelaundry(data) {
+  return axios({
+    url: "/store/findall",
+    method: "post",
+    params:data
+  })
+}
 
+export function deliverylaundry(data) {
+  return axios({
+    url: "/laundryorder/sfcollect",
+    method: "post",
+    params:data
+  })
+}
+
+export function distributionlaundry(data) {
+  return axios({
+    url: "/laundryorder/storepickup",
+    method: "post",
+    params:data
+  })
+}

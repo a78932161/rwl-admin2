@@ -41,37 +41,36 @@
         stripe
         style="width: 100%">
         <el-table-column
-          prop="date"
-          label="会员ID"
-          width="180">
+          prop="number"
+          label="会员ID">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="绑定手机"
-          width="180">
+          prop="phone"
+          label="绑定手机">
         </el-table-column>
         <el-table-column
           prop="name"
           label="姓名">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="balance"
           label="账户余额">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="frequency"
           label="消费次数">
         </el-table-column>
         <el-table-column
-          prop="date"
-          label="注册时间">
+          prop="createtime"
+          label="注册时间"
+          width="150">
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          width="110">
+          width="100">
           <template slot-scope="scope">
-            <el-button  type="text" size="small" @click="goBalance">查看详情</el-button>
+            <el-button type="text" size="small" @click="goBalance(scope.row)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,7 +78,9 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000">
+          @current-change="handleCurrentChange"
+          :page-size="5"
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -88,10 +89,9 @@
 
 <script>
   import "@/assets/js/city-data"
-
+  import {getvip, vipConsumption} from "@/components/api/vipss";
 
   export default {
-
 
     data() {
       return {
@@ -122,35 +122,70 @@
             }
           }]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
         options: CityInfo,
-        value1:'',
-        a:10
+        value1: '',
+        page: 1,
+        size: 5,
+        total: 10,
       }
     },
     methods: {
-      aa(){
-        this.$router.go(0)
+      getList() {
+        if (this.$store.state.vipId === 3) {
+          let a = {
+            page: this.page,
+            size: this.size,
+          };
+          getvip(a).then((res) => {
+            if (res.data.data.content) {
+              res.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.balance = value.balance / 100;
+              });
+              this.tableData = res.data.data.content;
+              this.total = res.data.data.totalElements;
+            }
+          })
+        } else if (this.$store.state.vipId === 0 || this.$store.state.vipId === 1 || this.$store.state.vipId === 2) {
+          let a = {
+            page: this.page,
+            size: this.size,
+            status: this.$store.state.vipId,
+          };
+          vipConsumption(a).then((res) => {
+            if (res.data.data.content) {
+              res.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.balance = value.balance / 100;
+              });
+              this.tableData = res.data.data.content;
+              this.total = res.data.data.totalElements;
+            }
+          })
+
+
+        }
+
+
       },
-      goBalance(){
-        this.$router.push('/balance')
+      aa() {
+        this.$router.go(0);
       },
+      goBalance(row) {
+        let a = row.id;
+        this.$router.push({name: 'balance', query: {id: a}});
+      },
+      getLocalTime(nS) {
+        return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
