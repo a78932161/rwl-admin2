@@ -8,3 +8,11 @@ export function loginApi (data) {
     data
   })
 }
+
+export function getInfo (data) {
+  return axios({
+    url: "/role/getselfinfo",
+    method: "post",
+    params: data
+  })
+}

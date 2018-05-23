@@ -34,26 +34,29 @@
             width="100">
           </el-table-column>
           <el-table-column
-            prop="date"
-            label="状态">
+            prop="people"
+            label="姓名">
           </el-table-column>
           <el-table-column
-            prop="name"
-            label="名称">
+            prop="accountName"
+            label="用户名">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="phone"
+            label="联系电话">
+          </el-table-column>
+          <el-table-column
+            prop="region"
             label="区域">
           </el-table-column>
-          <el-table-column label="操作" width="210">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
-                type="primary" @click="goStore">查看门店
+                type="primary" v-if="scope.row.account!==true" @click="addjs(scope.row)">添加角色
               </el-button>
               <el-button
-                size="mini"
-                type="mini">修改代理商
+                size="mini" @click="goStore(scope.row)">查看门店
               </el-button>
             </template>
           </el-table-column>
@@ -63,6 +66,7 @@
         <el-pagination
           background
           layout="prev, pager, next"
+          @current-change="handleCurrentChange"
           :total="total">
         </el-pagination>
       </div>
@@ -72,12 +76,6 @@
         width="40%"
         :before-close="handleClose">
         <el-form label-width="100px" :model="tableList" ref="tableList" :rules="rules">
-          <el-form-item label="账户名 :">
-            <el-input placeholder="请输入账户名"></el-input>
-          </el-form-item>
-          <el-form-item label="代理商 :">
-            <el-input placeholder="请输入"></el-input>
-          </el-form-item>
           <el-form-item label="地区负责人 :" prop="people">
             <el-input v-model="tableList.people" placeholder="请输入地区负责人"></el-input>
           </el-form-item>
@@ -112,25 +110,56 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
+          <el-button @click="cancel">重 置</el-button>
           <el-button type="primary" @click="addAs">新 增</el-button>
-          <el-button @click="cancel">取 消</el-button>
+      </span>
+      </el-dialog>
+      <el-dialog
+        title="添加角色"
+        :visible.sync="dialogVisible1"
+        width="35%"
+        :before-close="handleClose">
+        <el-form label-width="100px" :model="tableList1" :rules="rules1" ref="tableList1">
+          <el-form-item label="用户名 :" prop="username">
+            <el-input v-model="tableList1.username" placeholder="请输入用户名"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码 :" prop="password">
+            <el-input v-model="tableList1.password" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码 :" prop="dbpassword">
+            <el-input v-model="tableList1.dbpassword" placeholder="请输入密码"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="resetForm('tableList1')">重 置</el-button>
+    <el-button type="primary" @click="upPasswod1('tableList1')">确 定</el-button>
       </span>
       </el-dialog>
     </div>
-    <store v-if="isStore" @goIndex6="goIndex6"></store>
+
+    <store v-if="isStore" :agentId="agentId" @goIndex6="goIndex6"></store>
   </div>
 </template>
 
 <script>
   import "@/assets/js/city-data"
   import store from '@/components/Settings/adminer/store'
-  import {getAgents, addAgents, upAgents} from "@/components/api/agents";
+  import {getAgents, addAgents, upAgents, addRole} from "@/components/api/agents";
 
   export default {
     components: {
       store,
     },
     data() {
+      let psw1 = (rule, value, callback) => {
+        if (value !== this.tableList1.password) {
+          callback(new Error('两次密码不一样!'));
+        }
+        else {
+          callback();
+        }
+      };
+
       return {
         options: CityInfo,
         radio: this.$store.state.radio1,
@@ -143,7 +172,13 @@
           regionDistribution: '',
           region: '',
         },
+        tableList1: {
+          username: '',
+          password: '',
+          dbpassword: '',
+        },
         dialogVisible: false,
+        dialogVisible1: false,
         selectedOptions: [],
         checkedCities1: [],
         allocation: [],
@@ -153,23 +188,9 @@
         size: 5,
         page: 1,
         total: 10,
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
+        accountId: '',
+        agentId: '',
         rules: {
           people: [
             {required: true, message: '请输入负责人', trigger: 'blur'},
@@ -186,7 +207,18 @@
           workTime: [
             {required: true, message: '请输入办公时间', trigger: 'blur'},
           ],
-
+        },
+        rules1: {
+          username: [
+            {required: true, message: '请输入账号', trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: '请输入密码', trigger: 'blur'},
+          ],
+          dbpassword: [
+            {required: true, message: '请再次输入密码', trigger: 'blur'},
+            {validator: psw1, trigger: 'blur'}
+          ],
         },
       }
     },
@@ -198,18 +230,20 @@
         };
         getAgents(a).then((res) => {
           console.log(res);
+          this.tableData = res.data.data.content;
         })
       },
-      cancel(){
-        this.dialogVisible=false;
+      cancel() {
         this.resetForm('tableList');
       },
 
       goIndex() {
         this.$router.go(0);
+        this.$store.commit('changeRadio1', '2');
       },
       goIndex5() {
         this.$emit('goIndex5', true);
+        this.$store.commit('changeRadio1', '2');
       },
       goIndex6(data) {
         this.showFlag2 = data;
@@ -227,7 +261,6 @@
         this.$store.commit('changeRadio1', '2');
         this.$emit('goIndex6', true);
       },
-
       handleChange(value) {
         this.cities = [];
         this.allocation = [];
@@ -248,10 +281,15 @@
       addAs() {
         if (this.tableList.phone && this.tableList.people && this.tableList.address && this.tableList.qq
           && this.tableList.workTime && this.allocation && this.cities) {
-          this.tableList.regionDistribution = this.allocation.join(',');
-          this.tableList.region = this.cities.join(',');
+          this.tableList.regionDistribution = this.checkedCities1.join(',');
+          this.tableList.region = this.allocation.join(',');
           addAgents(this.tableList).then((res) => {
-            console.log(res);
+            this.getList();
+            this.dialogVisible = false;
+            this.$message({
+              message: '添加成功!',
+              type: 'success'
+            });
           })
         } else {
           this.$message({
@@ -264,10 +302,87 @@
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      goStore() {
+      goStore(row) {
+        this.agentId = row.id;
         this.isStore = true;
         this.showFlag2 = false;
-      }
+      },
+      addjs(row) {
+        this.accountId = row.id;
+        this.dialogVisible1 = true;
+      },
+      upPasswod1(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let a = {
+              username: this.tableList1.username,
+              password: this.tableList1.password,
+              accountId: this.accountId,
+            };
+            addRole(a).then((res) => {
+              if (res.data.code === 1) {
+                this.$message({
+                  message: '添加失败!',
+                  type: 'warning'
+                });
+              } else {
+                this.dialogVisible1 = false;
+                this.resetForm('tableList1');
+                this.getList();
+                this.$message({
+                  message: '添加成功!',
+                  type: 'success'
+                });
+              }
+            })
+          } else {
+            this.$message({
+              message: '请填写完整!',
+              type: 'warning'
+            });
+            return false;
+          }
+        });
+      },
+      upPasswod2(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let a = {
+              username: this.tableList1.username,
+              password: this.tableList1.password,
+              accountId: this.accountId,
+            };
+            addRole(a).then((res) => {
+              if (res.data.code === 1) {
+                this.$message({
+                  message: '添加失败!',
+                  type: 'warning'
+                });
+              } else {
+                this.dialogVisible1 = false;
+                this.resetForm('tableList1');
+                this.getList();
+                this.$message({
+                  message: '添加成功!',
+                  type: 'success'
+                });
+              }
+            })
+          } else {
+            this.$message({
+              message: '请填写完整!',
+              type: 'warning'
+            });
+            return false;
+          }
+        });
+      },
+
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.page = val;
+        this.getList();
+      },
     },
     mounted() {
       this.getList();

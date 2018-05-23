@@ -6,22 +6,72 @@
         <div class="logo2"><label>全国管理中心</label></div>
       </el-col>
       <el-col :span="4" :offset="10">
-        <el-button type="text" class="logo3" @click="zhuxiao">注销</el-button>
+        <el-dropdown trigger="click" @command="handleCommand">
+          <el-button type="text" class="logo3">更多</el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="a">修改密码</el-dropdown-item>
+            <el-dropdown-item command="b">退出系统</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-col>
     </el-col>
+    <el-dialog
+      title="更改密码"
+      :visible.sync="dialogVisible1"
+      width="35%"
+      :before-close="handleClose">
+      <el-form label-width="100px" :model="tableList1" :rules="rules1" ref="tableList1">
+        <el-form-item label="用户名 :">
+          <el-input v-model="tableList1.username" placeholder="请输入用户名" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="原密码 :" prop="password">
+          <el-input v-model="tableList1.password" placeholder="请输入原密码"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码 :" prop="dbpassword">
+          <el-input v-model="tableList1.dbpassword" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="resetForm('tableList1')">重 置</el-button>
+    <el-button type="primary" @click="upPasswod1('tableList1')">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {removeToken} from "@/auth";
+  import {upRole} from "@/components/api/adminer";
+
   export default {
     name: "top",
-    methods:{
-      zhuxiao(){
+    data() {
+      return {
+        dialogVisible1: false,
+        tableList1: {
+          username: '',
+          password: '',
+          dbpassword: '',
+        },
+        rules1: {
+          username: [
+            {required: true, message: '请输入账号', trigger: 'blur'},
+          ],
+          password: [
+            {required: true, message: '请输入原密码', trigger: 'blur'},
+          ],
+          dbpassword: [
+            {required: true, message: '请再次新密码', trigger: 'blur'},
+          ],
+        }
+      }
+    },
+    methods: {
+      zhuxiao() {
         this.$confirm('确认注销 吗?', '提示', {
           //type: 'warning'
         }).then(() => {
-          removeToken();
+          localStorage.clear();
           this.$router.push({path: '/login'});
           this.$message({
             message: '注销成功!',
@@ -29,8 +79,67 @@
           });
         }).catch(() => {
         });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {
+          });
+      },
+      upPasswod1(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let a = {
+              username: this.tableList1.username,
+              password: this.tableList1.password,
+            };
+            upRole(a).then((res) => {
+              if (res.data.code === 1) {
+                this.$message({
+                  message: '用户名或密码错误!',
+                  type: 'warning'
+                });
+              } else {
+                this.dialogVisible1 = false;
+                this.resetForm('tableList1');
+                removeToken();
+                localStorage.removeItem("info");
+                this.$router.push({path: '/login'});
+                this.$message({
+                  message: '修改成功!',
+                  type: 'success'
+                });
+              }
+            })
+          } else {
+            this.$message({
+              message: '请填写完整!',
+              type: 'warning'
+            });
+            return false;
+          }
+        });
+      },
+      upPasswod() {
+        let a = JSON.parse(localStorage.getItem("info"));
+        this.tableList1.username = a.username;
+        this.dialogVisible1 = true;
+      },
+      handleCommand(command) {
+
+        if (command == 'a') {
+          this.upPasswod();
+        } else if (command == 'b') {
+          this.zhuxiao();
+        }
       }
-    }
+    },
+
   }
 </script>
 

@@ -1,11 +1,12 @@
 <template>
   <div>
     <top></top>
-    <el-col :span="4" :offset="5" class="vipAside">
+    <el-col :span="6" :offset="5" class="vipAside">
       <div class="vipTop">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: '/vip' }">会员管理</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goye">用户余额</span></el-breadcrumb-item>
           <el-breadcrumb-item>用户订单</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
@@ -52,7 +53,7 @@
         <div class="el3">
           <div class="el3-1">已收衣物</div>
           <div class="el3-2">
-            <div class="el3-2-1" v-for="data in imgData" @click="goDetails">
+            <div class="el3-2-1" v-for="data in imgData" @click="goDetails(data)">
                 <img style="width:150px;height:150px" :src="data.src">
               <div>
                 <label>{{data.name}}</label>
@@ -79,7 +80,7 @@
         xqData: [],
         imgData:[],
         active:0,
-        imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
+        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
       }
     },
     methods: {
@@ -90,7 +91,6 @@
             orderid: a,
           };
           getfinid(b).then((res) => {
-            console.log(res);
             this.listData = res.data.data.items;
             this.listData.forEach((value)=>{
               value.laundryProduct.logo=`${this.imgUrl}${value.laundryProduct.logo}`;
@@ -100,7 +100,6 @@
             this.xqData =res.data.data;
             this.active=res.data.data.status;
           })
-
         } else if (a.substr(a.length - 2, 2) == '10') {
           let b = {
             orderid: a,
@@ -118,9 +117,14 @@
           })
         }
       },
-      goDetails() {
-        this.$router.push('details');
-      }
+      goDetails(data) {
+        console.log(data);
+        //this.$router.push('details');
+
+      },
+      goye(){
+        this.$router.go(-1);
+      },
     },
     mounted() {
       this.getList();

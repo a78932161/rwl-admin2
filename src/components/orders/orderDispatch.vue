@@ -21,10 +21,10 @@
       </div>
     </div>
     <div class="ord-content4">
-      <el-button type="primary" @click="goLaundry">洗衣<br>{{items.洗衣}}</el-button>
-      <el-button type="primary" @click="goDesigner">高端洗护<br>{{items.高端洗护}}</el-button>
-      <el-button type="primary" @click="goFurniture">小让家具<br>{{items.家具}}</el-button>
-      <el-button type="primary" @click="goMall">小让商城<br>{{items.商城}}</el-button>
+      <el-button type="primary" v-if="A1" @click="goLaundry">洗衣<br>{{items.洗衣}}</el-button>
+      <el-button type="primary" v-if="A2" @click="goDesigner">高端洗护<br>{{items.高端洗护}}</el-button>
+      <el-button type="primary" v-if="A3" @click="goFurniture">小让家具<br>{{items.家具}}</el-button>
+      <el-button type="primary" v-if="A4" @click="goMall">小让商城<br>{{items.商城}}</el-button>
     </div>
   </div>
 </template>
@@ -39,11 +39,30 @@
         a: 10,
         options: CityInfo,
         items: [],
-        value1:'',
+        value1: '',
+        A1: false,
+        A2: false,
+        A3: false,
+        A4: false,
       }
     },
     methods: {
       getList() {
+        if (localStorage.getItem("info")) {
+          let b = JSON.parse(localStorage.getItem("info"));
+          if(b.functionAuthority.indexOf('A1') > -1){
+            this.A1=true;
+          }
+          if(b.functionAuthority.indexOf('A2') > -1){
+            this.A2=true;
+          }
+          if(b.functionAuthority.indexOf('A3') > -1){
+            this.A3=true;
+          }
+          if(b.functionAuthority.indexOf('A4') > -1){
+            this.A4=true;
+          }
+        }
         let a = new Date();
         let b = {
           starttime: a.getTime() - 3600 * 1000 * 24,
@@ -52,12 +71,12 @@
         orderNumber(b).then((res) => {
           this.items = res.data.data;
         })
+
       },
 
 
-
       aa() {
-        this.$emit('goIndex',true);
+        this.$emit('goIndex', true);
       },
       goLaundry() {
         this.$router.push('/newLaundry');

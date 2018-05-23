@@ -16,7 +16,7 @@ if (window.location.pathname !== '/') {
 
 let config = {
   loginUrl: `${URL}${URL1}/#/login`, /*登陆地址*/
-  loginApi: `${baseURL}/shop/login`, /*登陆API*/
+  loginApi: `${baseURL}login`, /*登陆API*/
   logoutApi: `${baseURL}/logout`, /*退出API*/
   indexUrl: `${URL}${URL1}#/home` /*首页*/
 };
@@ -66,13 +66,12 @@ service.interceptors.response.use(
       if (getLimited() === 'true') {
         setLimited('false');
         location.href = getLimitedUrl();
-
       }
-      else {
+ /*     else {
         setTimeout(() => {
           location.href = config.indexUrl;
         }, 100);
-      }
+      }*/
     }
     else if (request.responseURL === config.logoutApi && request.status === 200) {
       /!*注销*!/

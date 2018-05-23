@@ -80,7 +80,7 @@
       return {
         options: CityInfo,
         tableData: [],
-        value1: '',
+        value1: null,
         balance: 0,
         Wechat: 0,
         province: '',
@@ -119,7 +119,7 @@
       getList() {
         this.balance = 0;
         this.Wechat = 0;
-        if (this.value1 && this.province && this.city && this.zone) {
+        if (this.value1 && this.province) {
           let b = {
             starttime: this.value1[0].getTime(),
             endtime: this.value1[1].getTime(),
@@ -135,8 +135,7 @@
             });
             this.tableData = res.data.data;
           });
-
-        } else {
+        } else if (this.value1 === null && this.province === '') {
           let a = new Date();
           let b = {
             starttime: 0,
@@ -150,9 +149,35 @@
             });
             this.tableData = res.data.data;
           });
+        }else if (this.value1===null && this.province) {
+          let b = {
+            province: this.province,
+            city: this.city,
+            area: this.zone,
+          };
+          analysis(b).then((res) => {
+            console.log(res);
+            res.data.data.forEach((value) => {
+              this.balance += value.balancePay;
+              this.Wechat += value.weChatPay;
+            });
+            this.tableData = res.data.data;
+          });
+        }else if (this.value1 && this.province==='') {
+          let b = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+          };
+          analysis(b).then((res) => {
+            console.log(res);
+            res.data.data.forEach((value) => {
+              this.balance += value.balancePay;
+              this.Wechat += value.weChatPay;
+            });
+            this.tableData = res.data.data;
+          });
         }
       },
-
       getSummaries(param) {
         const {columns} = param;
         const sums = [];
@@ -168,7 +193,6 @@
             sums[index] = '余额支付:' + this.balance;
           }
         });
-
         return sums;
       },
       aa() {
@@ -178,6 +202,7 @@
         this.getList();
       },
       cascader(value) {
+        this.province = '';
         this.options.forEach((value1) => {
           if (value[0] == value1.value) {
             value1.children.forEach((value2) => {
@@ -192,9 +217,10 @@
               }
             })
           }
-        });
+        })
       },
-      goOrder(row){
+
+      goOrder(row) {
         console.log(row);
         switch (row.category) {
           case "普通洗护":

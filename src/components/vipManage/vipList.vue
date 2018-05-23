@@ -170,7 +170,7 @@
 
       },
       aa() {
-        this.$router.go(0);
+        this.$emit('goIndex', true);
       },
       goBalance(row) {
         let a = row.id;

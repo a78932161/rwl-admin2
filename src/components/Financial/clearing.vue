@@ -11,27 +11,26 @@
           </el-breadcrumb>
         </div>
         <div class="ord-content">
-          <div style="margin-right: 13%">
+          <el-date-picker
+            v-model="value1"
+            type="daterange"
+            align="left"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions2">
+          </el-date-picker>
+          <div>
             <el-cascader
               placeholder="试试搜索：浙江"
               :options="options"
               filterable
               change-on-select
               clearable
+              @change="cascader"
             ></el-cascader>
-            <el-button type="primary">查询</el-button>
-          </div>
-          <div>
-            <el-date-picker
-              v-model="value1"
-              type="daterange"
-              align="center"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptions2">
-            </el-date-picker>
+            <el-button type="primary" @click="search">查询</el-button>
           </div>
         </div>
         <div>
@@ -41,54 +40,50 @@
             style="width: 100%">
             <el-table-column
               prop="name"
-              label="日期">
+              label="名称">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="orderTotal"
               label="订单总数">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="productTotal"
               label="商品数量">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="orderTotal"
               label="收入总额">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="rechargeTotal"
               label="充值总额">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="导卡总额">
-            </el-table-column>
-            <el-table-column
-              prop="name"
+              prop="refundTotal"
               label="退款总额">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="laundryTotal"
               label="洗衣">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="highLaundryTotal"
               label="高端洗护">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="furnitureTotal"
               label="小让家具">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="mallTotal"
               label="订单商城">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="agentIncome"
               label="商户收入">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="platformIncome"
               label="平台佣金">
             </el-table-column>
             <el-table-column
@@ -104,7 +99,7 @@
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="1000">
+            :total="total">
           </el-pagination>
         </div>
       </el-col>
@@ -117,15 +112,22 @@
 <script>
   import "@/assets/js/city-data"
   import top from '@/assets/vue/top'
-  
+  import {getclearing} from "@/components/api/clearing";
+
   export default {
-    components:{
+    components: {
       top,
     },
     data() {
       return {
         options: CityInfo,
-        value1: '',
+        value1: null,
+        size: 5,
+        page: 1,
+        total: 10,
+        province: '',
+        city: '',
+        zone: '',
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -153,29 +155,85 @@
             }
           }]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
       }
     },
-    methods:{
-      goclearingds(){
+    methods: {
+      goclearingds() {
         this.$router.push('/clearingds');
-      }
+      },
+      getList() {
+        console.log(this.value1);
+        console.log(this.province);
+
+        if (this.value1 && this.province) {
+          let b = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+            province: this.province,
+            city: this.city,
+            area: this.zone,
+          };
+          getclearing(b).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data;
+          })
+        } else if (this.value1 ===null && this.province) {
+          let b = {
+            province: this.province,
+            city: this.city,
+            area: this.zone,
+          };
+          getclearing(b).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data;
+          })
+        } else if (this.value1 && this.province === '') {
+          let b = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+          };
+          getclearing(b).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data;
+          })
+        } else if (this.value1 ===null && this.province === '') {
+          let a = new Date();
+          let b = {
+            starttime: 0,
+            endtime: a.getTime(),
+          };
+          getclearing(b).then((res) => {
+            console.log(res);
+            this.tableData = res.data.data;
+          })
+        }
+      },
+      cascader(value) {
+        this.province = '';
+        this.options.forEach((value1) => {
+          if (value[0] == value1.value) {
+            value1.children.forEach((value2) => {
+              if (value[1] == value2.value) {
+                value2.children.forEach((value3) => {
+                  if (value[2] == value3.value) {
+                    this.province = value1.label;
+                    this.city = value2.label;
+                    this.zone = value3.label;
+                  }
+                })
+              }
+            })
+          }
+        })
+      },
+      search() {
+        this.getList();
+      },
+
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -185,44 +243,19 @@
     font-size: 18px;
   }
 
-  .top {
-    height: 50px;
-    border-bottom: 1px solid rgb(20, 190, 240);
-    display: flex;
-    align-items: center;
-    margin: 0 0 30px 0;
-  }
-
-  .logo {
-    display: flex;
-  }
-
-  .logo1 {
-    margin: 0 10px 0 0;
-  }
-
   .logo1 img {
     width: 200px;
     height: 30px;
 
   }
 
-  .logo2 {
-    color: rgb(20, 190, 240);
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin: 5px 0 0 0;
-  }
-
-  .logo3 {
-    font-size: 16px;
-  }
-
   .ord-content {
     display: flex;
+    justify-content: space-between;
     margin: 0 0 3% 0;
   }
-  .el-bb{
+
+  .el-bb {
     margin-bottom: 3%;
   }
 </style>

@@ -8,8 +8,8 @@
         </el-breadcrumb>
       </div>
       <div class="ord-content2">
-        <el-button type="primary" class="ord-content2-bt" @click="gopd">订单派单</el-button>
-        <el-button type="primary" @click="gofx">订单分析</el-button>
+        <el-button  v-if="A1" type="primary" class="ord-content2-bt" @click="gopd">订单派单</el-button>
+        <el-button  v-if="A5" type="primary" @click="gofx">订单分析</el-button>
       </div>
     </div>
 
@@ -35,7 +35,9 @@
         showFlag: true,
         isDispatch: false,
         isAnalysis: false,
-        options: CityInfo
+        options: CityInfo,
+        A1:false,
+        A5:false,
       }
     },
     methods: {
@@ -54,7 +56,32 @@
       goIndex1(data) {
         this.showFlag = data;
         this.isAnalysis = false;
-      }
+      },
+      getList() {
+        if (localStorage.getItem("info")) {
+          let b = JSON.parse(localStorage.getItem("info"));
+          if(b.functionAuthority.indexOf('A5') > -1){
+            this.A5=true;
+          }
+          if(this.A1===false){
+            if(b.functionAuthority.indexOf('A1') > -1){
+              this.A1=true;
+            }
+            if(b.functionAuthority.indexOf('A2') > -1){
+              this.A1=true;
+            }
+            if(b.functionAuthority.indexOf('A3') > -1){
+              this.A1=true;
+            }
+            if(b.functionAuthority.indexOf('A4') > -1){
+              this.A1=true;
+            }
+          }
+        }
+      },
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>

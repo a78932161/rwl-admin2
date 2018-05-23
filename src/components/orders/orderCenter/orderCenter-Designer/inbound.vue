@@ -8,7 +8,7 @@
         <el-breadcrumb-item>已入站</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-<inquire @orderData="orderData"></inquire>
+    <inquire @orderData="orderData"></inquire>
     <div class="ord-content5">
       <div>
         <el-cascader
@@ -20,7 +20,7 @@
         ></el-cascader>
         <el-button type="primary" disabled>立即派送</el-button>
         <el-button type="primary" disabled>已派订单</el-button>
-        <el-button type="primary" >入站订单</el-button>
+        <el-button type="primary">入站订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
       </div>
     </div>
@@ -51,7 +51,7 @@
               </el-form-item>
 
               <el-form-item style="display: flex; justify-content:center;width:100%">
-                <el-button type="primary">查看详情</el-button>
+                <el-button type="primary" @click="details(props.row)">查看详情</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -90,31 +90,29 @@
 
   import {getlaundry} from "@/components/api/orderLaundry";
   import inquire from '@/assets/vue/inquire'
+
   export default {
-    components:{
+    components: {
       inquire
     },
     data() {
       return {
-
         page: 1,
         size: 5,
         total: 10,
         tableData: [],
-        options:[],
+        options: [],
+        inquire: [],
       }
     },
     methods: {
       getLaundryList() {
-        let a = {
-          type: 2,
-          status: 3,
-          page: this.page,
-          size: this.size,
-        };
-        getlaundry(a).then((res) => {
-          console.log(res);
-          res.data.data.content.forEach((value) => {
+        this.options = [];
+        this.tableData = [];
+        this.$store.state.getieData = [];
+        this.inquire = [];
+        if (this.$store.state.orderFind.length > 0) {
+          this.$store.state.orderFind.forEach((value) => {
             value.items = value.items.length + '件';
             value.createtime = this.getLocalTime(value.createtime);
             switch (value.status) {
@@ -141,8 +139,8 @@
                 break;
             }
           });
-          this.tableData = res.data.data.content;
-          this.total = res.data.data.totalElements;
+          this.tableData = this.$store.state.orderFind;
+          this.total = this.$store.state.orderFind.length;
           this.inquire = {
             page: this.page,
             size: this.size,
@@ -150,26 +148,110 @@
             status: 3,
           };
           this.$store.commit('getieData', this.inquire);
-        })
+        } else if (this.$store.state.orderArea.content) {
+          this.$store.state.orderArea.content.forEach((value) => {
+            value.items = value.items.length + '件';
+            value.createtime = this.getLocalTime(value.createtime);
+            switch (value.status) {
+              case 0:
+                value.status = '新订单';
+                break;
+              case 1:
+                value.status = '已派订单';
+                break;
+              case 2:
+                value.status = '已收订单';
+                break;
+              case 3:
+                value.status = '入站订单';
+                break;
+              case 4:
+                value.status = '上挂订单';
+                break;
+              case 5:
+                value.status = '完结订单';
+                break;
+              case 6:
+                value.status = '取消订单';
+                break;
+            }
+          });
+          this.tableData = this.$store.state.orderArea.content;
+          this.total = this.$store.state.orderArea.totalElements;
+          this.inquire = {
+            page: this.page,
+            size: this.size,
+            type: 2,
+            status: 3,
+          };
+          this.$store.commit('getieData', this.inquire);
+
+        } else {
+          let a = {
+            type: 2,
+            status: 3,
+            page: this.page,
+            size: this.size,
+          };
+          getlaundry(a).then((res) => {
+            res.data.data.content.forEach((value) => {
+              value.items = value.items.length + '件';
+              value.createtime = this.getLocalTime(value.createtime);
+              switch (value.status) {
+                case 0:
+                  value.status = '新订单';
+                  break;
+                case 1:
+                  value.status = '已派订单';
+                  break;
+                case 2:
+                  value.status = '已收订单';
+                  break;
+                case 3:
+                  value.status = '入站订单';
+                  break;
+                case 4:
+                  value.status = '上挂订单';
+                  break;
+                case 5:
+                  value.status = '完结订单';
+                  break;
+                case 6:
+                  value.status = '取消订单';
+                  break;
+              }
+            });
+            this.tableData = res.data.data.content;
+            this.total = res.data.data.totalElements;
+            this.inquire = {
+              page: this.page,
+              size: this.size,
+              type: 2,
+              status: 3,
+            };
+            this.$store.commit('getieData', this.inquire);
+          });
+        }
       },
       orderData(data) {
-        console.log(data);
+        this.getLaundryList();
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.page = val;
         this.getLaundryList();
       },
-      aa() {
-        this.$router.go(0)
-      },
+
       goLaundry() {
         this.$router.push('/orderIndex');
       },
       getLocalTime(nS) {
         return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
       },
-
+      details(row) {
+        let a = row.id;
+        this.$router.push({name: 'userOrders', query: {id: a}});
+      },
 
     },
     mounted() {
@@ -192,13 +274,16 @@
     width: 100px;
     height: 50px;
   }
+
   .demo-table-expand {
     font-size: 0;
   }
+
   .demo-table-expand label {
     width: 90px;
     color: #99a9bf;
   }
+
   .demo-table-expand .el-form-item {
     margin-right: 0;
     margin-bottom: 0;

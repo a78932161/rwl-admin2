@@ -154,7 +154,7 @@
         goodsId: {},
         category: '',
         fileList: [],
-        imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
+        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
         list: [
           {name: '上衣类', value: '1'},
           {name: '裤裙类', value: '2'},

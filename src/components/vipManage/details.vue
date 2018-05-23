@@ -6,7 +6,7 @@
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: '/vip' }">会员管理</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: '/userOrders' }">用户订单</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="godd">用户订单</span></el-breadcrumb-item>
           <el-breadcrumb-item>衣物详情</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
@@ -54,7 +54,6 @@
         <div class="el3">
           <div class="el3-1">衣物详情</div>
           <div class="el3-2">
-
           </div>
         </div>
       </el-col>
@@ -66,9 +65,17 @@
   import top from '@/assets/vue/top'
 
   export default {
-    components:{
+    components: {
       top,
     },
+    data() {
+      return {}
+    },
+    methods: {
+      godd() {
+        this.$router.go(-1);
+      }
+    }
   }
 </script>
 
@@ -157,7 +164,7 @@
 
   .el3-2 {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 

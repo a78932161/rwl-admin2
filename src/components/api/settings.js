@@ -8,11 +8,11 @@ export function getreward(data) {
   })
 }
 
-export function upreward(id,data) {
+export function upreward(id, data) {
   return axios({
     url: "/recharge/setrecharge",
     method: "post",
-    params:id,
+    params: id,
     data: data,
 
   })
@@ -26,11 +26,11 @@ export function getCommission(data) {
   })
 }
 
-export function upCommission(id,data) {
+export function upCommission(id, data) {
   return axios({
     url: "/commission/setcommission",
     method: "post",
-    params:id,
+    params: id,
     data: data,
   })
 }
@@ -39,7 +39,7 @@ export function upPsw(data) {
   return axios({
     url: "/role/modifypassword",
     method: "post",
-    params:data,
+    params: data,
   })
 }
 
@@ -48,9 +48,10 @@ export function getproblem(data) {
   return axios({
     url: "/platformtext/findbytype",
     method: "post",
-    params:data,
+    params: data,
   })
 }
+
 export function addproblem(data) {
   return axios({
     url: "/platformtext/save",
@@ -58,11 +59,29 @@ export function addproblem(data) {
     data,
   })
 }
+
 export function upproblem(data) {
   return axios({
     url: "/platformtext/update",
     method: "post",
-    params:data,
+    params: data,
+  })
+}
+
+export function getExpress(data) {
+  return axios({
+    url: "/freightset/get",
+    method: "post",
+    params: data,
+  })
+}
+
+export function upExpress(id, data) {
+  return axios({
+    url: "/freightset/set",
+    method: "post",
+    params: id,
+    data: data,
   })
 }
 

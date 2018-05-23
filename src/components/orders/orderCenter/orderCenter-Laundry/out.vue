@@ -50,7 +50,7 @@
                 <span>{{ props.row.amount }}</span>
               </el-form-item>
               <el-form-item style="display: flex; justify-content:center;width:100%">
-                <el-button type="primary">查看详情</el-button>
+                <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary">派给顺丰</el-button>
               </el-form-item>
             </el-form>
@@ -140,7 +140,6 @@
           });
           this.tableData = res.data.data.content;
           this.total = res.data.data.totalElements;
-
         })
       },
       handleCurrentChange(val) {
@@ -148,17 +147,17 @@
         this.page = val;
         this.getLaundryList();
       },
-      aa() {
-        this.$router.go(0)
-      },
+
       goLaundry() {
         this.$router.push('/orderIndex');
       },
       getLocalTime(nS) {
         return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
       },
-
-
+      details(row){
+        let a=row.id;
+        this.$router.push({name: 'userOrders', query: {id: a}});
+      },
     },
     mounted() {
       this.getLaundryList();

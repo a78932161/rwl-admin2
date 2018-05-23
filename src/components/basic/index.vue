@@ -8,11 +8,11 @@
         </el-breadcrumb>
       </div>
       <div class="bc-content2">
-        <el-button type="primary" @click="goAds">广告</el-button>
-        <el-button type="primary" @click="goLaundry">洗衣</el-button>
-        <el-button type="primary" @click="goFurniture">小让家具</el-button>
-        <el-button type="primary" @click="goMall">小让商城</el-button>
-        <el-button type="primary" @click="goDesigner">高端洗护</el-button>
+        <el-button type="primary" v-if="C1" @click="goAds">广告</el-button>
+        <el-button type="primary" v-if="C2" @click="goLaundry">洗衣</el-button>
+        <el-button type="primary" v-if="C4" @click="goFurniture">小让家具</el-button>
+        <el-button type="primary" v-if="C5" @click="goMall">小让商城</el-button>
+        <el-button type="primary" v-if="C3" @click="goDesigner">高端洗护</el-button>
       </div>
     </div>
     <ads v-if="isAds" @gojczl="gojczl"></ads>
@@ -31,29 +31,57 @@
       return {
         dcShow: true,
         isAds: false,
+        C1: false,
+        C2: false,
+        C3: false,
+        C4: false,
+        C5: false,
       }
     },
     methods: {
-      goAds(){
-        this.dcShow=false;
-        this.isAds=true;
+      goAds() {
+        this.dcShow = false;
+        this.isAds = true;
       },
-      gojczl(data){
-        this.dcShow=data;
-        this.isAds=false;
+      gojczl(data) {
+        this.dcShow = data;
+        this.isAds = false;
       },
-      goLaundry(){
+      goLaundry() {
         this.$router.push('basicLaundry');
       },
-      goFurniture(){
+      goFurniture() {
         this.$router.push('basicFurniture');
       },
-      goMall(){
+      goMall() {
         this.$router.push('basicMall');
       },
-      goDesigner(){
+      goDesigner() {
         this.$router.push('basicDesigner');
       },
+      getList() {
+        if (localStorage.getItem("info")) {
+          let b = JSON.parse(localStorage.getItem("info"));
+          if (b.functionAuthority.indexOf('C1') > -1) {
+            this.C1 = true;
+          }
+          if (b.functionAuthority.indexOf('C2') > -1) {
+            this.C2 = true;
+          }
+          if (b.functionAuthority.indexOf('C3') > -1) {
+            this.C3 = true;
+          }
+          if (b.functionAuthority.indexOf('C4') > -1) {
+            this.C4 = true;
+          }
+          if (b.functionAuthority.indexOf('C5') > -1) {
+            this.C5 = true;
+          }
+        }
+      }
+    },
+    mounted() {
+      this.getList();
     }
   }
 
@@ -69,7 +97,9 @@
   }
 
   .bc-content2 {
-    text-align: center;
+    display: flex;
+    justify-content: space-around;
+
   }
 
   .bc-content2 button {

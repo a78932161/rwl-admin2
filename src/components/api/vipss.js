@@ -73,4 +73,19 @@ export function vipConsumption(data) {
   })
 }
 
+export function xyConsumption(data) {
+  return axios({
+    url: "/statistical/laundryconsumestatistical",
+    method: "post",
+    params: data
+  })
+}
 
+
+export function gdxhConsumption(data) {
+  return axios({
+    url: "/statistical/highlaundryconsumestatistical",
+    method: "post",
+    params: data
+  })
+}

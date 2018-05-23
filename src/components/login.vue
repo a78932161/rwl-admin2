@@ -8,9 +8,9 @@
               <div class="card-block">
                 <h1>让我来后台管理</h1>
                 <p class="text-muted">用户名/密码登录</p>
-                <div class="input-group m-b-1" >
+                <div class="input-group m-b-1">
                   <span class="input-group-addon"><i class="iconfont icon-rentou"></i></span>
-                  <input type="text" class="form-control" placeholder="请输入账号" v-model="form.username" >
+                  <input type="text" class="form-control" placeholder="请输入账号" v-model="form.username">
                 </div>
                 <div class="input-group m-b-2">
                   <span class="input-group-addon"><i class="iconfont icon-mima"></i></span>
@@ -47,11 +47,10 @@
 </template>
 
 <script>
-   import {loginApi} from "@/components/api/login";
+  import {loginApi, getInfo} from "@/components/api/login";
   import {setToken, getToken} from '@/auth'
 
   export default {
-
     data() {
       return {
         form: {
@@ -60,34 +59,46 @@
         },
         rules1: {
           username: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
-            //{ validator: validaePass }
+            {required: true, message: '请输入账号', trigger: 'blur'},
           ],
           password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            //{ validator: validaePass2 }
+            {required: true, message: '请输入密码', trigger: 'blur'},
           ]
         },
       }
     },
     methods: {
       login() {
-        if(this.form.username!=''&&this.form.password!=''){
+        if (this.form.username != '' && this.form.password != '') {
           let data = {username: this.form.username, password: this.form.password};
           loginApi(data).then(res => {
             if (res.status === 200) {
-              setToken(res.headers['x-auth-token']);
-              this.$router.push({path: '/home'});
+              let promise = new Promise((resolve, reject) => {
+                setToken(res.headers['x-auth-token']);
+                this.$message({
+                  message: '登陆成功!',
+                  type: 'success'
+                });
+                this.getList(resolve);
+              });
+              promise.then(() => {
+                this.$router.push('/');
+              });
             }
           });
-        }else{
+        } else {
           this.$message({
             message: '请输入账号或者密码!',
             type: 'warning'
           });
         }
-
-      }
+      },
+      getList(resolve) {
+        getInfo().then((res) => {
+          localStorage.setItem("info", JSON.stringify(res.data.data));
+          resolve();
+        })
+      },
     }
 
   }

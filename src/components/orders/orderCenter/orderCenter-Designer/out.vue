@@ -50,7 +50,7 @@
                 <span>{{ props.row.amount }}</span>
               </el-form-item>
               <el-form-item style="display: flex; justify-content:center;width:100%">
-                <el-button type="primary">查看详情</el-button>
+                <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary">派给顺丰</el-button>
               </el-form-item>
             </el-form>
@@ -146,16 +146,17 @@
         this.page = val;
         this.getLaundryList();
       },
-      aa() {
-        this.$router.go(0)
-      },
+
       goLaundry() {
         this.$router.push('/orderIndex');
       },
       getLocalTime(nS) {
         return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
       },
-
+      details(row){
+        let a=row.id;
+        this.$router.push({name: 'userOrders', query: {id: a}});
+      },
 
     },
     mounted() {
@@ -174,24 +175,6 @@
     text-align: center;
   }
 
-  .ord-content {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 0 3% 0;
-  }
-
-  .ord-content1 {
-    display: flex;
-    width: 30%;
-  }
-
-  .ord-content3 {
-    margin: 10px auto;
-  }
-
-  .ord-content3-l {
-    margin: 0 10px 0 0;
-  }
 
   .ord-content5 button {
     width: 100px;

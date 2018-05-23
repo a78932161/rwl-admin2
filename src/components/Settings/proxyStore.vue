@@ -4,8 +4,7 @@
       <div class="cr-top">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item><span @click="goIndex">平台设置</span></el-breadcrumb-item>
-          <el-breadcrumb-item><span @click="goIndex6">代理商</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goIndex7">代理商</span></el-breadcrumb-item>
           <el-breadcrumb-item>门店</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
@@ -20,6 +19,8 @@
           ></el-cascader>
           <el-button type="primary">查询</el-button>
         </div>
+        <el-radio v-model="radio" label="1" border>新增门店</el-radio>
+        <el-radio v-model="radio" label="2" border @change="qaq">新增角色</el-radio>
         <el-button type="primary" @click="dialogVisible = true">添加门店<i class="el-icon-plus"></i></el-button>
       </div>
       <div>
@@ -201,10 +202,9 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {getStore, addStore, addRole,BusinessSwitch} from "@/components/api/store";
+  import {getStore, addStore, addRole, BusinessSwitch} from "@/components/api/store";
 
   export default {
-    props: ['agentId'],
     data() {
       let psw1 = (rule, value, callback) => {
         if (value !== this.tableList2.password) {
@@ -216,6 +216,7 @@
       };
       return {
         options: CityInfo,
+        radio: this.$store.state.radio2,
         tableList: {
           name: '',
           phone: '',
@@ -231,6 +232,7 @@
         dialogVisible2: false,
         tableData: [],
         accountId: '',
+        agentId: '',
         page: 1,
         size: 5,
         total: 10,
@@ -261,11 +263,8 @@
       }
     },
     methods: {
-      goIndex() {
-        this.$router.go(0);
-      },
-      goIndex6() {
-        this.$emit('goIndex6', true);
+      goIndex7() {
+        this.$emit('goIndex7', true);
       },
       handleClose(done) {
         this.$confirm('确认关闭？')
@@ -276,6 +275,8 @@
           });
       },
       getList() {
+        let b = JSON.parse(localStorage.getItem("info"));
+        this.agentId = b.accountId;
         let a = {
           agentid: this.agentId,
           size: this.size,
@@ -380,20 +381,24 @@
             });
             return false;
           }
-        });
+        })
       },
-      storekg(row){
-        let a={
-          storeid:row.id,
+      qaq() {
+        this.$store.commit('changeRadio2', '2');
+        this.$emit('goIndex8', true);
+      },
+      storekg(row) {
+        let a = {
+          storeid: row.id,
         };
-        BusinessSwitch(a).then((res)=>{
-          if(res.data.code===0){
+        BusinessSwitch(a).then((res) => {
+          if (res.data.code === 0) {
             this.$message({
               message: '修改成功!',
               type: 'success'
             });
             this.getList();
-          }else {
+          } else {
             this.$message({
               message: '修改失败!',
               type: 'warning'

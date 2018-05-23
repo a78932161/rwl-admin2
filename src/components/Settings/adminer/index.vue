@@ -86,7 +86,8 @@
   }
 
   .ord-content2 {
-    text-align: center;
+    display: flex;
+    justify-content: space-around;
   }
 
   .ord-content2 button {

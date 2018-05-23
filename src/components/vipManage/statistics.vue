@@ -39,7 +39,7 @@
         <el-button type="primary" @click="goList(2)">已储蓄会员<br>{{listData.depositCount}}</el-button>
       </div>
     </div>
-    <vip-list v-if="isList"></vip-list>
+    <vip-list v-if="isList" @goIndex="goIndex"></vip-list>
   </div>
 </template>
 
@@ -104,8 +104,11 @@
       },
       goIndex1() {
         this.$emit('goIndex1', true);
-      }
-
+      },
+      goIndex(data) {
+        this.showFlag = data;
+        this.isList = false;
+      },
     },
     mounted() {
       this.getList();
@@ -138,8 +141,6 @@
     display: flex;
     justify-content: space-around;
   }
-
-
 
   .ord-content2 button {
     width: 180px;

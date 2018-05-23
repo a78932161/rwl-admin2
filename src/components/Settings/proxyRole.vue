@@ -3,8 +3,7 @@
     <div class="cr-top">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><span @click="goIndex">平台设置</span></el-breadcrumb-item>
-        <el-breadcrumb-item><span @click="goIndex2">管理员</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span @click="goIndex6">代理商</span></el-breadcrumb-item>
         <el-breadcrumb-item>角色</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -19,9 +18,9 @@
         ></el-cascader>
         <el-button type="primary">查询</el-button>
       </div>
-      <el-radio v-model="radio" label="1" border @change="qaq">新增代理商</el-radio>
+      <el-radio v-model="radio" label="1" border @change="qaq">新增门店</el-radio>
       <el-radio v-model="radio" label="2" border>新增角色</el-radio>
-      <el-button type="primary" @click="dialogVisible= true">添加新角色<i class="el-icon-plus"></i></el-button>
+      <el-button type="primary" @click="dialogVisible= true">添加角色<i class="el-icon-plus"></i></el-button>
     </div>
     <div>
       <el-table
@@ -108,38 +107,11 @@
         </div>
       </div>
       <div>
-        <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" @change="handleCheckAllChange1">B1.1-会员管理
-        </el-checkbox>
-        <div style="margin: 15px 0;">
-          <el-checkbox-group v-model="checkedCities1" @change="handleCheckedCitiesChange1">
-            <el-checkbox v-for="city in cities1" :label="city" :key="city">{{city}}</el-checkbox>
-          </el-checkbox-group>
-        </div>
-      </div>
-      <div>
-        <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" @change="handleCheckAllChange2">C1.1-基础资料
-        </el-checkbox>
-        <div style="margin: 15px 0;">
-          <el-checkbox-group v-model="checkedCities2" @change="handleCheckedCitiesChange2">
-            <el-checkbox v-for="city in cities2" :label="city" :key="city">{{city}}</el-checkbox>
-          </el-checkbox-group>
-        </div>
-      </div>
-      <div>
         <el-checkbox :indeterminate="isIndeterminate3" v-model="checkAll3" @change="handleCheckAllChange3">D1.1-财务管理
         </el-checkbox>
         <div style="margin: 15px 0;">
           <el-checkbox-group v-model="checkedCities3" @change="handleCheckedCitiesChange3">
             <el-checkbox v-for="city in cities3" :label="city" :key="city">{{city}}</el-checkbox>
-          </el-checkbox-group>
-        </div>
-      </div>
-      <div>
-        <el-checkbox :indeterminate="isIndeterminate4" v-model="checkAll4" @change="handleCheckAllChange4">E1.1-平台设置
-        </el-checkbox>
-        <div style="margin: 15px 0;">
-          <el-checkbox-group v-model="checkedCities4" @change="handleCheckedCitiesChange4">
-            <el-checkbox v-for="city in cities4" :label="city" :key="city">{{city}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
@@ -153,14 +125,11 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {getRoleList, addRole, delRole, upPurview, findPurview} from "@/components/api/adminer";
+  import {upPurview, findPurview} from "@/components/api/adminer";
+  import {getProxyList, addProxy, delProxy} from "@/components/api/proxy";
 
-  const cityOptions = ['A1-洗衣', 'A2-小让商城', 'A3-高端洗护', 'A4-小让家具', 'A5-订单分析'];
-  const cityOptions1 = ['B1-用户统计', 'B2-消费统计', 'B3-反馈'];
-  const cityOptions2 = ['C1-广告设置', 'C2-洗衣设置', 'C3-高端洗护设置', 'C4-家具设置', 'C5-商城设置'];
-  const cityOptions3 = ['D1-财务管理', 'D2-商户管理'];
-  const cityOptions4 = ['E1-充值设置', 'E2-提成设置', 'E3-账号管理', 'E-4平台编辑', 'E-5运费设置'];
-
+  const cityOptions = ['A1-洗衣', 'A2-小让商城', 'A3-高端洗护', 'A5-订单分析'];
+  const cityOptions3 = ['D2-商户管理'];
   export default {
     data() {
       let psw = (rule, value, callback) => {
@@ -173,7 +142,7 @@
       };
       return {
         options: CityInfo,
-        radio: this.$store.state.radio1,
+        radio: this.$store.state.radio2,
         dialogVisible: false,
         dialogVisible1: false,
         dialogVisible2: false,
@@ -196,22 +165,10 @@
         checkedCities: [],
         cities: cityOptions,
         isIndeterminate: false,
-        checkAll1: false,
-        checkedCities1: [],
-        cities1: cityOptions1,
-        isIndeterminate1: false,
-        checkAll2: false,
-        checkedCities2: [],
-        cities2: cityOptions2,
-        isIndeterminate2: false,
         checkAll3: false,
         checkedCities3: [],
         cities3: cityOptions3,
         isIndeterminate3: false,
-        checkAll4: false,
-        checkedCities4: [],
-        cities4: cityOptions4,
-        isIndeterminate4: false,
         tableData: [],
         checkData: [],
         user: '',
@@ -236,11 +193,8 @@
       }
     },
     methods: {
-      goIndex() {
-        this.$router.go(0);
-      },
-      goIndex2() {
-        this.$emit('goIndex2', true);
+      goIndex6() {
+        this.$emit('goIndex6', true);
       },
       handleClose(done) {
         this.$confirm('确认关闭？')
@@ -259,24 +213,6 @@
         this.checkAll = checkedCount === this.cities.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
       },
-      handleCheckAllChange1(val) {
-        this.checkedCities1 = val ? cityOptions1 : [];
-        this.isIndeterminate1 = false;
-      },
-      handleCheckedCitiesChange1(value) {
-        let checkedCount = value.length;
-        this.checkAll1 = checkedCount === this.cities1.length;
-        this.isIndeterminate1 = checkedCount > 0 && checkedCount < this.cities1.length;
-      },
-      handleCheckAllChange2(val) {
-        this.checkedCities2 = val ? cityOptions2 : [];
-        this.isIndeterminate2 = false;
-      },
-      handleCheckedCitiesChange2(value) {
-        let checkedCount = value.length;
-        this.checkAll2 = checkedCount === this.cities2.length;
-        this.isIndeterminate2 = checkedCount > 0 && checkedCount < this.cities2.length;
-      },
       handleCheckAllChange3(val) {
         this.checkedCities3 = val ? cityOptions3 : [];
         this.isIndeterminate3 = false;
@@ -286,28 +222,22 @@
         this.checkAll3 = checkedCount === this.cities3.length;
         this.isIndeterminate3 = checkedCount > 0 && checkedCount < this.cities3.length;
       },
-      handleCheckAllChange4(val) {
-        this.checkedCities4 = val ? cityOptions4 : [];
-        this.isIndeterminate4 = false;
-      },
-      handleCheckedCitiesChange4(value) {
-        let checkedCount = value.length;
-        this.checkAll4 = checkedCount === this.cities4.length;
-        this.isIndeterminate4 = checkedCount > 0 && checkedCount < this.cities4.length;
-      },
       qaq() {
-        this.$store.commit('changeRadio1', '1');
-        this.$emit('goIndex3', true);
+        this.$store.commit('changeRadio2', '1');
+        this.$emit('goIndex9', true);
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
       getList() {
+        let b = JSON.parse(localStorage.getItem("info"));
         let a = {
-          number: 4,
+          number: 5,
+          accountid: b.accountId,
         };
-        getRoleList(a).then((res) => {
+        getProxyList(a).then((res) => {
           if (res.data.data) {
+            console.log(res);
             this.tableData = res.data.data;
           }
         })
@@ -315,13 +245,15 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            let b = JSON.parse(localStorage.getItem("info"));
             let a = {
               username: this.tableList.username,
               password: this.tableList.password,
               department: this.tableList.department,
               phone: this.tableList.phone,
+              accountId: b.accountId,
             };
-            addRole(a).then((res) => {
+            addProxy(a).then((res) => {
               if (res.data.code === 1) {
                 this.$message({
                   message: '用户名或密码错误!',
@@ -330,7 +262,6 @@
               } else {
                 this.dialogVisible = false;
                 this.getList();
-
                 this.$message({
                   message: '修改成功!',
                   type: 'success'
@@ -350,11 +281,18 @@
         let a = {
           username: row.username,
         };
-        delRole(a).then((res) => {
-          this.$message({
-            message: '删除成功!',
-            type: 'success'
-          });
+        delProxy(a).then((res) => {
+          if (res.data.code === 0) {
+            this.$message({
+              message: '删除成功!',
+              type: 'success'
+            });
+          } else {
+            this.$message({
+              message: '删除失败!',
+              type: 'warning'
+            });
+          }
         })
       },
       authority() {
@@ -364,23 +302,8 @@
             this.checkData.push(value.substring(2, 0));
           })
         }
-        if (this.checkedCities1.length > 0) {
-          this.checkedCities1.forEach((value) => {
-            this.checkData.push(value.substring(2, 0));
-          })
-        }
-        if (this.checkedCities2.length > 0) {
-          this.checkedCities2.forEach((value) => {
-            this.checkData.push(value.substring(2, 0));
-          })
-        }
         if (this.checkedCities3.length > 0) {
           this.checkedCities3.forEach((value) => {
-            this.checkData.push(value.substring(2, 0));
-          })
-        }
-        if (this.checkedCities4.length > 0) {
-          this.checkedCities4.forEach((value) => {
             this.checkData.push(value.substring(2, 0));
           })
         }
@@ -406,10 +329,7 @@
       szqx(row) {
         this.user = row.username;
         this.checkedCities = [];
-        this.checkedCities1 = [];
-        this.checkedCities2 = [];
         this.checkedCities3 = [];
-        this.checkedCities4 = [];
         let a = {
           roleid: row.id,
         };
@@ -459,9 +379,10 @@
                   break;
               }
             });
+
           }
+          this.dialogVisible2 = true;
         })
-        this.dialogVisible2 = true;
       }
     },
     mounted() {

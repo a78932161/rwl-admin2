@@ -7,34 +7,7 @@
         <el-breadcrumb-item>账号管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="ord-content">
-      <div class="ord-content1">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">查询</el-button>
-      </div>
-      <div>
-        <el-date-picker
-          v-model="value1"
-          type="daterange"
-          align="center"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions2">
-        </el-date-picker>
-      </div>
-      <div>
-        <el-cascader
-          placeholder="试试搜索：浙江"
-          :options="options"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary">查询</el-button>
-      </div>
-    </div>
+
     <div class="ord-content2">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="120px"
                class="demo-ruleForm">

@@ -52,7 +52,7 @@
                 <span>{{ props.row.amount }}</span>
               </el-form-item>
               <el-form-item style="display: flex; justify-content:center;width:100%">
-                <el-button type="primary">查看详情</el-button>
+                <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary" @click="quxiao(props.row)">取消订单</el-button>
                 <el-button type="primary" @click="delivery(props.row)">派给顺丰</el-button>
               </el-form-item>
@@ -110,18 +110,17 @@
         province: '',
         city: '',
         zone: '',
+        inquire:[],
       }
     },
     methods: {
       getLaundryList() {
-        let a = {
-          type: 2,
-          status: 0,
-          page: this.page,
-          size: this.size,
-        };
-        getlaundry(a).then((res) => {
-          res.data.data.content.forEach((value) => {
+        this.options = [];
+        this.tableData = [];
+        this.$store.state.getieData = [];
+        this.inquire = [];
+        if (this.$store.state.orderFind.length > 0) {
+          this.$store.state.orderFind.forEach((value) => {
             value.items = value.items.length + '件';
             value.createtime = this.getLocalTime(value.createtime);
             switch (value.status) {
@@ -148,8 +147,8 @@
                 break;
             }
           });
-          this.tableData = res.data.data.content;
-          this.total = res.data.data.totalElements;
+          this.tableData = this.$store.state.orderFind;
+          this.total = this.$store.state.orderFind.length;
           this.inquire = {
             page: this.page,
             size: this.size,
@@ -157,31 +156,110 @@
             status: 0,
           };
           this.$store.commit('getieData', this.inquire);
-        });
-        storelaundry().then((res) => {
-          console.log(res);
-          res.data.data.forEach((value) => {
-            let a = {
-              value: value.id,
-              label: value.name
-            };
-            this.options.push(a);
+        } else if (this.$store.state.orderArea.content) {
+          this.$store.state.orderArea.content.forEach((value) => {
+            value.items = value.items.length + '件';
+            value.createtime = this.getLocalTime(value.createtime);
+            switch (value.status) {
+              case 0:
+                value.status = '新订单';
+                break;
+              case 1:
+                value.status = '已派订单';
+                break;
+              case 2:
+                value.status = '已收订单';
+                break;
+              case 3:
+                value.status = '入站订单';
+                break;
+              case 4:
+                value.status = '上挂订单';
+                break;
+              case 5:
+                value.status = '完结订单';
+                break;
+              case 6:
+                value.status = '取消订单';
+                break;
+            }
           });
-          console.log(this.options);
-        })
+          this.tableData = this.$store.state.orderArea.content;
+          this.total = this.$store.state.orderArea.totalElements;
+          this.inquire = {
+            page: this.page,
+            size: this.size,
+            type: 2,
+            status: 0,
+          };
+          this.$store.commit('getieData', this.inquire);
+
+        } else {
+          let a = {
+            type: 2,
+            status: 0,
+            page: this.page,
+            size: this.size,
+          };
+          getlaundry(a).then((res) => {
+            res.data.data.content.forEach((value) => {
+              value.items = value.items.length + '件';
+              value.createtime = this.getLocalTime(value.createtime);
+              switch (value.status) {
+                case 0:
+                  value.status = '新订单';
+                  break;
+                case 1:
+                  value.status = '已派订单';
+                  break;
+                case 2:
+                  value.status = '已收订单';
+                  break;
+                case 3:
+                  value.status = '入站订单';
+                  break;
+                case 4:
+                  value.status = '上挂订单';
+                  break;
+                case 5:
+                  value.status = '完结订单';
+                  break;
+                case 6:
+                  value.status = '取消订单';
+                  break;
+              }
+            });
+            this.tableData = res.data.data.content;
+            this.total = res.data.data.totalElements;
+            this.inquire = {
+              page: this.page,
+              size: this.size,
+              type: 2,
+              status: 0,
+            };
+            this.$store.commit('getieData', this.inquire);
+          });
+          storelaundry().then((res) => {
+            res.data.data.forEach((value) => {
+              let a = {
+                value: value.id,
+                label: value.name
+              };
+              this.options.push(a);
+            });
+          })
+        }
 
       },
       orderData(data) {
-        console.log(data);
+        this.getLaundryList();
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
         this.page = val;
         this.getLaundryList();
       },
-      aa() {
-        this.$router.go(0)
-      },
+
       goLaundry() {
         this.$router.push('/orderIndex');
       },
@@ -270,7 +348,10 @@
         });
         return ids;
       },
-
+      details(row){
+        let a=row.id;
+        this.$router.push({name: 'userOrders', query: {id: a}});
+      },
     },
     mounted() {
       this.getLaundryList();

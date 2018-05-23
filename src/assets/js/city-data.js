@@ -1,7 +1,7 @@
 CityInfo=[
-          {value: 1, label: '北京', children: [
+
               {value: 1, label: '北京市', children: [
-                  {value: 1, label: '东城区'},
+                  {value: 1, label: '东城区',children: []},
                   {value: 2, label: '西城区'},
                   {value: 3, label: '崇文区'},
                   {value: 4, label: '宣武区'},
@@ -20,7 +20,7 @@ CityInfo=[
                   {value: 17, label: '密云县'},
                   {value: 18, label: '延庆县'}
               ]}
-          ]},
+          ,
           {value: 2, label: '天津', children: [
               {value: 2, label: '天津市', children: [
                   {value: 19, label: '和平区'},

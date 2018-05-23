@@ -1,17 +1,17 @@
 <template>
   <div class="ord-content">
     <div class="ord-content1">
-      <el-input placeholder="请输入内容"></el-input>
-      <el-button type="primary">查询</el-button>
+      <el-input placeholder="请输入内容" v-model="value"></el-input>
+      <el-button type="primary" @click="getcx()">查询</el-button>
     </div>
     <div>
       <el-cascader
+        ref="cascader"
         placeholder="试试搜索：浙江"
         :options="options"
         filterable
         change-on-select
         clearable
-        @change="cascader"
       ></el-cascader>
       <el-button type="primary" @click="getList()">查询</el-button>
     </div>
@@ -20,7 +20,7 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {xyinquire, jjinquire, scinquire} from "@/components/api/inquire";
+  import {xyinquire, jjinquire, scinquire, xycx, jjcx, sccx} from "@/components/api/inquire";
   import {mapState} from "vuex"
 
   export default {
@@ -31,83 +31,151 @@
         province: '',
         city: '',
         zone: '',
-        orderData:'',
+        value: '',
       }
     },
     methods: {
-      cascader(value) {
-        this.options.forEach((value1) => {
-          if (value[0] == value1.value) {
-            this.province = value1.label;
-            value1.children.forEach((value2) => {
-              this.city = value2.label;
-              if (value[1] == value2.value) {
-                value2.children.forEach((value3) => {
-                  if (value[2] == value3.value) {
-                    this.zone = value3.label;
-                  }
-                })
-              }
-            })
-          }
-        });
-      },
       getList() {
-        if (this.province && this.city && this.zone) {
+        this.$store.state.orderArea = [];
+        let cityData = this.$refs.cascader.currentLabels;
+        if (cityData[0] && cityData[1]) {
           let type = this.ieData.type;
           if (type === 1 || type === 2) {
             let a = {
               type: this.ieData.type,
               status: this.ieData.status,
-              province: this.province,
-              city: this.city,
-              area: this.zone,
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
               size: this.ieData.size,
               page: this.ieData.page,
             };
             xyinquire(a).then((res) => {
-              this.orderData=res.data.data;
+              console.log(res);
+              if (res.data.data.content.length > 0) {
+                this.$store.state.orderArea.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '该地区无订单',
+                  type: 'warning'
+                });
+              }
             })
 
           } else if (type === 3) {
             let b = {
+              type: this.ieData.type,
               status: this.ieData.status,
-              province: this.province,
-              city: this.city,
-              area: this.zone,
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
               size: this.ieData.size,
               page: this.ieData.page,
             };
             jjinquire(b).then((res) => {
-              this.orderData=res.data.data;
+              if (res.data.data.content.length > 0) {
+                this.$store.state.orderArea.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '该地区无订单',
+                  type: 'warning'
+                });
+              }
             })
-
           } else if (type === 4) {
-
             let c = {
+              type: this.ieData.type,
               status: this.ieData.status,
-              province: this.province,
-              city: this.city,
-              area: this.zone,
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
               size: this.ieData.size,
               page: this.ieData.page,
             };
             scinquire(c).then((res) => {
-              this.orderData=res.data.data;
+              if (res.data.data.content.length > 0) {
+                this.$store.state.orderArea.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '该地区无订单',
+                  type: 'warning'
+                });
+              }
             })
           }
-        }else{
+        } else {
+          this.$store.state.orderArea = [];
+          this.$store.state.orderFind = [];
+          this.$emit('orderData', true);
           this.$message({
             message: '请选择地区',
             type: 'warning'
           });
         }
-        this.$emit('orderData',this.orderData);
 
+      },
+      getcx() {
+        this.$store.state.orderFind = [];
+        if (this.value) {
+          let type = this.ieData.type;
+          if (type === 1 || type === 2) {
+            let a = {
+              number: this.value
+            };
+            xycx(a).then((res) => {
+              if (res.data.code === 0) {
+                this.$store.state.orderFind.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '订单不存在',
+                  type: 'warning'
+                });
+              }
+            })
+          } else if (type === 3) {
+            let b = {
+              number: this.value
+            };
+            jjcx(b).then((res) => {
+              if (res.data.code === 0) {
+                this.$store.state.orderFind.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '订单不存在',
+                  type: 'warning'
+                });
+              }
+            })
+          } else if (type === 4) {
+            let c = {
+              number: this.value
+            };
+            sccx(c).then((res) => {
+              if (res.data.code === 0) {
+                this.$store.state.orderFind.push(res.data.data);
+                this.$emit('orderData', true);
+              } else {
+                this.$message({
+                  message: '订单不存在',
+                  type: 'warning'
+                });
+              }
+            })
+          }
+        } else {
+          this.$store.state.orderFind = [];
+          this.$store.state.orderArea = [];
+          this.$emit('orderData', true);
+        }
       }
     },
     computed: {
-      ...mapState(['ieData'])
+      ...mapState(['ieData', 'orderFind', 'orderArea'])
     }
   }
 </script>

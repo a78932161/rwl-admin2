@@ -42,8 +42,6 @@
           callback();
         }
       };
-
-
       return {
         ruleForm: {
           username:'',
@@ -69,8 +67,8 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let a={
-              username:this.username,
-              password:this.password,
+              username:this.ruleForm.username,
+              password:this.ruleForm.password,
             };
             upPsw(a).then((res)=>{
               console.log(res);
@@ -79,6 +77,7 @@
                   message: '用户名或密码错误!',
                   type: 'warning'
                 });
+               this.resetForm('ruleForm');
               }else{
                 this.$message({
                   message: '修改成功!',

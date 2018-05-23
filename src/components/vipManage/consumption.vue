@@ -4,32 +4,34 @@
       <div class="vipTop">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item ><span @click="goIndex">会员管理</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="goIndex">会员管理</span></el-breadcrumb-item>
           <el-breadcrumb-item>消费统计</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="ord-content">
-        <div style="margin-right: 20%">
+        <div>
+          <el-date-picker
+            v-model="value1"
+            type="daterange"
+            align="left"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions2"
+            @blur="timeFind">
+          </el-date-picker>
+        </div>
+        <div>
           <el-cascader
             placeholder="试试搜索：浙江"
+            ref="cascader"
             :options="options"
             filterable
             change-on-select
             clearable
           ></el-cascader>
-          <el-button type="primary">查询</el-button>
-        </div>
-        <div>
-          <el-date-picker
-            v-model="value1"
-            type="daterange"
-            align="center"
-            unlink-panels
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :picker-options="pickerOptions2">
-          </el-date-picker>
+          <el-button type="primary" @click="timeFind">查询</el-button>
         </div>
 
       </div>
@@ -45,11 +47,11 @@
       </div>
       <div style="display: flex">
         <div id="myChart" :style="{width: '500px', height: '450px'}"></div>
-        <el-card style="width: 100%;line-height: 30px">
-          <div style="display: flex;justify-content: space-between">
-            <label class="vip1">1 西装上衣</label>
-            <label class="vip2">60%</label>
-            <label class="vip3">12213</label>
+        <el-card style="width: 80%;line-height: 30px">
+          <div class="vip1" v-for="(item,index) in opinionData">
+            <label>{{index}} {{item.name}}</label>
+            <label>{{item.scale}}</label>
+            <label>{{item.value}}</label>
           </div>
 
           <div style="text-align: center">
@@ -70,31 +72,31 @@
           border
           style="width: 100%">
           <el-table-column
-            prop="date"
+            prop="title"
             label="次数">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="number"
             label="人数">
           </el-table-column>
         </el-table>
       </div>
       <div class="vipyw">
         <div></div>
-        消费次数
+        消费金额
       </div>
       <div class="viptable">
         <el-table
-          :data="tableData"
+          :data="tableData1"
           stripe
           border
           style="width: 100%">
           <el-table-column
-            prop="date"
-            label="次数">
+            prop="title"
+            label="价位">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="number"
             label="人数">
           </el-table-column>
         </el-table>
@@ -108,26 +110,23 @@
   import "@/assets/js/city-data"
   import echarts from 'echarts'
   import cdl from '@/components/vipManage/clothingDetail'
+  import {xyConsumption, gdxhConsumption} from '@/components/api/vipss'
+
   export default {
-    components:{
+    components: {
       cdl
     },
     data() {
       return {
-        isCdl:false,
-        isDiv:true,
+        isCdl: false,
+        isDiv: true,
         charts: '',
         options: CityInfo,
-        value1: '',
+        value1: null,
         radio: '1',
-        opinion: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎'],
-        opinionData: [
-          {value: 335, name: '直接访问'},
-          {value: 310, name: '邮件营销'},
-          {value: 234, name: '联盟广告'},
-          {value: 135, name: '视频广告'},
-          {value: 1548, name: '搜索引擎'}
-        ],
+        opinion: [],
+        opinionData: [],
+        sum: 0,
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -155,27 +154,12 @@
             }
           }]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
+        tableData1: [],
       }
     },
     mounted() {
-      this.drawLine();
+      this.getList(this.radio);
     },
     methods: {
       drawLine() {
@@ -210,16 +194,194 @@
           ]
         });
       },
-      gocdl(){
-        this.isDiv=false;
-        this.isCdl=true;
+      gocdl() {
+        this.isDiv = false;
+        this.isCdl = true;
       },
-      goIndex(){
-        this.$emit('goIndex2',true);
+      goIndex() {
+        this.$emit('goIndex2', true);
       },
-      goIndex1(data){
-        this.isDiv=data;
-        this.isCdl=false;
+      goIndex1(data) {
+        this.isDiv = data;
+        this.isCdl = false;
+      },
+      getList(index) {
+        this.opinionData = [];
+        this.opinion = [];
+        this.tableData1 = [];
+        this.tableData = [];
+        let data;
+        if (index == '1') {
+          if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
+            data = {
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
+            data = {};
+          }
+          xyConsumption(data).then((res) => {
+            console.log(res);
+            let a;
+            let b;
+            if (res.data.data) {
+              res.data.data.consumeFrequency.forEach((value, index) => {
+                if (index >= 11) {
+                  a = {
+                    title: 10 + '次以上',
+                    number: value + '人'
+                  };
+                } else {
+                  a = {
+                    title: index + '次',
+                    number: value + '人'
+                  };
+                }
+                this.tableData.push(a);
+              });
+              res.data.data.consumePrice.forEach((value, index) => {
+                if (index == 0) {
+                  b = {
+                    title: 100 + '元以下',
+                    number: value + '人'
+                  };
+                } else if (index >= 10) {
+                  b = {
+                    title: 1001 + '元以上',
+                    number: value + '人'
+                  };
+                } else {
+                  b = {
+                    title: index * 100 + 1 + '-' + (index * 100 + 100),
+                    number: value + '人'
+                  };
+                }
+                this.tableData1.push(b);
+              });
+              res.data.data.productTop.forEach((value) => {
+                this.sum = this.sum + value.count
+              });
+              res.data.data.productTop.forEach((value, index) => {
+                let a = {
+                  value: value.count,
+                  name: value.productName,
+                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                };
+                this.opinionData.push(a);
+                this.opinion.push(value.productName);
+              });
+            }
+            this.drawLine();
+          })
+
+        } else if (index == '2') {
+          if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
+            data = {
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
+            data = {};
+          }
+          gdxhConsumption().then((res) => {
+            console.log(res);
+            let a;
+            let b;
+            if (res.data.data) {
+              res.data.data.consumeFrequency.forEach((value, index) => {
+                if (index >= 11) {
+                  a = {
+                    title: 10 + '次以上',
+                    number: value + '人'
+                  };
+                } else {
+                  a = {
+                    title: index + '次',
+                    number: value + '人'
+                  };
+                }
+                this.tableData.push(a);
+              });
+              res.data.data.consumePrice.forEach((value, index) => {
+                if (index == 0) {
+                  b = {
+                    title: 100 + '元以下',
+                    number: value + '人'
+                  };
+                } else if (index >= 10) {
+                  b = {
+                    title: 1001 + '元以上',
+                    number: value + '人'
+                  };
+                } else {
+                  b = {
+                    title: index * 100 + 1 + '-' + (index * 100 + 100),
+                    number: value + '人'
+                  };
+                }
+                this.tableData1.push(b);
+              });
+              res.data.data.productTop.forEach((value) => {
+                this.sum = this.sum + value.count
+              });
+              res.data.data.productTop.forEach((value, index) => {
+                let a = {
+                  value: value.count,
+                  name: value.productName,
+                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                };
+                this.opinionData.push(a);
+                this.opinion.push(value.productName);
+              });
+            }
+            this.drawLine();
+          })
+        }
+      },
+      timeFind() {
+        this.getList(this.radio);
+      }
+
+    },
+    watch: {
+      radio(curVal, oldVal) {
+        if (curVal == '1') {
+          this.getList(1);
+        } else if (curVal == '2') {
+          this.getList(2);
+        } else if (curVal == '3') {
+          this.getList(3);
+        } else if (curVal == '4') {
+          this.getList(4);
+        }
       }
     }
   }
@@ -236,6 +398,7 @@
 
   .ord-content {
     display: flex;
+    justify-content: space-between;
     margin: 0 0 3% 0;
   }
 
@@ -249,12 +412,6 @@
     margin-right: 3%;
   }
 
-  /*.vip1{*/
-  /*margin-right: 30%;*/
-  /*}*/
-  /*.vip2{*/
-  /*margin-right: 30%;*/
-  /*}*/
   .vipyw {
     border-bottom: 1px solid rgb(20, 190, 240);
     width: 20%;
@@ -274,5 +431,14 @@
 
   .viptable {
     margin-bottom: 3%;
+  }
+
+  .vip1 {
+    display: flex;
+    justify-content: space-between
+  }
+
+  .vip1 label {
+    min-width: 46%;
   }
 </style>

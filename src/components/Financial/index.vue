@@ -9,8 +9,8 @@
       </div>
 
       <div class="ord-content2">
-          <el-button type="primary" @click="goAccount" >账号管理</el-button>
-          <el-button type="primary" @click="goclearing">商户结算</el-button>
+        <el-button type="primary" v-if="D1" @click="goAccount">账号管理</el-button>
+        <el-button type="primary" v-if="D2" @click="goclearing">商户结算</el-button>
       </div>
     </div>
     <account v-if="isAccount" @mmp="godetails" @mmp1="godetails1"></account>
@@ -62,7 +62,9 @@
         a: 10,
         showFlag: true,
         isAccount: false,
-        isDetails:false,
+        isDetails: false,
+        D1: false,
+        D2: false,
       }
     },
     methods: {
@@ -70,27 +72,38 @@
         this.showFlag = false;
         this.isAccount = true;
       },
-      godetails(data){
-        this.isDetails=data;
+      godetails(data) {
+        this.isDetails = data;
         this.isAccount = false;
       },
-      godetails1(data){
-        this.showFlag=data;
+      godetails1(data) {
+        this.showFlag = data;
         this.isAccount = false;
-        this.isDetails=false;
+        this.isDetails = false;
       },
-      godetails2(data){
-        this.showFlag=false;
+      godetails2(data) {
+        this.showFlag = false;
         this.isAccount = data;
-        this.isDetails=false;
+        this.isDetails = false;
       },
-
-
-      goclearing(){
+      goclearing() {
         this.$router.push('/clearing')
+      },
+      getList() {
+        if (localStorage.getItem("info")) {
+          let b = JSON.parse(localStorage.getItem("info"));
+          if (b.functionAuthority.indexOf('D1') > -1) {
+            this.D1 = true;
+          }
+          if (b.functionAuthority.indexOf('D2') > -1) {
+            this.D2 = true;
+          }
+        }
       }
     },
-
+    mounted() {
+      this.getList();
+    }
   }
 </script>
 

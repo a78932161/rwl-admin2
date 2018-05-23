@@ -154,7 +154,7 @@
         goodsId: {},
         category: '',
         fileList: [],
-        imgUrl: 'http://rtest.rwlai.cn/rwlmall/rwlmall/images/',
+        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
         list: [
           {name: '上衣类', value: '1'},
           {name: '裤裙类', value: '2'},
@@ -241,7 +241,6 @@
       goodsAdd() {
         if (this.tableList.name != '' || this.tableList.old_price != '' || this.tableList.price != '' ||
           this.tableList.stock != '' || this.tableList.date != '' || this.tableList.stock != '') {
-
           let a = {
             name: this.tableList.name,
             old_price: this.tableList.old_price * 100,
@@ -267,6 +266,7 @@
               logo: '',
               stock: '',
               date: '',
+              img:'',
               sort: '',
               category: '',
               type: 2,

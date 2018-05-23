@@ -120,7 +120,7 @@
       getlsit() {
         getCommission().then((res) => {
           console.log(res.data.data);
-          if(es.data.data){
+          if(res.data.data){
             res.data.data.forEach((res1) => {
               if (res1.key == 'commissionMall') {
                 res1.key = '小让商城';

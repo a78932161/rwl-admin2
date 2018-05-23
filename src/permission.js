@@ -5,6 +5,7 @@
 
 import router from '@/router'
 import {getToken} from '@/auth'
+
   router.beforeEach((to, from, next) => {
   const nextRoute =['/login'];
 
