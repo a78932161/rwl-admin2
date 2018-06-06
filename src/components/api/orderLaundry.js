@@ -25,7 +25,7 @@ export function outlaundry(data) {
 
 export function storelaundry(data) {
   return axios({
-    url: "/store/findall",
+    url: "/store/finddistributestore",
     method: "post",
     params:data
   })

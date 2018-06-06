@@ -102,7 +102,7 @@
         </el-table>
       </div>
     </div>
-    <cdl v-show="isCdl" @goIndex1="goIndex1"></cdl>
+    <cdl v-if="isCdl" @goIndex1="goIndex1" @goIndex2="goIndex" :qaq="index"></cdl>
   </div>
 </template>
 
@@ -110,7 +110,7 @@
   import "@/assets/js/city-data"
   import echarts from 'echarts'
   import cdl from '@/components/vipManage/clothingDetail'
-  import {xyConsumption, gdxhConsumption} from '@/components/api/vipss'
+  import {xyConsumption, gdxhConsumption, xrjjConsumption, xrscConsumption} from '@/components/api/vipss'
 
   export default {
     components: {
@@ -127,6 +127,7 @@
         opinion: [],
         opinionData: [],
         sum: 0,
+        index: 1,
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -201,6 +202,7 @@
       goIndex() {
         this.$emit('goIndex2', true);
       },
+
       goIndex1(data) {
         this.isDiv = data;
         this.isCdl = false;
@@ -364,6 +366,158 @@
             }
             this.drawLine();
           })
+        } else if (index == '3') {
+          if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
+            data = {
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
+            data = {};
+          }
+          xrjjConsumption().then((res) => {
+            console.log(res);
+            let a;
+            let b;
+            if (res.data.data) {
+              res.data.data.consumeFrequency.forEach((value, index) => {
+                if (index >= 11) {
+                  a = {
+                    title: 10 + '次以上',
+                    number: value + '人'
+                  };
+                } else {
+                  a = {
+                    title: index + '次',
+                    number: value + '人'
+                  };
+                }
+                this.tableData.push(a);
+              });
+              res.data.data.consumePrice.forEach((value, index) => {
+                if (index == 0) {
+                  b = {
+                    title: 100 + '元以下',
+                    number: value + '人'
+                  };
+                } else if (index >= 10) {
+                  b = {
+                    title: 1001 + '元以上',
+                    number: value + '人'
+                  };
+                } else {
+                  b = {
+                    title: index * 100 + 1 + '-' + (index * 100 + 100),
+                    number: value + '人'
+                  };
+                }
+                this.tableData1.push(b);
+              });
+              res.data.data.productTop.forEach((value) => {
+                this.sum = this.sum + value.count
+              });
+              res.data.data.productTop.forEach((value, index) => {
+                let a = {
+                  value: value.count,
+                  name: value.productName,
+                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                };
+                this.opinionData.push(a);
+                this.opinion.push(value.productName);
+              });
+            }
+            this.drawLine();
+          })
+        } else if (index == '4') {
+          if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
+            data = {
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
+            data = {
+              startime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              area: this.$refs.cascader.currentLabels[0],
+              province: this.$refs.cascader.currentLabels[1],
+              city: this.$refs.cascader.currentLabels[2],
+            }
+          } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
+            data = {};
+          }
+          xrscConsumption().then((res) => {
+            console.log(res);
+            let a;
+            let b;
+            if (res.data.data) {
+              res.data.data.consumeFrequency.forEach((value, index) => {
+                if (index >= 11) {
+                  a = {
+                    title: 10 + '次以上',
+                    number: value + '人'
+                  };
+                } else {
+                  a = {
+                    title: index + '次',
+                    number: value + '人'
+                  };
+                }
+                this.tableData.push(a);
+              });
+              res.data.data.consumePrice.forEach((value, index) => {
+                if (index == 0) {
+                  b = {
+                    title: 100 + '元以下',
+                    number: value + '人'
+                  };
+                } else if (index >= 10) {
+                  b = {
+                    title: 1001 + '元以上',
+                    number: value + '人'
+                  };
+                } else {
+                  b = {
+                    title: index * 100 + 1 + '-' + (index * 100 + 100),
+                    number: value + '人'
+                  };
+                }
+                this.tableData1.push(b);
+              });
+              res.data.data.productTop.forEach((value) => {
+                this.sum = this.sum + value.count
+              });
+              res.data.data.productTop.forEach((value, index) => {
+                let a = {
+                  value: value.count,
+                  name: value.productName,
+                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                };
+                this.opinionData.push(a);
+                this.opinion.push(value.productName);
+              });
+            }
+            this.drawLine();
+          })
         }
       },
       timeFind() {
@@ -375,12 +529,16 @@
       radio(curVal, oldVal) {
         if (curVal == '1') {
           this.getList(1);
+          this.index = 1;
         } else if (curVal == '2') {
           this.getList(2);
+          this.index = 2;
         } else if (curVal == '3') {
           this.getList(3);
+          this.index = 3;
         } else if (curVal == '4') {
           this.getList(4);
+          this.index = 4;
         }
       }
     }

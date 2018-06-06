@@ -10,17 +10,7 @@
         </el-breadcrumb>
       </div>
       <div class="cr-top1">
-        <div>
-          <el-cascader
-            placeholder="试试搜索：浙江"
-            :options="options"
-            filterable
-            change-on-select
-            clearable
-            v-model="selectedOptions"
-          ></el-cascader>
-          <el-button type="primary">查询</el-button>
-        </div>
+
         <el-radio v-model="radio" label="1" border>新增代理商</el-radio>
         <el-radio v-model="radio" label="2" border @change="qaq">新增角色</el-radio>
         <el-button type="primary" @click="dialogVisible= true">添加代理商<i class="el-icon-plus"></i></el-button>
@@ -46,7 +36,7 @@
             label="联系电话">
           </el-table-column>
           <el-table-column
-            prop="region"
+            prop="regionDistribution"
             label="区域">
           </el-table-column>
           <el-table-column label="操作" width="200">

@@ -128,7 +128,7 @@
   import {upPurview, findPurview} from "@/components/api/adminer";
   import {getProxyList, addProxy, delProxy} from "@/components/api/proxy";
 
-  const cityOptions = ['A1-洗衣', 'A2-小让商城', 'A3-高端洗护', 'A5-订单分析'];
+  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家具', 'A5-订单分析'];
   const cityOptions3 = ['D2-商户管理'];
   export default {
     data() {

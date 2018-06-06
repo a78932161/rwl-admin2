@@ -10,16 +10,6 @@
         </el-breadcrumb>
       </div>
       <div class="cr-top1">
-        <div>
-          <el-cascader
-            placeholder="试试搜索：浙江"
-            :options="options"
-            filterable
-            change-on-select
-            clearable
-          ></el-cascader>
-          <el-button type="primary">查询</el-button>
-        </div>
         <el-button type="primary" @click="dialogVisible = true">添加门店<i class="el-icon-plus"></i></el-button>
       </div>
       <div>
@@ -426,8 +416,7 @@
   }
 
   .cr-top1 {
-    display: flex;
-    justify-content: space-between;
+    text-align: right;
     margin-bottom: 3%;
   }
 

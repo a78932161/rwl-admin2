@@ -9,7 +9,6 @@
         <div class="NavMenu">
           <router-link to="/newFurniture"><span>|</span>新订单</router-link>
           <router-link to="/shipFurniture"><span>|</span>已派订单</router-link>
-          <router-link to="/sentFurniture"><span>|</span>已上挂</router-link>
           <router-link to="/endFurniture"><span>|</span>完结订单</router-link>
           <router-link to="/cancelFurniture"><span>|</span>取消订单</router-link>
         </div>

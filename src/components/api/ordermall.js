@@ -18,7 +18,7 @@ export function InvalidMall(data) {
 
 export function deliveryMall(data) {
   return axios({
-    url: "/store/findall",
+    url: "/store/finddistributestore",
     method: "post",
     params:data
   })

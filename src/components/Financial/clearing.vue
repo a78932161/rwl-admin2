@@ -90,7 +90,7 @@
               fixed="right"
               label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="goclearingds">详情</el-button>
+                <el-button type="text" size="small" @click="goclearingds(scope.row)">详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -99,6 +99,8 @@
           <el-pagination
             background
             layout="prev, pager, next"
+            @current-change="handleCurrentChange"
+            :page-size="5"
             :total="total">
           </el-pagination>
         </div>
@@ -159,13 +161,12 @@
       }
     },
     methods: {
-      goclearingds() {
-        this.$router.push('/clearingds');
+      goclearingds(row) {
+        console.log(row.id);
+        let a = row.id;
+        this.$router.push({name: 'clearingds', query: {id: a}});
       },
       getList() {
-        console.log(this.value1);
-        console.log(this.province);
-
         if (this.value1 && this.province) {
           let b = {
             starttime: this.value1[0].getTime(),
@@ -175,18 +176,42 @@
             area: this.zone,
           };
           getclearing(b).then((res) => {
-            console.log(res);
-            this.tableData = res.data.data;
+            this.total = res.data.data.length;
+            let arr = res.data.data;
+            let currentArr = [];
+            let page = this.size;
+            let currentPage = this.page;
+            let StartNum = (currentPage - 1) * page;
+            let EndNum = currentPage * page;
+            for (let i = StartNum; i < EndNum; i++) {
+              if (!arr[i]) {
+                break;
+              }
+              currentArr.push(arr[i]);
+            }
+            this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 ===null && this.province) {
+        } else if (this.value1 === null && this.province) {
           let b = {
             province: this.province,
             city: this.city,
             area: this.zone,
           };
           getclearing(b).then((res) => {
-            console.log(res);
-            this.tableData = res.data.data;
+            this.total = res.data.data.length;
+            let arr = res.data.data;
+            let currentArr = [];
+            let page = this.size;
+            let currentPage = this.page;
+            let StartNum = (currentPage - 1) * page;
+            let EndNum = currentPage * page;
+            for (let i = StartNum; i < EndNum; i++) {
+              if (!arr[i]) {
+                break;
+              }
+              currentArr.push(arr[i]);
+            }
+            this.tableData = currentArr;//显示的数据
           })
         } else if (this.value1 && this.province === '') {
           let b = {
@@ -194,18 +219,43 @@
             endtime: this.value1[1].getTime(),
           };
           getclearing(b).then((res) => {
-            console.log(res);
-            this.tableData = res.data.data;
+            this.total = res.data.data.length;
+            let arr = res.data.data;
+            let currentArr = [];
+            let page = this.size;
+            let currentPage = this.page;
+            let StartNum = (currentPage - 1) * page;
+            let EndNum = currentPage * page;
+            for (let i = StartNum; i < EndNum; i++) {
+              if (!arr[i]) {
+                break;
+              }
+              currentArr.push(arr[i]);
+            }
+            this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 ===null && this.province === '') {
+        } else if (this.value1 === null && this.province === '') {
           let a = new Date();
           let b = {
             starttime: 0,
             endtime: a.getTime(),
           };
           getclearing(b).then((res) => {
-            console.log(res);
-            this.tableData = res.data.data;
+            console.log(res)
+            this.total = res.data.data.length;
+            let arr = res.data.data;
+            let currentArr = [];
+            let page = this.size;
+            let currentPage = this.page;
+            let StartNum = (currentPage - 1) * page;
+            let EndNum = currentPage * page;
+            for (let i = StartNum; i < EndNum; i++) {
+              if (!arr[i]) {
+                break;
+              }
+              currentArr.push(arr[i]);
+            }
+            this.tableData = currentArr;//显示的数据
           })
         }
       },
@@ -230,7 +280,10 @@
       search() {
         this.getList();
       },
-
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
     },
     mounted() {
       this.getList();

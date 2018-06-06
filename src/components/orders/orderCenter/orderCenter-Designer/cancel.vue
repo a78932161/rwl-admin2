@@ -51,8 +51,6 @@
               </el-form-item>
               <el-form-item style="display: flex; justify-content:center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
-                <el-button type="primary">取消订单</el-button>
-                <el-button type="primary">派给顺丰</el-button>
                 <el-button type="primary">订单退款</el-button>
               </el-form-item>
             </el-form>
@@ -255,6 +253,8 @@
       },
     },
     mounted() {
+      this.$store.state.orderFind = [];
+      this.$store.state.orderArea = [];
       this.getLaundryList();
     }
   }

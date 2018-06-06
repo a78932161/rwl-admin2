@@ -8,16 +8,6 @@
       </el-breadcrumb>
     </div>
     <div class="re-top1">
-      <div>
-        <el-cascader
-          placeholder="试试搜索：浙江"
-          :options="options"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary">查询</el-button>
-      </div>
     </div>
     <div>
       <el-table

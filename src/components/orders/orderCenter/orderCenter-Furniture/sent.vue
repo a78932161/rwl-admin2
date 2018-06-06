@@ -255,6 +255,8 @@
       },
     },
     mounted() {
+      this.$store.state.orderFind = [];
+      this.$store.state.orderArea = [];
       this.getFurnitureList();
     }
   }

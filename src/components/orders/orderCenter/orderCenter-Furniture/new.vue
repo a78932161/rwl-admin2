@@ -240,7 +240,7 @@
             res.data.data.forEach((value) => {
               let a = {
                 value: value.id,
-                label: value.name
+                label:value.accountName
               };
               this.options.push(a);
             });
@@ -327,8 +327,9 @@
       },
     },
     mounted() {
+      this.$store.state.orderFind = [];
+      this.$store.state.orderArea = [];
       this.getFurnitureList();
-
     }
   }
 </script>

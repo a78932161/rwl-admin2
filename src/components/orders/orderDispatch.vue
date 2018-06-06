@@ -8,16 +8,16 @@
       </el-breadcrumb>
     </div>
     <div class="ord-content">
-
       <div>
         <el-cascader
           placeholder="试试搜索：浙江"
           :options="options"
+          ref="cascader"
           filterable
           change-on-select
           clearable
         ></el-cascader>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="getList()">查询</el-button>
       </div>
     </div>
     <div class="ord-content4">
@@ -50,19 +50,35 @@
       getList() {
         if (localStorage.getItem("info")) {
           let b = JSON.parse(localStorage.getItem("info"));
-          if(b.functionAuthority.indexOf('A1') > -1){
-            this.A1=true;
+          if (b.functionAuthority.indexOf('A1') > -1) {
+            this.A1 = true;
           }
-          if(b.functionAuthority.indexOf('A2') > -1){
-            this.A2=true;
+          if (b.functionAuthority.indexOf('A2') > -1) {
+            this.A2 = true;
           }
-          if(b.functionAuthority.indexOf('A3') > -1){
-            this.A3=true;
+          if (b.functionAuthority.indexOf('A3') > -1) {
+            this.A3 = true;
           }
-          if(b.functionAuthority.indexOf('A4') > -1){
-            this.A4=true;
+          if (b.functionAuthority.indexOf('A4') > -1) {
+            this.A4 = true;
           }
         }
+        if (this.$refs.cascader.currentLabels) {
+          let a = new Date();
+          let b = {
+            starttime: a.getTime() - 3600 * 1000 * 24,
+            endtime: a.getTime(),
+            province: this.$refs.cascader.currentLabels[0],
+            city: this.$refs.cascader.currentLabels[1],
+            area: this.$refs.cascader.currentLabels[2] || '',
+          };
+          orderNumber(b).then((res) => {
+            this.items = res.data.data;
+          })
+
+
+        }
+
         let a = new Date();
         let b = {
           starttime: a.getTime() - 3600 * 1000 * 24,

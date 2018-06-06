@@ -7,3 +7,12 @@ export function getclearing(data) {
     params:data
   })
 }
+
+
+export function getclearingds(data) {
+  return axios({
+    url: "/statistical/storedayanalysis",
+    method: "post",
+    params:data
+  })
+}

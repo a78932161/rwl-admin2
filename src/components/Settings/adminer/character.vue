@@ -9,16 +9,6 @@
       </el-breadcrumb>
     </div>
     <div class="cr-top1">
-      <div>
-        <el-cascader
-          placeholder="试试搜索：浙江"
-          :options="options"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary">查询</el-button>
-      </div>
       <el-radio v-model="radio" label="1" border @change="qaq">新增代理商</el-radio>
       <el-radio v-model="radio" label="2" border>新增角色</el-radio>
       <el-button type="primary" @click="dialogVisible= true">添加新角色<i class="el-icon-plus"></i></el-button>
@@ -155,7 +145,7 @@
   import "@/assets/js/city-data"
   import {getRoleList, addRole, delRole, upPurview, findPurview} from "@/components/api/adminer";
 
-  const cityOptions = ['A1-洗衣', 'A2-小让商城', 'A3-高端洗护', 'A4-小让家具', 'A5-订单分析'];
+  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家具', 'A4-小让商城', 'A5-订单分析'];
   const cityOptions1 = ['B1-用户统计', 'B2-消费统计', 'B3-反馈'];
   const cityOptions2 = ['C1-广告设置', 'C2-洗衣设置', 'C3-高端洗护设置', 'C4-家具设置', 'C5-商城设置'];
   const cityOptions3 = ['D1-财务管理', 'D2-商户管理'];

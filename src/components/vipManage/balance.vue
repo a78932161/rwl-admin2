@@ -54,6 +54,7 @@
             background
             layout="prev, pager, next"
             @current-change="handleCurrentChange"
+            :page-size="5"
             :total="total">
           </el-pagination>
         </div>
@@ -87,31 +88,35 @@
           userid: this.$route.query.id,
         };
         getvip1(a).then((res) => {
-          this.name = res.data.data.name;
-          this.id = res.data.data.number;
-          this.phone = res.data.data.phone;
+          if (res.data.code === 0) {
+            this.name = res.data.data.name;
+            this.id = res.data.data.number;
+            this.phone = res.data.data.phone;
+          }
         });
         getrecords(a).then((res1) => {
-          res1.data.data.forEach((value) => {
-            value.time = this.getLocalTime(value.time);
-            value.balance = value.balance / 100;
-            value.money = value.money / 100;
-          });
-          this.total = res1.data.data.length;
-          let arr = res1.data.data;
-          let currentArr = [];
-          let page = this.size;
-          let currentPage = this.page;
-          let StartNum = (currentPage - 1) * page;
-          let EndNum = currentPage * page;
-          for (let i = StartNum; i < EndNum; i++) {
-            if (!arr[i]) {
-              break;
+          console.log(res1);
+          if (res1.data.code === 0) {
+            res1.data.data.forEach((value) => {
+              value.time = this.getLocalTime(value.time);
+              value.balance = value.balance / 100;
+              value.money = value.money / 100;
+            });
+            this.total = res1.data.data.length;
+            let arr = res1.data.data;
+            let currentArr = [];
+            let page = this.size;
+            let currentPage = this.page;
+            let StartNum = (currentPage - 1) * page;
+            let EndNum = currentPage * page;
+            for (let i = StartNum; i < EndNum; i++) {
+              if (!arr[i]) {
+                break;
+              }
+              currentArr.push(arr[i]);
             }
-            currentArr.push(arr[i]);
+            this.tableData = currentArr;//显示的数据
           }
-          this.tableData = currentArr;//显示的数据
-          console.log(this.tableData);
         })
       },
       goUserOrders(row) {

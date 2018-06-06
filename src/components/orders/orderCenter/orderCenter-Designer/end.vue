@@ -49,7 +49,6 @@
               <el-form-item label="已付金额">
                 <span>{{ props.row.amount }}</span>
               </el-form-item>
-
               <el-form-item style="display: flex; justify-content:center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
               </el-form-item>
@@ -255,6 +254,8 @@
 
     },
     mounted() {
+      this.$store.state.orderFind = [];
+      this.$store.state.orderArea = [];
       this.getLaundryList();
     }
   }

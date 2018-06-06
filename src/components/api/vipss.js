@@ -89,3 +89,20 @@ export function gdxhConsumption(data) {
     params: data
   })
 }
+
+
+export function xrjjConsumption(data) {
+  return axios({
+    url: "/statistical/mallconsumestatistical",
+    method: "post",
+    params: data
+  })
+}
+
+export function xrscConsumption(data) {
+  return axios({
+    url: "/statistical/furnitureconsumestatistical",
+    method: "post",
+    params: data
+  })
+}

@@ -201,7 +201,6 @@
             status: 0,
           };
           this.$store.commit('getieData', this.inquire);
-
         } else {
           let a = {
             type: 1,
@@ -251,10 +250,11 @@
             res.data.data.forEach((value) => {
               let a = {
                 value: value.id,
-                label: value.name
+                label:value.accountName
               };
               this.options.push(a);
             });
+            console.log(this.options);
           })
         }
       },
@@ -362,9 +362,10 @@
           this.getLaundryList();
         }
       },
-
     },
     mounted() {
+      this.$store.state.orderFind = [];
+      this.$store.state.orderArea = [];
       this.getLaundryList();
     },
   }

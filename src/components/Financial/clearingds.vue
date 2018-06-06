@@ -8,82 +8,69 @@
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/financial' }">财务管理</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/clearing' }">商户结算</el-breadcrumb-item>
-            <el-breadcrumb-item >商户结算详情</el-breadcrumb-item>
+            <el-breadcrumb-item>商户结算详情</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         <div>
           <el-table
             :data="tableData"
-            stripe
-            style="width: 100%">
+            stripe>
             <el-table-column
-              prop="name"
+              prop="date"
               label="日期">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="orderTotal"
               label="订单总数">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="撤单总数">
+              prop="incomeTotal"
+              label="总收入">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="退款总数">
+              prop="productTotal"
+              label="商品总量">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="收衣总数">
-            </el-table-column>
-            <el-table-column
-              prop="name"
+              prop="laundryTotal"
               label="洗衣收入">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="mallTotal"
               label="小让商城收入">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="furnitureTotal"
               label="小让家具收入">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="highLaundryTotal"
               label="高端洗护收入">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="weChatPay"
               label="微信支付">
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="balancePay"
               label="余额支付">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="支付宝">
+              prop="agentIncome"
+              label="商户收入">
             </el-table-column>
             <el-table-column
-              prop="name"
-              label="代理商收入">
-            </el-table-column>
-            <el-table-column
-              prop="name"
+              prop="platformIncome"
               label="平台收入">
             </el-table-column>
-            <el-table-column
-              prop="name"
-              label="物流收入">
-            </el-table-column>
-
           </el-table>
         </div>
         <div style="text-align: center;margin: 5% 0 5% 0;">
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="1000">
+            @current-change="handleCurrentChange"
+            :total="total">
           </el-pagination>
         </div>
       </el-col>
@@ -96,15 +83,19 @@
 <script>
   import "@/assets/js/city-data"
   import top from '@/assets/vue/top'
+  import {getclearingds} from "@/components/api/clearing";
 
   export default {
-    components:{
+    components: {
       top,
     },
     data() {
       return {
         options: CityInfo,
         value1: '',
+        page: 1,
+        size: 10,
+        total: 10,
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -132,27 +123,34 @@
             }
           }]
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '10',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '20',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '30',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '50',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }],
+        tableData: [],
       }
     },
-    methods:{
+    methods: {
+      getList() {
+        let a = this.$route.query.id;
+        let b = {
+          storeid: a,
+          page:this.page,
+          size:this.size,
+        };
+        getclearingds(b).then((res) => {
+          console.log(res);
+          if (res.data.code === 0) {
+            this.tableData = res.data.data.content;
+            this.total=res.data.data.count;
+          }
+        })
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.page = val;
+        this.getList();
+      },
 
+    },
+    mounted() {
+      this.getList();
     }
   }
 </script>
@@ -162,7 +160,7 @@
     font-size: 18px;
   }
 
-  .el-bb{
+  .el-bb {
     margin-bottom: 3%;
   }
 </style>

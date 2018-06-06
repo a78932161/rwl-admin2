@@ -45,7 +45,7 @@
             </el-form-item>
             <el-form-item label="设置图片 :">
               <el-upload
-                action="http://rtest.rwlai.cn/rwlmall/rwlmall/file/uploadimage"
+                action="https://rtest.rwlai.com/rwlmall/file/uploadimage"
                 :limit="1"
                 list-type="picture-card"
                 :headers="headers"

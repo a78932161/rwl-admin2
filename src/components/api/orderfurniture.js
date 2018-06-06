@@ -18,7 +18,7 @@ export function InvalidFurniture(data) {
 
 export function deliveryFurniture(data) {
   return axios({
-    url: "/store/findall",
+    url: "/store/finddistributestore",
     method: "post",
     params:data
   })
