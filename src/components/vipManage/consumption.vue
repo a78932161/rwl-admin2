@@ -212,6 +212,7 @@
         this.opinion = [];
         this.tableData1 = [];
         this.tableData = [];
+        this.sum = 0;
         let data;
         if (index == '1') {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间

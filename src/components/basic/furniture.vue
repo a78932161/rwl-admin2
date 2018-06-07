@@ -199,7 +199,7 @@
         fileList1: [],
         imgList: [],
         imgList1: [],
-        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
+        imgUrl: 'https://image.rwlai.com/',
         imgay: [],
         imgay1: [],
         list: [

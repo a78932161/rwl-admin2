@@ -16,7 +16,7 @@
       </el-radio-group>
 
     </div>
-    <div id="editorElem" ></div>
+    <div id="editorElem"></div>
 
     <div class="ititle1">
       <el-button v-if="isok" type="primary" @click="tijiao">提交</el-button>
@@ -40,7 +40,7 @@
         isok1: false,
         tjIndex: '',
         id: '',
-        qaq:null,
+        qaq: null,
       }
     },
     methods: {
@@ -57,8 +57,8 @@
           if (res.data.data) {
             this.id = res.data.data.id;
             this.qaq = res.data.data.content;
-            console.log(this.qaq)
-            if(this.qaq !=null){
+            console.log(this.qaq);
+            if (this.qaq != null) {
               let editor = new E('#editorElem');
               editor.customConfig.onchange = (html) => {
                 this.editorContent = html
@@ -67,7 +67,7 @@
               editor.txt.html(this.qaq);
             }
 
-          }else{
+          } else {
             let editor = new E('#editorElem');
             editor.customConfig.onchange = (html) => {
               this.editorContent = html
@@ -118,7 +118,7 @@
       },
     },
     mounted() {
-        this.getList(1);
+      this.getList(1);
 
     },
 

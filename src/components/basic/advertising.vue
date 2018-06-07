@@ -66,7 +66,7 @@
         fileList: [],
         isok: true,
         isok1: false,
-        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
+        imgUrl: 'https://image.rwlai.com/',
       }
     },
     methods: {

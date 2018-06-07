@@ -81,7 +81,7 @@
         xqData: [],
         imgData: [],
         active: 0,
-        imgUrl: 'http://p8wunmyz8.bkt.clouddn.com/',
+        imgUrl: 'https://image.rwlai.com/',
         dataLength: '',
       }
     },
