@@ -2,7 +2,7 @@ import axios from '@/fetch'
 
 export function getvip(data) {
   return axios({
-    url: "/user/findall",
+    url: "/user/findbytimeandarea",
     method: "post",
     params: data
   })
@@ -73,6 +73,14 @@ export function vipConsumption(data) {
   })
 }
 
+export function Consumption(data) {
+  return axios({
+    url: "/user/findbydeposit",
+    method: "post",
+    params: data
+  })
+}
+
 export function xyConsumption(data) {
   return axios({
     url: "/statistical/laundryconsumestatistical",
@@ -106,3 +114,29 @@ export function xrscConsumption(data) {
     params: data
   })
 }
+
+export function getvips(data) {
+  return axios({
+    url: "/user/findbybindindcard",
+    method: "post",
+    params: data
+  })
+}
+
+
+export function cxNumber(data) {
+  return axios({
+    url: "/user/findbynumber",
+    method: "post",
+    params: data
+  })
+}
+
+export function cxPhone(data) {
+  return axios({
+    url: "/user/findbyphone",
+    method: "post",
+    params: data
+  })
+}
+

@@ -62,6 +62,8 @@
       <el-pagination
         background
         layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :page-size="5"
         :total="total">
       </el-pagination>
     </div>
@@ -128,7 +130,7 @@
   import {upPurview, findPurview} from "@/components/api/adminer";
   import {getProxyList, addProxy, delProxy} from "@/components/api/proxy";
 
-  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家具', 'A5-订单分析'];
+  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家居', 'A5-订单分析'];
   const cityOptions3 = ['D2-商户管理'];
   export default {
     data() {
@@ -232,13 +234,15 @@
       getList() {
         let b = JSON.parse(localStorage.getItem("info"));
         let a = {
+          page: this.page,
+          size: this.size,
           number: 5,
           accountid: b.accountId,
         };
         getProxyList(a).then((res) => {
           if (res.data.data) {
-            console.log(res);
-            this.tableData = res.data.data;
+            this.tableData = res.data.data.object;
+            this.total = res.data.data.totalSize;
           }
         })
       },
@@ -254,17 +258,17 @@
               accountId: b.accountId,
             };
             addProxy(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '用户名或密码错误!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible = false;
                 this.getList();
                 this.$message({
-                  message: '修改成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -284,12 +288,12 @@
         delProxy(a).then((res) => {
           if (res.data.code === 0) {
             this.$message({
-              message: '删除成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
           } else {
             this.$message({
-              message: '删除失败!',
+              message: `${res.data.msg}`,
               type: 'warning'
             });
           }
@@ -315,12 +319,12 @@
           if (res.data.code === 0) {
             this.dialogVisible2 = false;
             this.$message({
-              message: '设置成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
           } else {
             this.$message({
-              message: '设置失败!',
+              message: `${res.data.msg}`,
               type: 'warning'
             });
           }
@@ -372,7 +376,7 @@
                 case 'E': {
                   cityOptions4.forEach((value1) => {
                     if (value1.indexOf(value) > -1) {
-                      this.checkedCities4.push(value);
+                      this.checkedCities4.push(value1);
                     }
                   })
                 }
@@ -383,7 +387,11 @@
           }
           this.dialogVisible2 = true;
         })
-      }
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
     },
     mounted() {
       this.getList();

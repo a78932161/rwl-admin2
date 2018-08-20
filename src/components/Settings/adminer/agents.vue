@@ -10,7 +10,6 @@
         </el-breadcrumb>
       </div>
       <div class="cr-top1">
-
         <el-radio v-model="radio" label="1" border>新增代理商</el-radio>
         <el-radio v-model="radio" label="2" border @change="qaq">新增角色</el-radio>
         <el-button type="primary" @click="dialogVisible= true">添加代理商<i class="el-icon-plus"></i></el-button>
@@ -19,10 +18,6 @@
         <el-table
           :data="tableData"
           style="width: 100%">
-          <el-table-column
-            type="selection"
-            width="100">
-          </el-table-column>
           <el-table-column
             prop="people"
             label="姓名">
@@ -36,10 +31,15 @@
             label="联系电话">
           </el-table-column>
           <el-table-column
+            prop="region"
+            label="省市">
+          </el-table-column>
+          <el-table-column
+            width="150"
             prop="regionDistribution"
             label="区域">
           </el-table-column>
-          <el-table-column label="操作" width="200">
+          <el-table-column label="操作" width="300">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -47,6 +47,9 @@
               </el-button>
               <el-button
                 size="mini" @click="goStore(scope.row)">查看门店
+              </el-button>
+              <el-button
+                size="mini" @click="goarea(scope.row)">修改区域
               </el-button>
             </template>
           </el-table-column>
@@ -57,6 +60,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
+          :page-size="5"
           :total="total">
         </el-pagination>
       </div>
@@ -66,6 +70,9 @@
         width="40%"
         :before-close="handleClose">
         <el-form label-width="100px" :model="tableList" ref="tableList" :rules="rules">
+          <el-form-item label="代理商名 :" prop="agentName">
+            <el-input v-model="tableList.agentName" placeholder="请输入代理商名"></el-input>
+          </el-form-item>
           <el-form-item label="地区负责人 :" prop="people">
             <el-input v-model="tableList.people" placeholder="请输入地区负责人"></el-input>
           </el-form-item>
@@ -88,7 +95,6 @@
               filterable
               change-on-select
               clearable
-              v-model="selectedOptions"
               @change="handleChange"
             ></el-cascader>
           </el-form-item>
@@ -125,6 +131,37 @@
     <el-button type="primary" @click="upPasswod1('tableList1')">确 定</el-button>
       </span>
       </el-dialog>
+
+      <el-dialog
+        title="修改区域"
+        :visible.sync="dialogVisible2"
+        width="40%"
+        :before-close="handleClose">
+        <el-form label-width="100px">
+          <el-form-item label="区域分配 :">
+            <el-cascader
+              ref="option"
+              placeholder="试试搜索：浙江"
+              :options="options"
+              filterable
+              change-on-select
+              clearable
+              @change="handleChange"
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="可收区域 :">
+            <el-checkbox-group
+              v-model="checkedCities2">
+              <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible2=false">取 消</el-button>
+    <el-button type="primary" @click="uparea()">确 定</el-button>
+      </span>
+      </el-dialog>
+
     </div>
 
     <store v-if="isStore" :agentId="agentId" @goIndex6="goIndex6"></store>
@@ -149,11 +186,12 @@
           callback();
         }
       };
-
       return {
         options: CityInfo,
         radio: this.$store.state.radio1,
+
         tableList: {
+          agentName: '',
           phone: '',
           people: '',
           address: '',
@@ -167,21 +205,27 @@
           password: '',
           dbpassword: '',
         },
+        tableList2: {},
         dialogVisible: false,
         dialogVisible1: false,
-        selectedOptions: [],
+        dialogVisible2: false,
         checkedCities1: [],
+        checkedCities2: [],
         allocation: [],
         cities: [],
         isStore: false,
         showFlag2: true,
         size: 5,
         page: 1,
-        total: 10,
+        total: 1,
         tableData: [],
         accountId: '',
         agentId: '',
+        areaId: '',
         rules: {
+          agentNameL: [
+            {required: true, message: '请输入代理商名', trigger: 'blur'},
+          ],
           people: [
             {required: true, message: '请输入负责人', trigger: 'blur'},
           ],
@@ -214,13 +258,15 @@
     },
     methods: {
       getList() {
+        this.cities = [];
+        this.allocation = [];
         let a = {
           size: this.size,
           page: this.page,
         };
         getAgents(a).then((res) => {
-          console.log(res);
           this.tableData = res.data.data.content;
+          this.total = res.data.data.totalElements;
         })
       },
       cancel() {
@@ -229,11 +275,9 @@
 
       goIndex() {
         this.$router.go(0);
-        this.$store.commit('changeRadio1', '2');
       },
       goIndex5() {
         this.$emit('goIndex5', true);
-        this.$store.commit('changeRadio1', '2');
       },
       goIndex6(data) {
         this.showFlag2 = data;
@@ -274,12 +318,19 @@
           this.tableList.regionDistribution = this.checkedCities1.join(',');
           this.tableList.region = this.allocation.join(',');
           addAgents(this.tableList).then((res) => {
-            this.getList();
-            this.dialogVisible = false;
-            this.$message({
-              message: '添加成功!',
-              type: 'success'
-            });
+            if (res.data.code === 0) {
+              this.getList();
+              this.dialogVisible = false;
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'success'
+              });
+            } else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
+            }
           })
         } else {
           this.$message({
@@ -310,18 +361,18 @@
               accountId: this.accountId,
             };
             addRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible1 = false;
                 this.resetForm('tableList1');
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -343,18 +394,18 @@
               accountId: this.accountId,
             };
             addRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible1 = false;
                 this.resetForm('tableList1');
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -367,9 +418,41 @@
           }
         });
       },
-
+      uparea() {
+        if (this.allocation.length > 0 && this.checkedCities2.length > 0) {
+          let a = {
+            regionDistribution: this.checkedCities2.join(','),
+            region: this.allocation.join(','),
+          };
+          upAgents(this.areaId, a).then((res) => {
+            if (res.data.code == 0) {
+              this.dialogVisible2 = false;
+              let obj = {};
+              obj.stopPropagation = () => {};
+              this.$refs.option.clearValue(obj);
+              this.getList();
+            } else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
+            }
+          })
+        } else {
+          this.$message({
+            message: '请填写信息!',
+            type: 'warning'
+          });
+        }
+      },
+      goarea(row) {
+        this.areaId = {agentid: row.id};
+        this.dialogVisible2 = true;
+        this.cities = [];
+        this.allocation=[];
+        this.checkedCities2 = [];
+      },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.page = val;
         this.getList();
       },

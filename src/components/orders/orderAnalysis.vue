@@ -128,7 +128,6 @@
             area: this.zone,
           };
           analysis(b).then((res) => {
-            console.log(res);
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
@@ -142,34 +141,31 @@
             endtime: a.getTime(),
           };
           analysis(b).then((res) => {
-            console.log(res);
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
             });
             this.tableData = res.data.data;
           });
-        }else if (this.value1===null && this.province) {
+        } else if (this.value1 === null && this.province) {
           let b = {
             province: this.province,
             city: this.city,
             area: this.zone,
           };
           analysis(b).then((res) => {
-            console.log(res);
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
             });
             this.tableData = res.data.data;
           });
-        }else if (this.value1 && this.province==='') {
+        } else if (this.value1 && this.province === '') {
           let b = {
             starttime: this.value1[0].getTime(),
             endtime: this.value1[1].getTime(),
           };
           analysis(b).then((res) => {
-            console.log(res);
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
@@ -221,19 +217,47 @@
       },
 
       goOrder(row) {
-        console.log(row);
+        let a = JSON.parse(localStorage.getItem("info"));
         switch (row.category) {
           case "普通洗护":
-            this.$router.push('newLaundry');
+            if (a.functionAuthority.indexOf('A1') > -1) {
+              this.$router.push('newLaundry');
+            } else {
+              this.$message({
+                message: '没有权限!',
+                type: 'warning'
+              });
+            }
             break;
           case "高端洗护":
-            this.$router.push('newDesigner');
+            if (a.functionAuthority.indexOf('A2') > -1) {
+              this.$router.push('newDesigner');
+            } else {
+              this.$message({
+                message: '没有权限!',
+                type: 'warning'
+              });
+            }
             break;
           case "家具":
-            this.$router.push('newFurniture');
+            if (a.functionAuthority.indexOf('A3') > -1) {
+              this.$router.push('newFurniture');
+            } else {
+              this.$message({
+                message: '没有权限!',
+                type: 'warning'
+              });
+            }
             break;
           case "商城":
-            this.$router.push('newMall');
+            if (a.functionAuthority.indexOf('A4') > -1) {
+              this.$router.push('newMall');
+            } else {
+              this.$message({
+                message: '没有权限!',
+                type: 'warning'
+              });
+            }
             break;
         }
       },
@@ -263,6 +287,5 @@
   .ord-content1 {
     display: flex;
     width: 30%;
-
   }
 </style>

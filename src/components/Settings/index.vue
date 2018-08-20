@@ -86,7 +86,14 @@
       },
       goproxyRole() {
         this.showFlag = false;
-        this.isProxyRole = true;
+        if (this.$store.state.radio2 == 2) {
+          this.showFlag = false;
+          this.isProxyRole = true;
+
+        } else if (this.$store.state.radio2 == 1) {
+          this.showFlag = false;
+          this.isProxyStore = true;
+        }
       },
 
       goIndex1(data) {

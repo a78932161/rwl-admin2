@@ -82,7 +82,6 @@
             refundid: this.$store.state.refundId,
           };
           idRefund(b).then((res) => {
-            console.log(res);
             res.data.data.userCreateTime=this.getLocalTime(res.data.data.userCreateTime);
             res.data.data.createtime=this.getLocalTime(res.data.data.createtime);
             res.data.data.money=res.data.data.money/100;

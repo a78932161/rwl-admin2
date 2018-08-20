@@ -109,7 +109,6 @@
     methods: {
       getlsit() {
         getCommission().then((res) => {
-          console.log(res.data.data);
           if(res.data.data){
             res.data.data.forEach((res1) => {
               if (res1.key == 'commissionMall') {

@@ -12,7 +12,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="120px"
                class="demo-ruleForm">
         <el-form-item label="转账类型 :">
-          <el-radio v-model="radio" label="1">导卡</el-radio>
+          <!--<el-radio v-model="radio" label="1">导卡</el-radio>-->
           <el-radio v-model="radio" label="2">退款</el-radio>
         </el-form-item>
         <div v-show="isRadio">
@@ -260,9 +260,9 @@
         value1: '',
         a: 10,
         showFlag: true,
-        radio: '1',
-        isRadio: true,
-        isRadio1: false,
+        radio: '2',
+        isRadio: false,
+        isRadio1: true,
         total: 10,
         total1: 10,
         size: 5,
@@ -316,26 +316,26 @@
     methods: {
       getList() {
         if (this.isRadio === true) {
-          if(this.phone){
+          if (this.phone) {
             let a = {
               phone: this.phone,
             };
             findRecharge(a).then((res) => {
-              if (res.data.data.content.length>0) {
+              if (res.data.data.content.length > 0) {
                 res.data.data.content.forEach((value) => {
                   value.createtime = this.getLocalTime(value.createtime);
                   value.money = value.money / 100;
                 });
                 this.total = res.data.data.totalElements;
                 this.tableData = res.data.data.content;
-              }else{
+              } else {
                 this.$message({
                   message: '该手机号无记录!',
                   type: 'warning'
                 });
               }
             });
-          }else{
+          } else {
             let a = {
               size: this.size,
               page: this.page
@@ -356,14 +356,14 @@
               phone: this.phone1,
             };
             findRefund(a).then((res) => {
-              if (res.data.data.content.length>0) {
+              if (res.data.data.content.length > 0) {
                 res.data.data.content.forEach((value) => {
                   value.createtime = this.getLocalTime(value.createtime);
                   value.money = value.money / 100;
                 });
                 this.total1 = res.data.data.totalElements;
                 this.tableData1 = res.data.data.content;
-              }else{
+              } else {
                 this.$message({
                   message: '该手机号无记录!',
                   type: 'warning'
@@ -389,19 +389,19 @@
       },
       getVipId() {
         let a = {
-          phone: this.ruleForm.userPhone,
+          registerphone: this.ruleForm.userPhone,
         };
         getphone(a).then((res) => {
-          if (res.data.code === 1) {
-            this.$message({
-              showClose: true,
-              message: '注册人手机号不存在!',
-              type: 'warning'
-            });
-          } else {
+          if (res.data.code === 0) {
             res.data.data.createtime = this.getLocalTime(res.data.data.createtime);
             res.data.data.balance = res.data.data.balance / 100;
             this.yhxx = res.data.data;
+          } else {
+            this.$message({
+              showClose: true,
+              message: `${res.data.msg}`,
+              type: 'warning'
+            });
           }
         })
       },
@@ -410,19 +410,19 @@
           if (valid) {
             this.ruleForm.money = this.ruleForm.money * 100;
             addRecharge(this.ruleForm).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  showClose: true,
-                  message: '注册人手机号不存在!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.resetForm('ruleForm');
                 this.getList();
                 this.$message({
                   showClose: true,
-                  message: '充值成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -440,19 +440,19 @@
         if (this.ruleForm.money || this.ruleForm.name || this.ruleForm.phone || this.ruleForm.userPhone || this.ruleForm.remark) {
           this.ruleForm.money = this.ruleForm.money * 100;
           addRefund(this.ruleForm).then((res) => {
-            if (res.data.code === 1) {
-              this.$message({
-                showClose: true,
-                message: '注册人手机号不存在!',
-                type: 'warning'
-              });
-            } else {
+            if (res.data.code === 0) {
               this.resetForm('ruleForm');
               this.getList();
               this.$message({
                 showClose: true,
                 message: '充值成功!',
                 type: 'success'
+              });
+            } else {
+              this.$message({
+                showClose: true,
+                message: '注册人手机号不存在!',
+                type: 'warning'
               });
             }
           })
@@ -502,7 +502,7 @@
       this.getList();
     },
     watch: {
-      radio(newValue, oldValue) {
+      radio(newValue) {
         if (newValue === '1') {
           this.isRadio = true;
           this.isRadio1 = false;

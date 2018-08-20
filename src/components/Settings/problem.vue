@@ -13,6 +13,7 @@
         <el-radio :label="2">关于小让</el-radio>
         <el-radio :label="3">加盟小让</el-radio>
         <el-radio :label="4">用户协议</el-radio>
+        <el-radio :label="5">加入小让</el-radio>
       </el-radio-group>
 
     </div>
@@ -53,11 +54,9 @@
         };
         this.tjIndex = index;
         getproblem(a).then((res) => {
-          console.log(res);
           if (res.data.data) {
             this.id = res.data.data.id;
             this.qaq = res.data.data.content;
-            console.log(this.qaq);
             if (this.qaq != null) {
               let editor = new E('#editorElem');
               editor.customConfig.onchange = (html) => {
@@ -136,6 +135,9 @@
             break;
           case 4:
             this.getList(4);
+            break;
+          case 5:
+            this.getList(5);
             break;
         }
       }

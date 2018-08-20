@@ -24,18 +24,19 @@
   import psw from '@/components/Settings/adminer/password'
   import character from '@/components/Settings/adminer/character'
   import agents from '@/components/Settings/adminer/agents'
+
   export default {
-    components:{
+    components: {
       psw,
       character,
       agents
     },
     data() {
       return {
-        showFlag1:true,
-        isPsw:false,
-        isCharacter:false,
-        isAgents:false,
+        showFlag1: true,
+        isPsw: false,
+        isCharacter: false,
+        isAgents: false,
 
 
       }
@@ -44,33 +45,40 @@
       goIndex4() {
         this.$emit('goIndex4', true);
       },
-      goPsw(){
-        this.showFlag1=false;
-        this.isPsw=true;
+      goPsw() {
+        this.showFlag1 = false;
+        this.isPsw = true;
       },
-      goCharacter(){
-        this.showFlag1=false;
-        this.isCharacter=true;
+      goCharacter() {
+        if (this.$store.state.radio1 == 1) {
+          this.showFlag1 = false;
+          this.isAgents = true;
+
+        } else if (this.$store.state.radio1 == 2) {
+          this.showFlag1 = false;
+          this.isCharacter = true;
+        }
+
       },
-      goIndex1(data){
-        this.showFlag1=data;
-        this.isPsw=false;
+      goIndex1(data) {
+        this.showFlag1 = data;
+        this.isPsw = false;
       },
-      goIndex2(data){
-        this.showFlag1=data;
-        this.isCharacter=false;
+      goIndex2(data) {
+        this.showFlag1 = data;
+        this.isCharacter = false;
       },
-      goIndex3(data){
-        this.isAgents=data;
-        this.isCharacter=false;
+      goIndex3(data) {
+        this.isAgents = data;
+        this.isCharacter = false;
       },
-      goIndex5(data){
-        this.showFlag1=data;
-        this.isAgents=false;
+      goIndex5(data) {
+        this.showFlag1 = data;
+        this.isAgents = false;
       },
-      goIndex6(data){
-        this.isAgents=false;
-        this.isCharacter=data;
+      goIndex6(data) {
+        this.isAgents = false;
+        this.isCharacter = data;
       }
     }
   }

@@ -6,21 +6,22 @@ import {Loading, Message} from 'element-ui'
 
 
 var loadinginstace;
-let baseURL = 'https://rtest.rwlai.com/rwlmall/';
+let baseURL = 'https://rtest.rwlai.com/rwlmall';
 let URL = window.location.origin;
 let URL1 = '';
-if (window.location.pathname !== '/') {
+if (window.location.pathname == '/') {
+  URL1='/';
+}else{
   URL1 = window.location.pathname;
 }
 
 
 let config = {
-  loginUrl: `${URL}${URL1}/#/login`, /*登陆地址*/
-  loginApi: `${baseURL}login`, /*登陆API*/
+  loginUrl: `${URL}${URL1}#/login`, /*登陆地址*/
+  loginApi: `${baseURL}/login`, /*登陆API*/
   logoutApi: `${baseURL}/logout`, /*退出API*/
-  indexUrl: `${URL}${URL1}#/home` /*首页*/
+  indexUrl: `${URL}${URL1}/#/home` /*首页*/
 };
-
 
 const service = axios.create({
   baseURL, // api的base_url
@@ -86,10 +87,13 @@ service.interceptors.response.use(
       if (location.href === config.loginUrl) {    /*登陆页面401错误，提示用户名或者密码错误*/
         loadinginstace.close();
         Message.error({
-          message: '账号或密码错误'
+          message: '账号或密码错误或超时'
         });
       }
       else {     /*访问受限资源，跳转至登陆页面*/
+        Message.error({
+          message: '超时'
+        });
         loadinginstace.close();
         localStorage.clear();
         location.href = config.loginUrl;

@@ -16,11 +16,12 @@ export function addAgents(data) {
   })
 }
 
-export function upAgents(data) {
+export function upAgents(id,data) {
   return axios({
     url: "/agent/update",
     method: "post",
-    params: data
+    params: id,
+    data
   })
 }
 

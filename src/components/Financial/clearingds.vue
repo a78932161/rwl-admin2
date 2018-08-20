@@ -12,64 +12,45 @@
           </el-breadcrumb>
         </div>
         <div>
-          <el-table
-            :data="tableData"
-            stripe>
-            <el-table-column
-              prop="date"
-              label="日期">
-            </el-table-column>
-            <el-table-column
-              prop="orderTotal"
-              label="订单总数">
-            </el-table-column>
-            <el-table-column
-              prop="incomeTotal"
-              label="总收入">
-            </el-table-column>
-            <el-table-column
-              prop="productTotal"
-              label="商品总量">
-            </el-table-column>
-            <el-table-column
-              prop="laundryTotal"
-              label="洗衣收入">
-            </el-table-column>
-            <el-table-column
-              prop="mallTotal"
-              label="小让商城收入">
-            </el-table-column>
-            <el-table-column
-              prop="furnitureTotal"
-              label="小让家具收入">
-            </el-table-column>
-            <el-table-column
-              prop="highLaundryTotal"
-              label="高端洗护收入">
-            </el-table-column>
-            <el-table-column
-              prop="weChatPay"
-              label="微信支付">
-            </el-table-column>
-            <el-table-column
-              prop="balancePay"
-              label="余额支付">
-            </el-table-column>
-            <el-table-column
-              prop="agentIncome"
-              label="商户收入">
-            </el-table-column>
-            <el-table-column
-              prop="platformIncome"
-              label="平台收入">
-            </el-table-column>
-          </el-table>
+          <table class="tab">
+            <tr>
+              <th>日期</th>
+              <th>订单总数</th>
+              <th>总收入</th>
+              <th>商品总量</th>
+              <th>洗衣收入</th>
+              <th>小让商城收入</th>
+              <th>小让家具收入</th>
+              <th>高端洗护收入</th>
+              <th>微信支付</th>
+              <th>余额支付</th>
+              <th>实体卡支付</th>
+              <th>商户收入</th>
+              <th>平台收入</th>
+            </tr>
+            <tr v-for="item in tableData">
+              <td>{{item.date}}</td>
+              <td>{{item.orderTotal}}</td>
+              <td>{{item.incomeTotal}}</td>
+              <td>{{item.productTotal}}</td>
+              <td>{{item.laundryTotal}}</td>
+              <td>{{item.mallTotal}}</td>
+              <td>{{item.furnitureTotal}}</td>
+              <td>{{item.highLaundryTotal}}</td>
+              <td>{{item.weChatPay}}</td>
+              <td>{{item.balancePay}}</td>
+              <td>{{item.cardPay}}</td>
+              <td>{{item.agentIncome}}</td>
+              <td>{{item.platformIncome}}</td>
+            </tr>
+          </table>
         </div>
         <div style="text-align: center;margin: 5% 0 5% 0;">
           <el-pagination
             background
             layout="prev, pager, next"
             @current-change="handleCurrentChange"
+            :page-size="10"
             :total="total">
           </el-pagination>
         </div>
@@ -131,19 +112,35 @@
         let a = this.$route.query.id;
         let b = {
           storeid: a,
-          page:this.page,
-          size:this.size,
+          page: this.page,
+          size: this.size,
         };
         getclearingds(b).then((res) => {
-          console.log(res);
           if (res.data.code === 0) {
+            res.data.data.content.forEach((value) => {
+              value.incomeTotal = (value.incomeTotal / 100).toFixed(1);
+              value.laundryTotal = (value.laundryTotal / 100).toFixed(1);
+              value.mallTotal = (value.mallTotal / 100).toFixed(1);
+              value.furnitureTotal = (value.furnitureTotal / 100).toFixed(1);
+              value.highLaundryTotal = (value.highLaundryTotal / 100).toFixed(1);
+              value.agentIncome = (value.agentIncome / 100).toFixed(1);
+              value.platformIncome = (value.platformIncome / 100).toFixed(1);
+              value.weChatPay = (value.weChatPay / 100).toFixed(1);
+              value.balancePay = (value.balancePay / 100).toFixed(1);
+              value.cardPay = (value.cardPay / 100).toFixed(1);
+
+            });
             this.tableData = res.data.data.content;
-            this.total=res.data.data.count;
+            this.total = res.data.data.count;
+          }else {
+            this.$message({
+              message: `${res.data.msg}`,
+              type: 'warning'
+            });
           }
         })
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.page = val;
         this.getList();
       },
@@ -162,5 +159,119 @@
 
   .el-bb {
     margin-bottom: 3%;
+  }
+
+  .tab {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #606266;
+  }
+
+  .tab tr th {
+    color: #909399;
+    text-align: left;
+  }
+
+  .tab td, th {
+    border-bottom: 1px solid #ebeef5;
+    padding: 12px 20px;
+    min-width: 0;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
+    line-height: 23px;
+  }
+  .tab th:nth-child(2){
+    background: #8fb2c5;
+    color: white;
+  }
+  .tab th:nth-child(3){
+    background: #8fb2c5;
+    color: white;
+  }
+  .tab th:nth-child(4){
+    background: #8fb2c5;
+    color: white;
+  }
+
+  .tab th:nth-child(5){
+    background: #289bf2;
+    color: white;
+  }
+  .tab th:nth-child(6){
+    background: #289bf2;
+    color: white;
+  }
+  .tab th:nth-child(7){
+    background: #289bf2;
+    color: white;
+  }
+  .tab th:nth-child(8){
+    background: #289bf2;
+    color: white;
+  }
+  .tab th:nth-child(9){
+    background: #bad1a3;
+    color: white;
+  }
+  .tab th:nth-child(10){
+    background: #bad1a3;
+    color: white;
+  }
+  .tab th:nth-child(11){
+    background: #bad1a3;
+    color: white;
+  }
+
+  .tab td:nth-child(2){
+    background: #8fb2c5;
+    color: white;
+  }
+  .tab td:nth-child(3){
+    background: #8fb2c5;
+    color: white;
+  }
+  .tab td:nth-child(4){
+    background: #8fb2c5;
+    color: white;
+  }
+
+  .tab td:nth-child(5){
+    background: #289bf2;
+    color: white;
+  }
+  .tab td:nth-child(6){
+    background: #289bf2;
+    color: white;
+  }
+  .tab td:nth-child(7){
+    background: #289bf2;
+    color: white;
+  }
+  .tab td:nth-child(8){
+    background: #289bf2;
+    color: white;
+  }
+  .tab td:nth-child(9){
+    background: #bad1a3;
+    color: white;
+  }
+  .tab td:nth-child(10){
+    background: #bad1a3;
+    color: white;
+  }
+  .tab td:nth-child(11){
+    background: #bad1a3;
+    color: white;
+  }
+
+  .tab tr:nth-child(2n){
+    background: #FAFAFA;
+  }
+  .tab tr:hover {
+    background: #f5f7fa;
+    transition: background-color .25s ease;
   }
 </style>

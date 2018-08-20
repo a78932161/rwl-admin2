@@ -95,7 +95,6 @@
       getlsit() {
         this.money=[];
         getExpress().then((res) => {
-          console.log(res.data.data);
           let value = res.data.data;
           value.freight = value.freight / 100;
           value.threshold = value.threshold / 100;

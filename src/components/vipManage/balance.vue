@@ -14,16 +14,31 @@
           <div><label>姓名: {{name}}</label></div>
           <div><label>ID: {{id}}</label></div>
           <div><label>手机: {{phone}}</label></div>
+          <div><label>余额: {{balance}}</label></div>
         </el-card>
-
       </el-col>
+      <!--<el-col :span="14">-->
+      <!--<div style="margin-left: 5%">-->
+      <!--<el-date-picker-->
+      <!--v-model="value1"-->
+      <!--type="daterange"-->
+      <!--align="center"-->
+      <!--unlink-panels-->
+      <!--range-separator="至"-->
+      <!--start-placeholder="开始日期"-->
+      <!--end-placeholder="结束日期"-->
+      <!--:picker-options="pickerOptions2">-->
+      <!--</el-date-picker>-->
+      <!--<el-button type="primary" @click="getList">查询</el-button>-->
+      <!--</div>-->
+      <!--</el-col>-->
       <el-col :span="14" class="vipMain">
         <el-table
           :data="tableData"
           stripe
           style="width: 100%">
           <el-table-column
-            prop="time"
+            prop="createtime"
             label="时间">
           </el-table-column>
           <el-table-column
@@ -80,6 +95,34 @@
         size: 5,
         page: 1,
         total: 10,
+        value1: '',
+        pickerOptions2: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
       }
     },
     methods: {
@@ -87,40 +130,44 @@
         let a = {
           userid: this.$route.query.id,
         };
+        let b;
         getvip1(a).then((res) => {
+          console.log(res);
           if (res.data.code === 0) {
             this.name = res.data.data.name;
             this.id = res.data.data.number;
             this.phone = res.data.data.phone;
+            this.balance = res.data.data.balance;
           }
         });
-        getrecords(a).then((res1) => {
-          console.log(res1);
+        if (this.value1) {
+          b = {
+            size: this.size,
+            page: this.page,
+            userid: this.$route.query.id,
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+          };
+        } else {
+          b = {
+            size: this.size,
+            page: this.page,
+            userid: this.$route.query.id,
+          };
+        }
+        getrecords(b).then((res1) => {
           if (res1.data.code === 0) {
-            res1.data.data.forEach((value) => {
-              value.time = this.getLocalTime(value.time);
+            this.total = res1.data.data.totalElements;
+            res1.data.data.content.forEach((value) => {
+              value.createtime = this.getLocalTime(value.createtime);
               value.balance = value.balance / 100;
               value.money = value.money / 100;
             });
-            this.total = res1.data.data.length;
-            let arr = res1.data.data;
-            let currentArr = [];
-            let page = this.size;
-            let currentPage = this.page;
-            let StartNum = (currentPage - 1) * page;
-            let EndNum = currentPage * page;
-            for (let i = StartNum; i < EndNum; i++) {
-              if (!arr[i]) {
-                break;
-              }
-              currentArr.push(arr[i]);
-            }
-            this.tableData = currentArr;//显示的数据
+            this.tableData = res1.data.data.content;
           }
         })
       },
       goUserOrders(row) {
-        console.log(row.orderId);
         let a = row.orderId;
         this.$router.push({name: 'userOrders', query: {id: a}});
       },
@@ -131,6 +178,9 @@
         this.page = val;
         this.getList();
       },
+      getcx() {
+
+      }
     },
     mounted() {
       this.getList();

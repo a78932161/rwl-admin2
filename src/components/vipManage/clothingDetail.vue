@@ -119,7 +119,6 @@
         this.$emit('goIndex1', true);
       },
       getList() {
-        console.log(this.qaq);
         let data = [];
         if (this.qaq == 1) {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
@@ -184,6 +183,11 @@
                 }
               });
               this.tableList = b;
+            }else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
             }
           })
         } else if (this.qaq == '2') {
@@ -248,6 +252,11 @@
                 }
               });
               this.tableList = b;
+            }else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
             }
           })
         } else if (this.qaq == '3') {
@@ -301,6 +310,11 @@
                 }
               });
               this.tableList = b;
+            }else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
             }
           })
         } else if (this.qaq == '4') {
@@ -362,7 +376,11 @@
                 }
               });
               this.tableList = b;
-              console.log(this.tableList);
+            }else {
+              this.$message({
+                message: `${res.data.msg}`,
+                type: 'warning'
+              });
             }
           })
         }

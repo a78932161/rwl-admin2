@@ -16,3 +16,12 @@ export function getclearingds(data) {
     params:data
   })
 }
+
+export function getIncome(data) {
+  return axios({
+    url: "/statistical/financestatistical",
+    method: "post",
+    params:data
+  })
+}
+

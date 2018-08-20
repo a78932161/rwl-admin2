@@ -9,8 +9,8 @@
     </div>
     <div class="ord-content">
       <div class="ord-content1">
-        <el-input placeholder="请输入内容"></el-input>
-        <el-button type="primary">查询</el-button>
+        <el-input placeholder="请输入手机号" v-model="value"></el-input>
+        <el-button type="primary" @click="getcx()">查询</el-button>
       </div>
       <div>
         <el-date-picker
@@ -26,13 +26,14 @@
       </div>
       <div>
         <el-cascader
+          ref="cascader"
           placeholder="试试搜索：浙江"
           :options="options"
           filterable
           change-on-select
           clearable
         ></el-cascader>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="getList()">查询</el-button>
       </div>
     </div>
     <div class="ord-content2">
@@ -43,6 +44,10 @@
         <el-table-column
           prop="number"
           label="会员ID">
+        </el-table-column>
+        <el-table-column
+          prop="cid"
+          label="会员卡">
         </el-table-column>
         <el-table-column
           prop="phone"
@@ -89,7 +94,7 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {getvip, vipConsumption} from "@/components/api/vipss";
+  import {getvip, vipConsumption, getvips, cxNumber, cxPhone, Consumption} from "@/components/api/vipss";
 
   export default {
 
@@ -124,19 +129,51 @@
         },
         tableData: [],
         options: CityInfo,
-        value1: '',
+        value1: null,
         page: 1,
         size: 5,
         total: 10,
+        value: '',
       }
     },
     methods: {
       getList() {
         if (this.$store.state.vipId === 3) {
-          let a = {
-            page: this.page,
-            size: this.size,
-          };
+          let cityData = this.$refs.cascader.currentLabels;
+          let a;
+          if (this.value1 === null && cityData[0] === undefined) {
+            a = {
+              page: this.page,
+              size: this.size,
+            };
+          } else if (this.value1 && cityData[0] === undefined) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              page: this.page,
+              size: this.size,
+            };
+
+          } else if (this.value1 === null && cityData[0]) {
+            a = {
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+            };
+
+          } else if (this.value1 && cityData[0]) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+            };
+          }
           getvip(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
@@ -147,12 +184,46 @@
               this.total = res.data.data.totalElements;
             }
           })
-        } else if (this.$store.state.vipId === 0 || this.$store.state.vipId === 1 || this.$store.state.vipId === 2) {
-          let a = {
-            page: this.page,
-            size: this.size,
-            status: this.$store.state.vipId,
-          };
+
+        } else if (this.$store.state.vipId === 0 || this.$store.state.vipId === 1) {
+          let cityData = this.$refs.cascader.currentLabels;
+          let a;
+          if (this.value1 === null && cityData[0] === undefined) {
+            a = {
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          } else if (this.value1 && cityData[0] === undefined) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          } else if (this.value1 === null && cityData[0]) {
+            a = {
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+
+          } else if (this.value1 && cityData[0]) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          }
           vipConsumption(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
@@ -164,10 +235,107 @@
             }
           })
 
+        } else if (this.$store.state.vipId === 4) {
+          let cityData = this.$refs.cascader.currentLabels;
+          let a;
+          if (this.value1 === null && cityData[0] === undefined) {
+            a = {
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          } else if (this.value1 && cityData[0] === undefined) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
 
+          } else if (this.value1 === null && cityData[0]) {
+            a = {
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+
+          } else if (this.value1 && cityData[0]) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          }
+          getvips(a).then((res) => {
+            if (res.data.data.content) {
+              res.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.balance = value.balance / 100;
+              });
+              this.tableData = res.data.data.content;
+              this.total = res.data.data.totalElements;
+            }
+          })
+        } else if (this.$store.state.vipId === 2) {
+          let cityData = this.$refs.cascader.currentLabels;
+          let a;
+          if (this.value1 === null && cityData[0] === undefined) {
+            a = {
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          } else if (this.value1 && cityData[0] === undefined) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+
+          } else if (this.value1 === null && cityData[0]) {
+            a = {
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+
+          } else if (this.value1 && cityData[0]) {
+            a = {
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime(),
+              province: cityData[0] || '',
+              city: cityData[1] || '',
+              area: cityData[2] || '',
+              page: this.page,
+              size: this.size,
+              status: this.$store.state.vipId,
+            };
+          }
+          Consumption(a).then((res) => {
+            if (res.data.data.content) {
+              res.data.data.content.forEach((value) => {
+                value.createtime = this.getLocalTime(value.createtime);
+                value.balance = value.balance / 100;
+              });
+              this.tableData = res.data.data.content;
+              this.total = res.data.data.totalElements;
+            }
+          })
         }
-
-
       },
       aa() {
         this.$emit('goIndex', true);
@@ -183,6 +351,25 @@
         this.page = val;
         this.getList();
       },
+      getcx() {
+        if (this.value.length == 11) {
+          this.tableData = [];
+          let a = {
+            phone: this.value
+          };
+          cxPhone(a).then((res) => {
+            if (res.data.code == 0) {
+              this.tableData.push(res.data.data);
+            }
+          })
+        } else if (this.value == '') {
+          this.getList();
+        } else {
+          this.tableData = [];
+          this.total = 0;
+        }
+      }
+
     },
     mounted() {
       this.getList();

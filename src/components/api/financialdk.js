@@ -18,7 +18,7 @@ export function getAll(data) {
 
 export function getphone(data) {
   return axios({
-    url: "/user/findbyphone",
+    url: "/user/findbyregisterphone",
     method: "post",
     params:data
   })

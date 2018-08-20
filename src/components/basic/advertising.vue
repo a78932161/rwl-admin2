@@ -80,7 +80,6 @@
         };
         getAd(a).then((res) => {
           if (res.data.data != null) {
-            console.log(res.data.data);
             this.value1 = res.data.data.time / 1000;
             this.fileList = this.tpjq(res.data.data.image);
             this.zhdz(res.data.data.webAddress);
@@ -141,7 +140,6 @@
         let b = a.substring(0, a.length);
         this.domains = b.split(',');
       },
-
 
       tijiao() {
         let data = [];

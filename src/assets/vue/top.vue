@@ -24,11 +24,11 @@
         <el-form-item label="用户名 :">
           <el-input v-model="tableList1.username" placeholder="请输入用户名" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="原密码 :" prop="password">
-          <el-input v-model="tableList1.password" placeholder="请输入原密码"></el-input>
+        <el-form-item label="新密码 :" prop="password">
+          <el-input type="password" v-model="tableList1.password" placeholder="请输入新密码"></el-input>
         </el-form-item>
         <el-form-item label="新密码 :" prop="dbpassword">
-          <el-input v-model="tableList1.dbpassword" placeholder="请输入新密码"></el-input>
+          <el-input type="password" v-model="tableList1.dbpassword" placeholder="请输入新密码"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -58,7 +58,7 @@
             {required: true, message: '请输入账号', trigger: 'blur'},
           ],
           password: [
-            {required: true, message: '请输入原密码', trigger: 'blur'},
+            {required: true, message: '请输入新密码', trigger: 'blur'},
           ],
           dbpassword: [
             {required: true, message: '请再次新密码', trigger: 'blur'},
@@ -74,10 +74,11 @@
           localStorage.clear();
           this.$router.push({path: '/login'});
           this.$message({
-            message: '注销成功!',
+            message: `注销成功!`,
             type: 'success'
           });
         }).catch(() => {
+
         });
       },
       resetForm(formName) {
@@ -94,28 +95,35 @@
       upPasswod1(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let a = {
-              username: this.tableList1.username,
-              password: this.tableList1.password,
-            };
-            upRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '用户名或密码错误!',
-                  type: 'warning'
-                });
-              } else {
-                this.dialogVisible1 = false;
-                this.resetForm('tableList1');
-                removeToken();
-                localStorage.removeItem("info");
-                this.$router.push({path: '/login'});
-                this.$message({
-                  message: '修改成功!',
-                  type: 'success'
-                });
-              }
-            })
+            if (this.tableList1.password == this.tableList1.dbpassword) {
+              let a = {
+                username: this.tableList1.username,
+                password: this.tableList1.dbpassword,
+              };
+              upRole(a).then((res) => {
+                if (res.data.code === 0) {
+                  this.dialogVisible1 = false;
+                  this.resetForm('tableList1');
+                  removeToken();
+                  localStorage.removeItem("info");
+                  this.$router.push({path: '/login'});
+                  this.$message({
+                    message: `${res.data.msg}`,
+                    type: 'success'
+                  });
+                } else {
+                  this.$message({
+                    message: `${res.data.msg}`,
+                    type: 'warning'
+                  });
+                }
+              })
+            }else {
+              this.$message({
+                message: `两次密码不一样`,
+                type: 'warning'
+              });
+            }
           } else {
             this.$message({
               message: '请填写完整!',

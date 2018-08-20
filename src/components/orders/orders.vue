@@ -7,12 +7,12 @@
           <el-breadcrumb-item>订单管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
+
       <div class="ord-content2">
         <el-button  v-if="A1" type="primary" class="ord-content2-bt" @click="gopd">订单派单</el-button>
         <el-button  v-if="A5" type="primary" @click="gofx">订单分析</el-button>
       </div>
     </div>
-
     <OrderDispatch v-if="isDispatch" @goIndex="goIndex"></OrderDispatch>
     <OrderAnalysis v-if="isAnalysis" @goIndex1="goIndex1"></OrderAnalysis>
 
@@ -99,6 +99,7 @@
   .ord-content2 {
     display: flex;
     justify-content: space-around;
+
   }
 
   .ord-content2 button {
@@ -110,5 +111,11 @@
 
   .ord-content2-bt {
     margin: 0 50px 0 0;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>

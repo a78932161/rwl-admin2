@@ -4,54 +4,59 @@ import home from '@/components/home'
 import a404 from '@/components/404'
 import login from '@/components/login'
 import orders from '@/components/orders/orders'
-import orderIndex from'@/components/orders/orderCenter/orderCenter-Laundry/index'
-import newLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/new'
-import cancelLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/cancel'
-import endLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/end'
-import hangLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/hang'
-import inboundLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/inbound'
-import outLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/out'
-import sentLaundry  from'@/components/orders/orderCenter/orderCenter-Laundry/sent'
-import designerIndex  from'@/components/orders/orderCenter/orderCenter-Designer/index'
-import newDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/new'
-import cancelDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/cancel'
-import endDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/end'
-import hangDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/hang'
-import inboundDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/inbound'
-import outDesigner  from'@/components/orders/orderCenter/orderCenter-Designer/out'
-import sentDesigner   from'@/components/orders/orderCenter/orderCenter-Designer/sent'
-import furnitureIndex  from'@/components/orders/orderCenter/orderCenter-Furniture/index'
-import cancelFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/cancel'
-import endFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/end'
-import newFurniture  from'@/components/orders/orderCenter/orderCenter-Furniture/new'
-import shipFurniture  from '@/components/orders/orderCenter/orderCenter-Furniture/ship'
-import mallIndex  from'@/components/orders/orderCenter/orderCenter-Mall/index'
-import cancelMall from'@/components/orders/orderCenter/orderCenter-Mall/cancel'
-import endMall from'@/components/orders/orderCenter/orderCenter-Mall/end'
-import newMall  from'@/components/orders/orderCenter/orderCenter-Mall/new'
-import sentMall  from'@/components/orders/orderCenter/orderCenter-Mall/sent'
-import vip  from'@/components/vipManage/index'
-import balance  from'@/components/vipManage/balance'
-import userOrders  from'@/components/vipManage/userOrders'
-import details  from'@/components/vipManage/details'
-import financial  from'@/components/Financial/index'
-import clearing  from'@/components/Financial/clearing'
-import clearingds  from'@/components/Financial/clearingds'
-import settings  from'@/components/Settings/index'
-import basic  from '@/components/basic/index'
-import  basicLaundry from '@/components/basic/laundry'
-import  basicFurniture from '@/components/basic/furniture'
-import  basicMall from '@/components/basic/mall'
-import  basicDesigner from '@/components/basic/designer'
+import orderIndex from '@/components/orders/orderCenter/orderCenter-Laundry/index'
+import newLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/new'
+import cancelLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/cancel'
+import endLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/end'
+import hangLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/hang'
+import returnLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/return'
+import inboundLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/inbound'
+import outLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/out'
+import sentLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/sent'
+import designerIndex from '@/components/orders/orderCenter/orderCenter-Designer/index'
+import newDesigner from '@/components/orders/orderCenter/orderCenter-Designer/new'
+import cancelDesigner from '@/components/orders/orderCenter/orderCenter-Designer/cancel'
+import endDesigner from '@/components/orders/orderCenter/orderCenter-Designer/end'
+import hangDesigner from '@/components/orders/orderCenter/orderCenter-Designer/hang'
+import returnDesigner from '@/components/orders/orderCenter/orderCenter-Designer/return'
+import inboundDesigner from '@/components/orders/orderCenter/orderCenter-Designer/inbound'
+import outDesigner from '@/components/orders/orderCenter/orderCenter-Designer/out'
+import sentDesigner from '@/components/orders/orderCenter/orderCenter-Designer/sent'
+import furnitureIndex from '@/components/orders/orderCenter/orderCenter-Furniture/index'
+import cancelFurniture from '@/components/orders/orderCenter/orderCenter-Furniture/cancel'
+import endFurniture from '@/components/orders/orderCenter/orderCenter-Furniture/end'
+import newFurniture from '@/components/orders/orderCenter/orderCenter-Furniture/new'
+import shipFurniture from '@/components/orders/orderCenter/orderCenter-Furniture/ship'
+import homeFurniture from '@/components/orders/orderCenter/orderCenter-Furniture/home'
+
+import mallIndex from '@/components/orders/orderCenter/orderCenter-Mall/index'
+import cancelMall from '@/components/orders/orderCenter/orderCenter-Mall/cancel'
+import endMall from '@/components/orders/orderCenter/orderCenter-Mall/end'
+import newMall from '@/components/orders/orderCenter/orderCenter-Mall/new'
+import sentMall from '@/components/orders/orderCenter/orderCenter-Mall/sent'
+import handsMall from '@/components/orders/orderCenter/orderCenter-Mall/hands'
+import vip from '@/components/vipManage/index'
+import balance from '@/components/vipManage/balance'
+import userOrders from '@/components/vipManage/userOrders'
+import details from '@/components/vipManage/details'
+import financial from '@/components/Financial/index'
+import clearing from '@/components/Financial/clearing'
+import clearingds from '@/components/Financial/clearingds'
+import settings from '@/components/Settings/index'
+import basic from '@/components/basic/index'
+import basicLaundry from '@/components/basic/laundry'
+import basicFurniture from '@/components/basic/furniture'
+import basicMall from '@/components/basic/mall'
+import basicDesigner from '@/components/basic/designer'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path:'/',
-      name:'',
-      redirect:'home'
+      path: '/',
+      name: '',
+      redirect: 'home'
     },
     {
       path: '/login',
@@ -62,7 +67,7 @@ export default new Router({
       path: '/home',
       name: 'home',
       component: home,
-      children:[
+      children: [
         {
           path: '/orders',
           name: 'orders',
@@ -84,9 +89,9 @@ export default new Router({
           component: settings,
         },
         {
-          path:'/basic',
-          name:'basic',
-          component:basic,
+          path: '/basic',
+          name: 'basic',
+          component: basic,
         }
 
       ]
@@ -122,7 +127,7 @@ export default new Router({
       path: '/designerIndex',
       name: 'designerIndex',
       component: designerIndex,
-      children:[
+      children: [
         {
           path: '/newDesigner',
           name: 'newDesigner',
@@ -144,6 +149,12 @@ export default new Router({
           component: hangDesigner,
         },
         {
+          path: '/returnDesigner',
+          name: 'returnDesigner',
+          component: returnDesigner,
+        },
+
+        {
           path: '/outDesigner',
           name: 'outDesigner',
           component: outDesigner,
@@ -161,10 +172,10 @@ export default new Router({
       ]
     },
     {
-      path:'/orderIndex',
-      name:'orderIndex',
-      component:orderIndex,
-      children:[
+      path: '/orderIndex',
+      name: 'orderIndex',
+      component: orderIndex,
+      children: [
         {
           path: '/newLaundry',
           name: 'newLaundry',
@@ -186,6 +197,12 @@ export default new Router({
           component: hangLaundry,
         },
         {
+          path: '/returnLaundry',
+          name: 'returnLaundry',
+          component: returnLaundry,
+        },
+
+        {
           path: '/outLaundry',
           name: 'outLaundry',
           component: outLaundry,
@@ -206,7 +223,7 @@ export default new Router({
       path: '/furnitureIndex',
       name: 'furnitureIndex',
       component: furnitureIndex,
-      children:[
+      children: [
         {
           path: '/cancelFurniture',
           name: 'cancelFurniture',
@@ -227,13 +244,18 @@ export default new Router({
           name: 'shipFurniture',
           component: shipFurniture,
         },
+        {
+          path: '/homeFurniture',
+          name: 'homeFurniture',
+          component: homeFurniture,
+        },
       ]
     },
     {
       path: '/mallIndex',
       name: 'mallIndex',
       component: mallIndex,
-      children:[
+      children: [
         {
           path: '/cancelMall',
           name: 'cancelMall',
@@ -254,6 +276,12 @@ export default new Router({
           name: 'sentMall',
           component: sentMall,
         },
+        {
+          path: '/handsMall',
+          name: 'handsMall',
+          component: handsMall,
+        },
+
       ]
     },
     {
@@ -267,14 +295,14 @@ export default new Router({
       component: basicFurniture,
     },
     {
-      path:'/basicMall',
-      name:'basicMall',
-      component:basicMall,
+      path: '/basicMall',
+      name: 'basicMall',
+      component: basicMall,
     },
     {
-      path:'/basicDesigner',
-      name:'basicDesigner',
-      component:basicDesigner,
+      path: '/basicDesigner',
+      name: 'basicDesigner',
+      component: basicDesigner,
     },
     {
       path: '*',

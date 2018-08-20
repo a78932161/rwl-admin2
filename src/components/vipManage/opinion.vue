@@ -29,12 +29,16 @@
         stripe
         style="width: 100%">
         <el-table-column
-          prop="number"
+          prop="memberId"
           label="会员ID">
         </el-table-column>
         <el-table-column
           prop="name"
           label="姓名">
+        </el-table-column>
+        <el-table-column
+          prop="phone"
+          label="手机号">
         </el-table-column>
         <el-table-column
           prop="createtime"
@@ -112,10 +116,9 @@
             page: this.page,
           };
           feedback(a).then((res) => {
-            console.log(res);
             this.tableData = res.data.data.content;
-            this.tableData.forEach((value)=>{
-              value.createtime=this.getLocalTime(value.createtime);
+            this.tableData.forEach((value) => {
+              value.createtime = this.getLocalTime(value.createtime);
             });
             this.total = res.data.data.totalElements;
           })
@@ -125,10 +128,9 @@
             page: this.page,
           };
           feedback(a).then((res) => {
-            console.log(res);
             this.tableData = res.data.data.content;
-            this.tableData.forEach((value)=>{
-              value.createtime=this.getLocalTime(value.createtime);
+            this.tableData.forEach((value) => {
+              value.createtime = this.getLocalTime(value.createtime);
             });
             this.total = res.data.data.totalElements;
           })

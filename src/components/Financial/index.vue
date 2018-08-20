@@ -7,14 +7,15 @@
           <el-breadcrumb-item>财务管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-
       <div class="ord-content2">
         <el-button type="primary" v-if="D1" @click="goAccount">账号管理</el-button>
         <el-button type="primary" v-if="D2" @click="goclearing">商户结算</el-button>
+        <el-button type="primary" v-if="D3" @click="goIncome">收支明细</el-button>
       </div>
     </div>
     <account v-if="isAccount" @mmp="godetails" @mmp1="godetails1"></account>
     <Details v-if="isDetails" @mp="godetails1" @mp1="godetails2"></Details>
+    <income v-if="isIncome" @mmp2="godetails3"></income>
   </div>
 </template>
 
@@ -22,11 +23,13 @@
   import "@/assets/js/city-data"
   import Account from '@/components/Financial/account'
   import Details from '@/components/Financial/details'
+  import income from '@/components/Financial/IncomeOutlay'
 
   export default {
     components: {
       Account,
-      Details
+      Details,
+      income
     },
     data() {
       return {
@@ -61,10 +64,12 @@
         value1: '',
         a: 10,
         showFlag: true,
+        isIncome: false,
         isAccount: false,
         isDetails: false,
         D1: false,
         D2: false,
+        D3:false,
       }
     },
     methods: {
@@ -86,8 +91,17 @@
         this.isAccount = data;
         this.isDetails = false;
       },
+      godetails3(data){
+        this.showFlag = data;
+        this.isIncome = false;
+      },
+
       goclearing() {
         this.$router.push('/clearing')
+      },
+      goIncome() {
+        this.showFlag = false;
+        this.isIncome = true;
       },
       getList() {
         if (localStorage.getItem("info")) {
@@ -97,6 +111,9 @@
           }
           if (b.functionAuthority.indexOf('D2') > -1) {
             this.D2 = true;
+          }
+          if (b.functionAuthority.indexOf('D3') > -1) {
+            this.D3 = true;
           }
         }
       }

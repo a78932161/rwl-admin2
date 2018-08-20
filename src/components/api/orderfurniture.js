@@ -32,3 +32,18 @@ export function distributionFurniture(data) {
   })
 }
 
+export function endFurniture(data) {
+  return axios({
+    url: "/furnitureorder/finish",
+    method: "post",
+    params:data
+  })
+}
+
+export function withdrawFurniture(data) {
+  return axios({
+    url: "/furnitureorder/canceldispatch",
+    method: "post",
+    params:data
+  })
+}

@@ -107,11 +107,13 @@
   .NavMenu ul > a:hover {
     background: rgb(56, 200, 243);
     color: white;
+    transition:  all 0.2s;
   }
 
   a.router-link-active {
     color: white;
     background: rgb(56, 200, 243);
+
   }
 
 

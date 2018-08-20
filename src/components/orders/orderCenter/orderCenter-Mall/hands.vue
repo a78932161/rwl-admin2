@@ -4,8 +4,8 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">洗衣</el-breadcrumb-item>
-        <el-breadcrumb-item>已派订单</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders' }">小让商城</el-breadcrumb-item>
+        <el-breadcrumb-item>已发订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <inquire @orderData="orderData"></inquire>
@@ -19,9 +19,11 @@
           clearable
         ></el-cascader>
         <el-button type="primary" disabled>立即派送</el-button>
-        <el-button type="primary">已派订单</el-button>
-        <el-button type="primary" disabled>入站订单</el-button>
+        <el-button type="primary" disabled>已派订单</el-button>
+        <el-button type="primary">已发订单</el-button>
+        <el-button type="primary" disabled>完结订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
+        <el-button type="primary" @click="daochu()">导出订单</el-button>
       </div>
     </div>
     <div>
@@ -43,16 +45,13 @@
               <el-form-item label="预约时间">
                 <span>{{ props.row.deliveryDate }}</span>
               </el-form-item>
-              <el-form-item label="套餐选择"><span>{{ props.row.goods }}</span></el-form-item>
+              <el-form-item label="套餐选择">
+                <span>{{ props.row.goods }}</span>
+              </el-form-item>
               <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
               <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
-              <el-form-item label="门店">
-                <span>{{ props.row.receiptPeople}}</span>
-              </el-form-item>
-
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
-                <el-button type="primary" @click="withdraw(props.row)">撤回订单</el-button>
                 <el-button type="primary" @click="endd(props.row)">完结订单</el-button>
               </el-form-item>
             </el-form>
@@ -98,7 +97,7 @@
 
 <script>
 
-  import {getlaundry, withdrawlaundry, endlaundry} from "@/components/api/orderLaundry";
+  import {getmall, endMall} from "@/components/api/ordermall";
   import inquire from '@/assets/vue/inquire'
 
   export default {
@@ -112,11 +111,11 @@
         total: 10,
         tableData: [],
         options: [],
-        inquire: '',
+        inquire: [],
       }
     },
     methods: {
-      getLaundryList() {
+      getMallList() {
         this.options = [];
         this.tableData = [];
         this.$store.state.getieData = [];
@@ -134,7 +133,7 @@
             if (value.items) {
               let b = [];
               value.items.forEach((value1) => {
-                b.push(value1.laundryProduct.name);
+                b.push(value1.mallProduct.name);
               });
               value.goods1 = b[0];
               value.goods = b.join(',');
@@ -147,8 +146,8 @@
           this.inquire = {
             page: this.page,
             size: this.size,
-            type: 1,
-            status: 1,
+            type: 4,
+            status: 4,
           };
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
@@ -164,7 +163,7 @@
             if (value.items) {
               let b = [];
               value.items.forEach((value1) => {
-                b.push(value1.laundryProduct.name);
+                b.push(value1.mallProduct.name);
               });
               value.goods1 = b[0];
               value.goods = b.join(',');
@@ -177,19 +176,19 @@
           this.inquire = {
             page: this.page,
             size: this.size,
-            type: 1,
-            status: 1,
+            type: 4,
+            status: 4,
           };
           this.$store.commit('getieData', this.inquire);
 
         } else {
           let a = {
-            type: 1,
-            status: 1,
+            type: 4,
+            status: 4,
             page: this.page,
             size: this.size,
           };
-          getlaundry(a).then((res) => {
+          getmall(a).then((res) => {
             res.data.data.content.forEach((value) => {
               value.total = value.items.length + '件';
               if (value.payMode == 0) {
@@ -202,32 +201,27 @@
               if (value.items) {
                 let b = [];
                 value.items.forEach((value1) => {
-                  b.push(value1.laundryProduct.name);
+                  b.push(value1.mallProduct.name);
                 });
                 value.goods1 = b[0];
                 value.goods = b.join(',');
               }
               value.createtime = this.getLocalTime(value.createtime);
-
             });
             this.tableData = res.data.data.content;
             this.total = res.data.data.totalElements;
             this.inquire = {
               page: this.page,
               size: this.size,
-              type: 1,
-              status: 1,
+              type: 4,
+              status: 4,
             };
             this.$store.commit('getieData', this.inquire);
           });
         }
       },
       orderData(data) {
-        this.getLaundryList();
-      },
-      handleCurrentChange(val) {
-        this.page = val;
-        this.getLaundryList();
+        this.getMallList();
       },
 
       goLaundry() {
@@ -236,36 +230,16 @@
       getLocalTime(nS) {
         return new Date(parseInt(nS) * 1).toLocaleString().replace(/:\d{1,2}$/, ' ');
       },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getMallList();
+      },
+      daochu() {
+        window.location.href = 'https://rtest.rwlai.com/rwlmall/mallorder/export?status=4';
+      },
       details(row) {
         let a = row.id;
         this.$router.push({name: 'userOrders', query: {id: a}});
-      },
-      withdraw(row) {
-        let a = {
-          orderid: row.id
-        };
-        withdrawlaundry(a).then((res) => {
-          this.$confirm('此操作将撤回订单, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            if (res.data.code == 0) {
-              this.$message({
-                message: '撤回成功!',
-                type: 'success'
-              });
-              this.getLaundryList();
-            } else {
-              this.$message.error('撤回失败!');
-            }
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消'
-            });
-          });
-        })
       },
       endd(row) {
         this.$confirm('此操作将完结订单, 是否继续?', '提示', {
@@ -276,15 +250,16 @@
           let a = {
             orderid: row.id,
           };
-          endlaundry(a).then((res) => {
+          endMall(a).then((res) => {
             if (res.data.code === 0) {
               this.$message({
                 type: 'success',
                 message: '操作成功!'
               });
-              this.getLaundryList();
+              this.getMallList();
             }
           });
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -297,7 +272,7 @@
     mounted() {
       this.$store.state.orderFind = [];
       this.$store.state.orderArea = [];
-      this.getLaundryList();
+      this.getMallList();
     }
   }
 </script>

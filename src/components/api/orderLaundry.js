@@ -46,3 +46,35 @@ export function distributionlaundry(data) {
     params:data
   })
 }
+
+export function shipmentlaundry(data) {
+  return axios({
+    url: "/laundryorder/sfsend",
+    method: "post",
+    params:data
+  })
+}
+
+
+export function endlaundry(data) {
+  return axios({
+    url: "/laundryorder/finish",
+    method: "post",
+    params:data
+  })
+}
+
+export function returnlaundry(data) {
+  return axios({
+    url: "/laundryorder/storegiveback",
+    method: "post",
+    params:data
+  })
+}
+export function withdrawlaundry(data) {
+  return axios({
+    url: "/laundryorder/canceldispatch",
+    method: "post",
+    params:data
+  })
+}

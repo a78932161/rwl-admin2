@@ -1,27 +1,33 @@
 <template>
   <div>
     <top></top>
-    <el-col :span="6" :offset="5" class="vipAside">
+    <el-col :span="8" :offset="5" class="vipAside">
       <div class="vipTop">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to="{ path: '/vip' }">会员管理</el-breadcrumb-item>
           <el-breadcrumb-item><span @click="goye">用户余额</span></el-breadcrumb-item>
-          <el-breadcrumb-item>用户订单</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="ywxq">用户订单</span></el-breadcrumb-item>
+          <el-breadcrumb-item v-if="showxq">衣物详情</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </el-col>
 
     <el-col :span="17" :offset="4" class="el1">
-      <el-steps :active="active" align-center>
-        <el-step title="新订单" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="派单" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="收单" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="入站" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="上挂" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="送还" description="这是一段很长很长很长的描述性文字"></el-step>
-        <el-step title="完结" description="这是一段很长很长很长的描述性文字"></el-step>
+      <el-steps :active="active" align-center v-if="isActive">
+        <el-step title="新订单"></el-step>
+        <el-step title="派单"></el-step>
+        <el-step title="入站"></el-step>
+        <el-step title="上挂"></el-step>
+        <el-step title="完结"></el-step>
       </el-steps>
+      <el-steps :active="active" align-center v-if="isActive1">
+        <el-step title="新订单"></el-step>
+        <el-step title="派单"></el-step>
+        <el-step title="上门或已发"></el-step>
+        <el-step title="完结"></el-step>
+      </el-steps>
+
     </el-col>
     <el-col :span="24">
       <el-col :span="5" :offset="4">
@@ -37,28 +43,40 @@
           <div><label>收衣地址 : {{xqData.address}}</label></div>
           <div><label>预约时间 : {{xqData.deliveryDate}}</label></div>
           <div><label>衣物总数 : {{dataLength}}</label></div>
-          <div><label>订单价格 : {{xqData.amount}}</label></div>
+          <div><label>订单价格 : {{xqData.amount/100}}</label></div>
           <div><label>付款方式 : {{xqData.payMode}}</label></div>
           <div><label>付款状态 : {{xqData.payStatus}}</label></div>
           <div><label>服务类型 : {{xqData.type}}</label></div>
-          <div><label>收单人员 : </label></div>
+          <div><label>收单人员 : {{xqData.receiptPeople}}</label></div>
           <div><label>服务商户 : {{xqData.serviceStore}}</label></div>
         </div>
       </el-col>
       <el-col :span="11" :offset="1">
-        <div class="el3">
-          <div class="el3-1">已收衣物</div>
+        <div class="el3" v-if="showyw">
+          <div class="el3-1">已收商品</div>
           <div class="el3-2">
             <div class="el3-2-1" v-for="data in imgData" @click="goDetails(data)">
               <div style="position: relative">
                 <img class="listImg" :src="data.src">
-                <div class="listImg1">
+                <div class="listImg1" v-if="data.problemImage===false">
                   <label style="color: white;letter-spacing: 1px;">问题需注意</label>
                 </div>
               </div>
               <div>
                 <label>{{data.name}}</label>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="el3" v-if="showxq">
+          <div class="el3-1">衣物详情</div>
+          <div>
+            <div class="el3-3">
+              <div><img :src="this.ywData.src" width="180" height="180" style="float: right;"></div>
+              <div style="width: 70%"><label>衣物瑕疵 :{{this.ywData.flaw}}</label></div>
+              <div style="width: 70%"><label>洗后效果 :{{this.ywData.washingEffect}}</label></div>
+              <div style="width: 70%"><label>衣物备注 :{{this.ywData.remark}}</label></div>
+
             </div>
           </div>
         </div>
@@ -81,13 +99,18 @@
         xqData: [],
         imgData: [],
         active: 0,
+        ywData: [],
         imgUrl: 'https://image.rwlai.com/',
         dataLength: '',
+        showxq: false,
+        showyw: true,
+        isActive: true,
+        isActive1: false,
       }
     },
     methods: {
       getList() {
-        this.listData=[];
+        this.listData = [];
         let a = this.$route.query.id;
         if (a.substr(a.length - 2, 2) == '03') {
           let b = {
@@ -97,19 +120,67 @@
             if (res.data.code === 0) {
               this.listData = res.data.data.items;
               this.listData.forEach((value) => {
-                value.laundryProduct.logo = `${this.imgUrl}${value.laundryProduct.logo}`;
-                this.imgData.push({
-                  src: value.laundryProduct.logo,
-                  id: value.laundryProduct.id,
-                  name: value.laundryProduct.name
-                });
+                if (value.image) {
+                  let a = value.image.split(',');
+                  a.forEach((value1) => {
+                    this.imgData.push({
+                      src: `${this.imgUrl}${value1}`,
+                      id: value.id,
+                      name: value.laundryProduct.name,
+                      problemImage: true,
+                      xq: {
+                        flaw: value.flaw,
+                        remark: value.remark,
+                        washingEffect:value.washingEffect,
+                        src: `${this.imgUrl}${value1}`,
+                      }
+                    });
+                  })
+                }
+                if (value.problemImage) {
+                  let b = value.problemImage.split(',');
+                  b.forEach((value1) => {
+                    this.imgData.push({
+                      src: `${this.imgUrl}${value1}`,
+                      id: value.id,
+                      name: value.laundryProduct.name,
+                      problemImage: false,
+                      xq: {
+                        flaw: value.flaw,
+                        remark: value.remark,
+                        washingEffect:value.washingEffect,
+                        src: `${this.imgUrl}${value1}`,
+                      }
+                    });
+                  })
+                }
               });
               this.xqData = res.data.data;
+              if (this.xqData.payMode == 0) {
+                this.xqData.payMode = '微信支付'
+              } else if (this.xqData.payMode == 1) {
+                this.xqData.payMode = '余额支付'
+              } else if (this.xqData.payMode == 2) {
+                this.xqData.payMode = '卡支付'
+              }
+              if (this.xqData.payStatus == 0) {
+                this.xqData.payStatus = '未付款';
+              } else if (this.xqData.payStatus == 1) {
+                this.xqData.payStatus = '已付款';
+              }
+              if (this.xqData.type == 1) {
+                this.xqData.type = "洗衣"
+              } else if (this.xqData.type == 2) {
+                this.xqData.type = "高端洗护"
+              }
+
               this.dataLength = res.data.data.items.length;
               this.active = res.data.data.status;
             }
           })
-        } else if (a.substr(a.length - 2, 2) == '10') {
+        } else if (a.substr(a.length - 2, 2) == '13') {
+          this.isActive1 = true;
+          this.isActive = false;
           let b = {
             orderid: a,
           };
@@ -117,49 +188,106 @@
             if (res.data.code === 0) {
               this.listData = res.data.data.items;
               this.listData.forEach((value) => {
-                value.laundryProduct.logo = `${this.imgUrl}${value.laundryProduct.logo}`;
-                this.imgData.push({
-                  src: value.laundryProduct.logo,
-                  id: value.laundryProduct.id,
-                  name: value.laundryProduct.name
-                });
+
+                if (value.image) {
+                  let a = value.image.split(',');
+                  a.forEach((value1) => {
+                    this.imgData.push({
+                      src: `${this.imgUrl}${value1}`,
+                      id: value.id,
+                      name: value.furnitureProduct.name,
+                      problemImage: true,
+                      xq: {
+                        flaw: value.flaw,
+                        remark: value.remark,
+                        washingEffect:value.washingEffect,
+                        src: `${this.imgUrl}${value1}`,
+                      }
+                    });
+                  })
+                }
+                if (value.problemImage) {
+                  let b = value.problemImage.split(',');
+                  b.forEach((value1) => {
+                    this.imgData.push({
+                      src: `${this.imgUrl}${value1}`,
+                      id: value.id,
+                      name: value.furnitureProduct.name,
+                      problemImage: false,
+                      xq: {
+                        flaw: value.flaw,
+                        remark: value.remark,
+                        washingEffect:value.washingEffect,
+                        src: `${this.imgUrl}${value1}`,
+                      }
+                    });
+                  })
+                }
               });
               this.xqData = res.data.data;
+              if (this.xqData.payMode == 0) {
+                this.xqData.payMode = '微信支付'
+              } else if (this.xqData.payMode == 1) {
+                this.xqData.payMode = '余额支付'
+              } else if (this.xqData.payMode == 2) {
+                this.xqData.payMode = '卡支付'
+              }
+              if (this.xqData.payStatus == 0) {
+                this.xqData.payStatus = '未付款';
+              } else if (this.xqData.payStatus == 1) {
+                this.xqData.payStatus = '已付款';
+              }
               this.dataLength = res.data.data.items.length;
               this.active = res.data.data.status;
             }
-
           })
-        } else if (a.substr(a.length - 2, 2) == '13') {
+        } else if (a.substr(a.length - 2, 2) == '10') {
+          this.isActive1 = true;
+          this.isActive = false;
           let b = {
             orderid: a,
           };
           getfinid2(b).then((res) => {
             if (res.data.code === 0) {
-              this.listData = res.data.data.items;
-              this.listData.forEach((value) => {
-                value.laundryProduct.logo = `${this.imgUrl}${value.laundryProduct.logo}`;
-                this.imgData.push({
-                  src: value.laundryProduct.logo,
-                  id: value.laundryProduct.id,
-                  name: value.laundryProduct.name
-                });
+              this.imgData.push({
+                src: `${this.imgUrl}${res.data.data.waybillImage}`,
               });
               this.xqData = res.data.data;
+              if (this.xqData.payMode == 0) {
+                this.xqData.payMode = '微信支付'
+              } else if (this.xqData.payMode == 1) {
+                this.xqData.payMode = '余额支付'
+              } else if (this.xqData.payMode == 2) {
+                this.xqData.payMode = '卡支付'
+              }
+              if (this.xqData.payStatus == 0) {
+                this.xqData.payStatus = '未付款';
+              } else if (this.xqData.payStatus == 1) {
+                this.xqData.payStatus = '已付款';
+              }
               this.dataLength = res.data.data.items.length;
               this.active = res.data.data.status;
             }
           })
         }
+        console.log(this.imgData);
       },
       goDetails(data) {
-        console.log(data);
-        //this.$router.push('details');
-
+        if (data.problemImage === false) {
+          this.ywData = data.xq;
+          this.showyw = false;
+          this.showxq = true;
+        }
       },
       goye() {
         this.$router.go(-1);
       },
+      ywxq() {
+        if (this.showxq === true) {
+          this.showyw = true;
+          this.showxq = false;
+        }
+      }
     },
     mounted() {
       this.getList();
@@ -237,9 +365,17 @@
     text-align: center;
   }
 
+  .el3-3 {
+    color: rgb(106, 119, 127);
+    line-height: 40px;
+    margin-left: 5%;
+    word-wrap: break-word;
+  }
+
   .listImg {
     width: 150px;
     height: 150px;
+    background-size: 100%;
   }
 
   .listImg1 {

@@ -28,8 +28,16 @@
             label="用户名">
           </el-table-column>
           <el-table-column
+            prop="people"
+            label="收件人名">
+          </el-table-column>
+          <el-table-column
             prop="name"
             label="名称">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="地址">
           </el-table-column>
           <el-table-column
             prop="province"
@@ -39,7 +47,7 @@
             prop="phone"
             label="联系电话">
           </el-table-column>
-          <el-table-column label="操作" width="300">
+          <el-table-column label="操作" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -48,10 +56,10 @@
                 @click="tjjs(scope.row)"
               >添加角色
               </el-button>
-              <el-button
-                size="mini"
-                type="primary" @click="dialogVisible1 = true ">查看详情
-              </el-button>
+              <!--<el-button-->
+              <!--size="mini"-->
+              <!--type="primary" @click="dialogVisible1 = true ">查看详情-->
+              <!--</el-button>-->
               <el-button
                 size="mini"
                 type="danger" v-if="scope.row.status==='营业中'" @click="storekg(scope.row)">禁用门店
@@ -87,6 +95,9 @@
         </el-form-item>
         <el-form-item label="联系电话 :" prop="phone">
           <el-input v-model="tableList.phone" placeholder="请输入电话"></el-input>
+        </el-form-item>
+        <el-form-item label="收件人名 :" prop="people">
+          <el-input v-model="tableList.people" placeholder="收件人名"></el-input>
         </el-form-item>
         <el-form-item label="营业时间 :">
           <el-time-picker
@@ -191,7 +202,7 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {getStore, addStore, addRole,BusinessSwitch} from "@/components/api/store";
+  import {getStore, addStore, addRole, BusinessSwitch} from "@/components/api/store";
 
   export default {
     props: ['agentId'],
@@ -235,6 +246,9 @@
           address: [
             {required: true, message: '请输入电话', trigger: 'blur'},
           ],
+          people: [
+            {required: true, message: '请输入收件人名', trigger: 'blur'},
+          ],
         },
         rules2: {
           username: [
@@ -272,7 +286,6 @@
           page: this.page,
         };
         getStore(a).then((res) => {
-          console.log(res);
           if (res.data.data.content) {
             res.data.data.content.forEach((value) => {
               value.province = value.city + value.area
@@ -290,7 +303,6 @@
         })
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.page = val;
         this.getList();
       },
@@ -306,20 +318,20 @@
               city: this.$refs.cascader.currentLabels[1],
               area: this.$refs.cascader.currentLabels[2] || '',
               agentId: this.agentId,
+              people:this.tableList.people,
             };
             addStore(a).then((res) => {
-              console.log(res);
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible = false;
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -348,18 +360,18 @@
               accountId: this.accountId,
             };
             addRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible2 = false;
                 this.resetForm('tableList2');
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -372,20 +384,21 @@
           }
         });
       },
-      storekg(row){
-        let a={
-          storeid:row.id,
+      storekg(row) {
+        let a = {
+          storeid: row.id,
         };
-        BusinessSwitch(a).then((res)=>{
-          if(res.data.code===0){
+        BusinessSwitch(a).then((res) => {
+
+          if (res.data.code === 0) {
             this.$message({
-              message: '修改成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
             this.getList();
-          }else {
+          } else {
             this.$message({
-              message: '修改失败!',
+              message: `${res.data.msg}`,
               type: 'warning'
             });
           }

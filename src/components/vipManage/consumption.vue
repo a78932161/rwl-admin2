@@ -19,7 +19,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :picker-options="pickerOptions2"
-            @blur="timeFind">
+            @change="timeFind">
           </el-date-picker>
         </div>
         <div>
@@ -38,7 +38,7 @@
       <div class="vipRadio">
         <el-radio v-model="radio" label="1" border size="medium">洗衣</el-radio>
         <el-radio v-model="radio" label="2" border size="medium">高端洗护</el-radio>
-        <el-radio v-model="radio" label="3" border size="medium">小让家具</el-radio>
+        <el-radio v-model="radio" label="3" border size="medium">小让家居</el-radio>
         <el-radio v-model="radio" label="4" border size="medium">小让商城</el-radio>
       </div>
       <div class="vipyw">
@@ -46,20 +46,17 @@
         衣物 TOP10
       </div>
       <div style="display: flex">
-        <div id="myChart" :style="{width: '500px', height: '450px'}"></div>
+        <div id="myChart" :style="{width: '500px', height: '700px'}"></div>
         <el-card style="width: 80%;line-height: 30px">
           <div class="vip1" v-for="(item,index) in opinionData">
-            <label>{{index}} {{item.name}}</label>
+            <label>{{index+1}} {{item.name}}</label>
             <label>{{item.scale}}</label>
             <label>{{item.value}}</label>
           </div>
-
           <div style="text-align: center">
             <el-button type="primary" size="mini" @click="gocdl">查看详情</el-button>
           </div>
-
         </el-card>
-
       </div>
       <div class="vipyw">
         <div></div>
@@ -238,7 +235,6 @@
             data = {};
           }
           xyConsumption(data).then((res) => {
-            console.log(res);
             let a;
             let b;
             if (res.data.data) {
@@ -282,7 +278,7 @@
                 let a = {
                   value: value.count,
                   name: value.productName,
-                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                  scale: Math.round((value.count / this.sum) * 100) + '%',
                 };
                 this.opinionData.push(a);
                 this.opinion.push(value.productName);
@@ -314,8 +310,7 @@
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
             data = {};
           }
-          gdxhConsumption().then((res) => {
-            console.log(res);
+          gdxhConsumption(data).then((res) => {
             let a;
             let b;
             if (res.data.data) {
@@ -359,7 +354,7 @@
                 let a = {
                   value: value.count,
                   name: value.productName,
-                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                  scale: Math.round((value.count / this.sum) * 100) + '%',
                 };
                 this.opinionData.push(a);
                 this.opinion.push(value.productName);
@@ -390,8 +385,7 @@
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
             data = {};
           }
-          xrjjConsumption().then((res) => {
-            console.log(res);
+          xrjjConsumption(data).then((res) => {
             let a;
             let b;
             if (res.data.data) {
@@ -435,7 +429,7 @@
                 let a = {
                   value: value.count,
                   name: value.productName,
-                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                  scale: Math.round((value.count / this.sum) * 100) + '%',
                 };
                 this.opinionData.push(a);
                 this.opinion.push(value.productName);
@@ -466,8 +460,7 @@
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
             data = {};
           }
-          xrscConsumption().then((res) => {
-            console.log(res);
+          xrscConsumption(data).then((res) => {
             let a;
             let b;
             if (res.data.data) {
@@ -511,7 +504,7 @@
                 let a = {
                   value: value.count,
                   name: value.productName,
-                  scale: parseInt((value.count / this.sum) * 100) + '%',
+                  scale: Math.round((value.count / this.sum) * 100) + '%',
                 };
                 this.opinionData.push(a);
                 this.opinion.push(value.productName);

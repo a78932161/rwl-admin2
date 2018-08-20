@@ -5,7 +5,7 @@
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">洗衣</el-breadcrumb-item>
-        <el-breadcrumb-item>已派订单</el-breadcrumb-item>
+        <el-breadcrumb-item>送还订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <inquire @orderData="orderData"></inquire>
@@ -19,7 +19,7 @@
           clearable
         ></el-cascader>
         <el-button type="primary" disabled>立即派送</el-button>
-        <el-button type="primary">已派订单</el-button>
+        <el-button type="primary" disabled>已派订单</el-button>
         <el-button type="primary" disabled>入站订单</el-button>
         <el-button type="primary" disabled>取消订单</el-button>
       </div>
@@ -46,14 +46,10 @@
               <el-form-item label="套餐选择"><span>{{ props.row.goods }}</span></el-form-item>
               <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
               <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
-              <el-form-item label="门店">
-                <span>{{ props.row.receiptPeople}}</span>
-              </el-form-item>
-
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
-                <el-button type="primary" @click="withdraw(props.row)">撤回订单</el-button>
                 <el-button type="primary" @click="endd(props.row)">完结订单</el-button>
+                <el-button type="primary" @click="withdraw(props.row)">撤回订单</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -98,7 +94,7 @@
 
 <script>
 
-  import {getlaundry, withdrawlaundry, endlaundry} from "@/components/api/orderLaundry";
+  import {getlaundry, returnlaundry, endlaundry, withdrawlaundry} from "@/components/api/orderLaundry";
   import inquire from '@/assets/vue/inquire'
 
   export default {
@@ -148,7 +144,7 @@
             page: this.page,
             size: this.size,
             type: 1,
-            status: 1,
+            status: 7,
           };
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
@@ -178,14 +174,14 @@
             page: this.page,
             size: this.size,
             type: 1,
-            status: 1,
+            status: 7,
           };
           this.$store.commit('getieData', this.inquire);
 
         } else {
           let a = {
             type: 1,
-            status: 1,
+            status: 7,
             page: this.page,
             size: this.size,
           };
@@ -208,7 +204,6 @@
                 value.goods = b.join(',');
               }
               value.createtime = this.getLocalTime(value.createtime);
-
             });
             this.tableData = res.data.data.content;
             this.total = res.data.data.totalElements;
@@ -216,7 +211,7 @@
               page: this.page,
               size: this.size,
               type: 1,
-              status: 1,
+              status: 7,
             };
             this.$store.commit('getieData', this.inquire);
           });
@@ -241,6 +236,7 @@
         this.$router.push({name: 'userOrders', query: {id: a}});
       },
       withdraw(row) {
+
         let a = {
           orderid: row.id
         };
@@ -252,7 +248,7 @@
           }).then(() => {
             if (res.data.code == 0) {
               this.$message({
-                message: '撤回成功!',
+                message: `${res.data.msg}`,
                 type: 'success'
               });
               this.getLaundryList();
@@ -280,9 +276,14 @@
             if (res.data.code === 0) {
               this.$message({
                 type: 'success',
-                message: '操作成功!'
+                message: `${res.data.msg}`,
               });
               this.getLaundryList();
+            } else {
+              this.$message({
+                type: 'warning',
+                message: `${res.data.msg}`,
+              })
             }
           });
         }).catch(() => {

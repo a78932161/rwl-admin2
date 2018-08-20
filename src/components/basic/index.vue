@@ -10,7 +10,7 @@
       <div class="bc-content2">
         <el-button type="primary" v-if="C1" @click="goAds">广告</el-button>
         <el-button type="primary" v-if="C2" @click="goLaundry">洗衣</el-button>
-        <el-button type="primary" v-if="C4" @click="goFurniture">小让家具</el-button>
+        <el-button type="primary" v-if="C4" @click="goFurniture">小让家居</el-button>
         <el-button type="primary" v-if="C5" @click="goMall">小让商城</el-button>
         <el-button type="primary" v-if="C3" @click="goDesigner">高端洗护</el-button>
       </div>

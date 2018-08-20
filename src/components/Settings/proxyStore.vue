@@ -29,8 +29,16 @@
             label="用户名">
           </el-table-column>
           <el-table-column
+            prop="people"
+            label="收件人名">
+          </el-table-column>
+          <el-table-column
             prop="name"
             label="名称">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="地址">
           </el-table-column>
           <el-table-column
             prop="province"
@@ -49,10 +57,10 @@
                 @click="tjjs(scope.row)"
               >添加角色
               </el-button>
-              <el-button
-                size="mini"
-                type="primary" @click="dialogVisible1 = true ">查看详情
-              </el-button>
+              <!--<el-button-->
+              <!--size="mini"-->
+              <!--type="primary" @click="dialogVisible1 = true ">查看详情-->
+              <!--</el-button>-->
               <el-button
                 size="mini"
                 type="danger" v-if="scope.row.status==='营业中'" @click="storekg(scope.row)">禁用门店
@@ -70,6 +78,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
+          :page-size="5"
           :total="total">
         </el-pagination>
       </div>
@@ -88,6 +97,9 @@
         </el-form-item>
         <el-form-item label="联系电话 :" prop="phone">
           <el-input v-model="tableList.phone" placeholder="请输入电话"></el-input>
+        </el-form-item>
+        <el-form-item label="收件人名 :" prop="people">
+          <el-input v-model="tableList.people" placeholder="收件人名"></el-input>
         </el-form-item>
         <el-form-item label="营业时间 :">
           <el-time-picker
@@ -237,6 +249,9 @@
           address: [
             {required: true, message: '请输入电话', trigger: 'blur'},
           ],
+          people: [
+            {required: true, message: '请输入收件人名', trigger: 'blur'},
+          ],
         },
         rules2: {
           username: [
@@ -273,7 +288,6 @@
           page: this.page,
         };
         getStore(a).then((res) => {
-          console.log(res);
           if (res.data.data.content) {
             res.data.data.content.forEach((value) => {
               value.province = value.city + value.area
@@ -291,7 +305,6 @@
         })
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
         this.page = val;
         this.getList();
       },
@@ -307,20 +320,20 @@
               city: this.$refs.cascader.currentLabels[1],
               area: this.$refs.cascader.currentLabels[2] || '',
               agentId: this.agentId,
+              people: this.tableList.people,
             };
             addStore(a).then((res) => {
-              console.log(res);
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible = false;
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -349,18 +362,18 @@
               accountId: this.accountId,
             };
             addRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '添加失败!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible2 = false;
                 this.resetForm('tableList2');
                 this.getList();
                 this.$message({
-                  message: '添加成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -421,7 +434,8 @@
   }
 
   .cr-top1 {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 3%;
   }
 

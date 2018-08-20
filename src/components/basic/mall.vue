@@ -10,6 +10,7 @@
               <a @click="NavMenuok(index)">
                 <li :class="['item', bgSelected(index)]">{{item.name}}</li>
               </a>
+              <transition name="fade">
               <div v-if="NavMenu[index]" class="NavMenudiv">
                 <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
                   <span v-if="title1[index1]" class="el-icon-caret-right"></span>
@@ -18,6 +19,7 @@
                   </el-button>
                 </div>
               </div>
+              </transition>
             </div>
           </ul>
         </div>
@@ -37,8 +39,8 @@
             <el-form-item label="单品名称 :" prop="name">
               <el-input placeholder="请输入名称" v-model="tableList.name" style="width: 40%;"></el-input>
             </el-form-item>
-            <el-form-item label="原价 :" prop="old_price">
-              <el-input placeholder="请输入名称" v-model="tableList.old_price" style="width: 40%;"></el-input>
+            <el-form-item label="原价 :" prop="oldPrice">
+              <el-input placeholder="请输入名称" v-model="tableList.oldPrice" style="width: 40%;"></el-input>
             </el-form-item>
             <el-form-item label="现价 :" prop="price">
               <el-input placeholder="请输入名称" v-model="tableList.price" style="width: 40%;"></el-input>
@@ -102,7 +104,7 @@
 
             <el-form-item label="商品库存数目 :" prop="stock">
               <el-input placeholder="商品的库存数" v-model="tableList.stock" style="width: 40%"></el-input>
-              <label>不填则默认为：9999999</label>
+
             </el-form-item>
             <el-form-item label="商品生效日期 :" prop="date">
               <el-date-picker
@@ -115,7 +117,7 @@
             </el-form-item>
             <el-form-item label="商品排序  :" prop="sort">
               <el-input placeholder="商品顺序权重" v-model="tableList.sort" style="width: 40%"></el-input>
-              <label>必须是整数，不传默认为o，权重数字越大越靠前</label>
+              <label>必须是整数,权重数字越大越靠前</label>
             </el-form-item>
             <el-form-item>
               <el-button v-show="isadd" type="primary" style="margin-right: 3% " @click="goodsAdd()">新增</el-button>
@@ -207,7 +209,7 @@
 
         tableList: {
           name: '',
-          old_price: '',
+          oldPrice: '',
           price: '',
           logo: '',
           image: '',
@@ -221,9 +223,9 @@
         rules: {
           name: [
             {required: true, message: '请输入名称', trigger: 'blur'},
-            {min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur'}
+            {min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'blur'}
           ],
-          old_price: [
+          oldPrice: [
             {required: true, message: '请输入原价',},
             {validator: oldprice, trigger: 'blur'}
           ],
@@ -270,7 +272,7 @@
           this.title1 = {};
           this.tableList = {
             name: '',
-            old_price: '',
+            oldPrice: '',
             price: '',
             logo: '',
             stock: '',
@@ -290,7 +292,7 @@
         }
       },
       goodsAdd() {
-        if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
+        if (this.tableList.name || this.tableList.oldPrice || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
           this.tableList.standard || this.tableList.productParameters) {
           let c = this.imgUrl.length;
@@ -299,13 +301,13 @@
 
           let a = {
             name: this.tableList.name,
-            old_price: this.tableList.old_price * 100,
+            oldPrice: this.tableList.oldPrice * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgList.toString(),
             productParameters: this.tableList.standard,
             sowingMap: this.imgList1.toString(),
-            standard:this.tableList.productParameters,
+            standard: this.tableList.productParameters,
             stock: this.tableList.stock,
             date: this.tableList.date.getTime(),
             sort: this.tableList.sort,
@@ -315,13 +317,13 @@
           mallAdd(a).then((res) => {
             this.goodsSelect(this.category);
             this.$message({
-              message: '添加成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
           });
           this.tableList = {
             name: '',
-            old_price: '',
+            oldPrice: '',
             price: '',
             logo: '',
             image: '',
@@ -343,7 +345,7 @@
         }
       },
       goodsAdd1() {
-        if (this.tableList.name || this.tableList.old_price || this.tableList.price ||
+        if (this.tableList.name || this.tableList.oldPrice || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
           this.tableList.standard || this.tableList.productParameters) {
           let c = this.imgUrl.length;
@@ -351,13 +353,13 @@
           this.tableList.logo = d.substring(c);
           let a = {
             name: this.tableList.name,
-            old_price: this.tableList.old_price * 100,
+            oldPrice: this.tableList.oldPrice * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgay.toString(),
             sowingMap: this.imgay1.toString(),
             productParameters: this.tableList.standard,
-            standard:this.tableList.productParameters,
+            standard: this.tableList.productParameters,
             stock: this.tableList.stock,
             date: this.tableList.date,
             sort: this.tableList.sort,
@@ -388,7 +390,6 @@
           category: category,
         };
         mallselect(a).then((res) => {
-          console.log(res);
           this.title = res.data.data;
         })
       },
@@ -407,7 +408,7 @@
         mallId(a).then((res) => {
           this.resetForm('tableList');
           this.tableList = res.data.data;
-          this.tableList.old_price = (this.tableList.old_price / 100);
+          this.tableList.oldPrice = (this.tableList.oldPrice / 100);
           this.tableList.price = (this.tableList.price / 100);
           this.fileList = [];
           this.imgay = [];
@@ -430,7 +431,6 @@
               let d = res.url.substring(c);
               this.imgay1.push(d);
             });
-            console.log(this.imgay1);
           }
 
           if (this.tableList.logo) {
@@ -464,7 +464,6 @@
         })
       },
       handleRemove(file) {
-        console.log(file.url);
         let d = '';
         if (file.url.indexOf(this.imgUrl) > -1) {
           let c = this.imgUrl.length;
@@ -485,11 +484,8 @@
         if (this.imgList.length !== 0) {
           this.imgList.remove(file.response.data);
         }
-
-        console.log(this.imgay);
       },
       handleRemove1(file) {
-        console.log(file.url);
         let d = '';
         if (file.url.indexOf(this.imgUrl) > -1) {
           let c = this.imgUrl.length;
@@ -510,7 +506,7 @@
         if (this.imgList1.length !== 0) {
           this.imgList1.remove(file.response.data);
         }
-        console.log(this.imgay1);
+
       },
 
       handlePictureCardPreview(file) {
@@ -523,7 +519,6 @@
             this.imgList.push(file.response.data);
           } else {
             this.imgay.push(file.response.data);
-            console.log(this.imgay);
           }
 
         }
@@ -534,7 +529,6 @@
             this.imgList1.push(file.response.data);
           } else {
             this.imgay1.push(file.response.data);
-            console.log(this.imgay1);
           }
         }
       },
@@ -598,6 +592,7 @@
 
   .aside {
     padding: 20px 100px 0 50px;
+    margin-top: 1%;
   }
 
   .router-link-active {
@@ -616,6 +611,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
 
   .NavMenu li {
@@ -634,9 +630,12 @@
 
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
-    line-height: 30px;
-    font-size: 16px;
-
+    position: absolute;
+    left: 152px;
+    top: 0;
+    width: 160px;
+    height: 370px;
+    overflow: auto;
   }
 
   .ly-content {
@@ -684,6 +683,13 @@
     height: 148px;
     display: block;
   }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
 
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+  {
+    opacity: 0;
+  }
 
 </style>

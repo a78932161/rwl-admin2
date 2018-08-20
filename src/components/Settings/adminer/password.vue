@@ -71,18 +71,17 @@
               password:this.ruleForm.password,
             };
             upPsw(a).then((res)=>{
-              console.log(res);
-              if(res.data.code===1){
+              if(res.data.code===0){
                 this.$message({
-                  message: '用户名或密码错误!',
-                  type: 'warning'
-                });
-               this.resetForm('ruleForm');
-              }else{
-                this.$message({
-                  message: '修改成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
                 });
+              }else{
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
+                });
+                this.resetForm('ruleForm');
               }
 
             })

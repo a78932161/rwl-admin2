@@ -33,7 +33,7 @@
           prop="phone"
           label="联系方式">
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="250">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -53,6 +53,8 @@
       <el-pagination
         background
         layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :page-size="5"
         :total="total">
       </el-pagination>
     </div>
@@ -145,11 +147,11 @@
   import "@/assets/js/city-data"
   import {getRoleList, addRole, delRole, upPurview, findPurview} from "@/components/api/adminer";
 
-  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家具', 'A4-小让商城', 'A5-订单分析'];
+  const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家居', 'A4-小让商城', 'A5-订单分析'];
   const cityOptions1 = ['B1-用户统计', 'B2-消费统计', 'B3-反馈'];
-  const cityOptions2 = ['C1-广告设置', 'C2-洗衣设置', 'C3-高端洗护设置', 'C4-家具设置', 'C5-商城设置'];
-  const cityOptions3 = ['D1-财务管理', 'D2-商户管理'];
-  const cityOptions4 = ['E1-充值设置', 'E2-提成设置', 'E3-账号管理', 'E-4平台编辑', 'E-5运费设置'];
+  const cityOptions2 = ['C1-广告设置', 'C2-洗衣设置', 'C3-高端洗护设置', 'C4-家居设置', 'C5-商城设置'];
+  const cityOptions3 = ['D1-财务管理', 'D2-商户管理', 'D3-收支明细'];
+  const cityOptions4 = ['E1-充值设置', 'E2-提成设置', 'E3-账号管理', 'E4-平台编辑', 'E5-运费设置'];
 
   export default {
     data() {
@@ -294,11 +296,14 @@
       },
       getList() {
         let a = {
+          page: this.page,
+          size: this.size,
           number: 4,
         };
         getRoleList(a).then((res) => {
           if (res.data.data) {
-            this.tableData = res.data.data;
+            this.tableData = res.data.data.object;
+            this.total = res.data.data.totalSize;
           }
         })
       },
@@ -312,18 +317,17 @@
               phone: this.tableList.phone,
             };
             addRole(a).then((res) => {
-              if (res.data.code === 1) {
-                this.$message({
-                  message: '用户名或密码错误!',
-                  type: 'warning'
-                });
-              } else {
+              if (res.data.code === 0) {
                 this.dialogVisible = false;
                 this.getList();
-
                 this.$message({
-                  message: '修改成功!',
+                  message: `${res.data.msg}`,
                   type: 'success'
+                });
+              } else {
+                this.$message({
+                  message: `${res.data.msg}`,
+                  type: 'warning'
                 });
               }
             })
@@ -337,15 +341,31 @@
         });
       },
       del(row) {
-        let a = {
-          username: row.username,
-        };
-        delRole(a).then((res) => {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let a = {
+            username: row.username,
+          };
+          delRole(a).then((res) => {
+            this.$message({
+              message: `${res.data.msg}`,
+              type: 'success'
+            });
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.getList();
+          })
+        }).catch(() => {
           this.$message({
-            message: '删除成功!',
-            type: 'success'
+            type: 'info',
+            message: '已取消删除'
           });
-        })
+        });
       },
       authority() {
         this.checkData = [];
@@ -382,12 +402,12 @@
           if (res.data.code === 0) {
             this.dialogVisible2 = false;
             this.$message({
-              message: '设置成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
           } else {
             this.$message({
-              message: '设置失败!',
+              message: `${res.data.msg}`,
               type: 'warning'
             });
           }
@@ -442,7 +462,7 @@
                 case 'E': {
                   cityOptions4.forEach((value1) => {
                     if (value1.indexOf(value) > -1) {
-                      this.checkedCities4.push(value);
+                      this.checkedCities4.push(value1);
                     }
                   })
                 }
@@ -450,9 +470,13 @@
               }
             });
           }
-        })
+        });
         this.dialogVisible2 = true;
-      }
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getList();
+      },
     },
     mounted() {
       this.getList();

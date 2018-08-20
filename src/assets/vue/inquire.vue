@@ -51,7 +51,6 @@
               page: this.ieData.page,
             };
             xyinquire(a).then((res) => {
-              console.log(res);
               if (res.data.data.content.length > 0) {
                 this.$store.state.orderArea.push(res.data.data);
                 this.$emit('orderData', true);

@@ -23,12 +23,12 @@
           </el-date-picker>
           <div>
             <el-cascader
+              ref="cascader"
               placeholder="试试搜索：浙江"
               :options="options"
               filterable
               change-on-select
               clearable
-              @change="cascader"
             ></el-cascader>
             <el-button type="primary" @click="search">查询</el-button>
           </div>
@@ -51,7 +51,7 @@
               label="商品数量">
             </el-table-column>
             <el-table-column
-              prop="orderTotal"
+              prop="incomeTotal"
               label="收入总额">
             </el-table-column>
             <el-table-column
@@ -76,7 +76,7 @@
             </el-table-column>
             <el-table-column
               prop="mallTotal"
-              label="订单商城">
+              label="小让商城">
             </el-table-column>
             <el-table-column
               prop="agentIncome"
@@ -162,20 +162,32 @@
     },
     methods: {
       goclearingds(row) {
-        console.log(row.id);
         let a = row.id;
         this.$router.push({name: 'clearingds', query: {id: a}});
       },
       getList() {
-        if (this.value1 && this.province) {
+
+        let cityData = this.$refs.cascader.currentLabels;
+        if (this.value1 && cityData[0]) {
           let b = {
             starttime: this.value1[0].getTime(),
             endtime: this.value1[1].getTime(),
-            province: this.province,
-            city: this.city,
-            area: this.zone,
+            province: cityData[0] || '',
+            city: cityData[1] || '',
+            area: cityData[2] || '',
           };
           getclearing(b).then((res) => {
+            res.data.data.forEach((value) => {
+              value.incomeTotal = (value.incomeTotal / 100).toFixed(1);
+              value.rechargeTotal = (value.rechargeTotal / 100).toFixed(1);
+              value.refundTotal = (value.refundTotal / 100).toFixed(1);
+              value.laundryTotal = (value.laundryTotal / 100).toFixed(1);
+              value.highLaundryTotal = (value.highLaundryTotal / 100).toFixed(1);
+              value.furnitureTotal = (value.furnitureTotal / 100).toFixed(1);
+              value.mallTotal = (value.mallTotal / 100).toFixed(1);
+              value.agentIncome = (value.agentIncome / 100).toFixed(1);
+              value.platformIncome = (value.platformIncome / 100).toFixed(1);
+            });
             this.total = res.data.data.length;
             let arr = res.data.data;
             let currentArr = [];
@@ -191,13 +203,24 @@
             }
             this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 === null && this.province) {
+        } else if (this.value1 === null && cityData[0]) {
           let b = {
-            province: this.province,
-            city: this.city,
-            area: this.zone,
+            province: cityData[0] || '',
+            city: cityData[1] || '',
+            area: cityData[2] || '',
           };
           getclearing(b).then((res) => {
+            res.data.data.forEach((value) => {
+              value.incomeTotal = (value.incomeTotal / 100).toFixed(1);
+              value.rechargeTotal = (value.rechargeTotal / 100).toFixed(1);
+              value.refundTotal = (value.refundTotal / 100).toFixed(1);
+              value.laundryTotal = (value.laundryTotal / 100).toFixed(1);
+              value.highLaundryTotal = (value.highLaundryTotal / 100).toFixed(1);
+              value.furnitureTotal = (value.furnitureTotal / 100).toFixed(1);
+              value.mallTotal = (value.mallTotal / 100).toFixed(1);
+              value.agentIncome = (value.agentIncome / 100).toFixed(1);
+              value.platformIncome = (value.platformIncome / 100).toFixed(1);
+            });
             this.total = res.data.data.length;
             let arr = res.data.data;
             let currentArr = [];
@@ -213,12 +236,23 @@
             }
             this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 && this.province === '') {
+        } else if (this.value1 && cityData[0]===undefined) {
           let b = {
             starttime: this.value1[0].getTime(),
             endtime: this.value1[1].getTime(),
           };
           getclearing(b).then((res) => {
+            res.data.data.forEach((value) => {
+              value.incomeTotal = (value.incomeTotal / 100).toFixed(1);
+              value.rechargeTotal = (value.rechargeTotal / 100).toFixed(1);
+              value.refundTotal = (value.refundTotal / 100).toFixed(1);
+              value.laundryTotal = (value.laundryTotal / 100).toFixed(1);
+              value.highLaundryTotal = (value.highLaundryTotal / 100).toFixed(1);
+              value.furnitureTotal = (value.furnitureTotal / 100).toFixed(1);
+              value.mallTotal = (value.mallTotal / 100).toFixed(1);
+              value.agentIncome = (value.agentIncome / 100).toFixed(1);
+              value.platformIncome = (value.platformIncome / 100).toFixed(1);
+            });
             this.total = res.data.data.length;
             let arr = res.data.data;
             let currentArr = [];
@@ -234,14 +268,24 @@
             }
             this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 === null && this.province === '') {
+        } else if (this.value1 === null && cityData[0]===undefined) {
           let a = new Date();
           let b = {
             starttime: 0,
             endtime: a.getTime(),
           };
           getclearing(b).then((res) => {
-            console.log(res)
+            res.data.data.forEach((value) => {
+              value.incomeTotal = (value.incomeTotal / 100).toFixed(1);
+              value.rechargeTotal = (value.rechargeTotal / 100).toFixed(1);
+              value.refundTotal = (value.refundTotal / 100).toFixed(1);
+              value.laundryTotal = (value.laundryTotal / 100).toFixed(1);
+              value.highLaundryTotal = (value.highLaundryTotal / 100).toFixed(1);
+              value.furnitureTotal = (value.furnitureTotal / 100).toFixed(1);
+              value.mallTotal = (value.mallTotal / 100).toFixed(1);
+              value.agentIncome = (value.agentIncome / 100).toFixed(1);
+              value.platformIncome = (value.platformIncome / 100).toFixed(1);
+            });
             this.total = res.data.data.length;
             let arr = res.data.data;
             let currentArr = [];
@@ -258,24 +302,6 @@
             this.tableData = currentArr;//显示的数据
           })
         }
-      },
-      cascader(value) {
-        this.province = '';
-        this.options.forEach((value1) => {
-          if (value[0] == value1.value) {
-            value1.children.forEach((value2) => {
-              if (value[1] == value2.value) {
-                value2.children.forEach((value3) => {
-                  if (value[2] == value3.value) {
-                    this.province = value1.label;
-                    this.city = value2.label;
-                    this.zone = value3.label;
-                  }
-                })
-              }
-            })
-          }
-        })
       },
       search() {
         this.getList();

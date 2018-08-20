@@ -23,20 +23,22 @@
         </div>
         <div>
           <el-cascader
+            ref="cascader"
             placeholder="试试搜索：浙江"
             :options="options"
             filterable
             change-on-select
             clearable
           ></el-cascader>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="search">查询</el-button>
         </div>
       </div>
       <div class="ord-content2">
         <el-button type="primary" @click="goList(3)">全部会员<br>{{listData.allCount}}</el-button>
         <el-button type="primary" @click="goList(1)">已消费会员<br>{{listData.consumeCount}}</el-button>
         <el-button type="primary" @click="goList(0)">未消费会员<br>{{listData.unConsumeCount}}</el-button>
-        <el-button type="primary" @click="goList(2)">已储蓄会员<br>{{listData.depositCount}}</el-button>
+        <el-button type="primary" @click="goList(2)">充值会员<br>{{listData.depositCount}}</el-button>
+        <el-button type="primary" @click="goList(4)">会员卡用户<br>{{listData.memberCount}}</el-button>
       </div>
     </div>
     <vip-list v-if="isList" @goIndex="goIndex"></vip-list>
@@ -82,8 +84,7 @@
           }]
         },
         options: CityInfo,
-        value1: '',
-
+        value1: null,
         showFlag: true,
         isList: false,
         listData: [],
@@ -91,12 +92,42 @@
     },
     methods: {
       getList() {
-        vipNumber().then((res) => {
-          console.log(res);
-          this.listData = res.data.data;
-        })
+        let cityData = this.$refs.cascader.currentLabels;
+        if (this.value1 ===null && cityData[0] === undefined) {
+          let a = {};
+          vipNumber(a).then((res) => {
+            this.listData = res.data.data;
+          })
+        } else if (this.value1 && cityData[0] === undefined) {
+          let a = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+          };
+          vipNumber(a).then((res) => {
+            this.listData = res.data.data;
+          })
+        } else if (this.value1 ===null && cityData[0]) {
+          let a = {
+            province: cityData[0] || '',
+            city: cityData[1] || '',
+            area: cityData[2] || '',
+          };
+          vipNumber(a).then((res) => {
+            this.listData = res.data.data;
+          })
+        } else if (this.value1 && cityData[0]) {
+          let a = {
+            starttime: this.value1[0].getTime(),
+            endtime: this.value1[1].getTime(),
+            province: cityData[0] || '',
+            city: cityData[1] || '',
+            area: cityData[2] || '',
+          };
+          vipNumber(a).then((res) => {
+            this.listData = res.data.data;
+          })
+        }
       },
-
       goList(index) {
         this.$store.state.vipId = index;
         this.showFlag = false;
@@ -109,6 +140,9 @@
         this.showFlag = data;
         this.isList = false;
       },
+      search(){
+        this.getList();
+      }
     },
     mounted() {
       this.getList();

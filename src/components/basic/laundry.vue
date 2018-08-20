@@ -10,14 +10,17 @@
               <a @click="NavMenuok(index)">
                 <li :class="['item', bgSelected(index)]">{{item.name}}</li>
               </a>
-              <div v-if="NavMenu[index]" class="NavMenudiv">
-                <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
-                  <span v-if="title1[index1]" class="el-icon-caret-right"></span>
-                  <el-button type="text" style="color: rgb(106, 119, 127)" @click="goodsUp(index1,item1)">
-                    {{item1.name}}
-                  </el-button>
+              <transition name="fade">
+                <div v-if="NavMenu[index]" class="NavMenudiv">
+                  <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
+                    <span v-if="title1[index1]" class="el-icon-caret-right"></span>
+                    <el-button type="text" style="color: rgb(106, 119, 127);max-width: 140px;overflow:hidden"
+                               @click="goodsUp(index1,item1)">
+                      {{item1.name}}
+                    </el-button>
+                  </div>
                 </div>
-              </div>
+              </transition>
             </div>
           </ul>
         </div>
@@ -37,8 +40,8 @@
             <el-form-item label="单品名称 :" prop="name">
               <el-input placeholder="请输入名称" v-model="tableList.name" style="width: 40%;"></el-input>
             </el-form-item>
-            <el-form-item label="原价 :" prop="old_price">
-              <el-input placeholder="请输入名称" v-model="tableList.old_price" style="width: 40%;"></el-input>
+            <el-form-item label="原价 :" prop="oldPrice">
+              <el-input placeholder="请输入名称" v-model="tableList.oldPrice" style="width: 40%;"></el-input>
             </el-form-item>
             <el-form-item label="现价 :" prop="price">
               <el-input placeholder="请输入名称" v-model="tableList.price" style="width: 40%;"></el-input>
@@ -64,7 +67,7 @@
 
             <el-form-item label="商品库存数目 :" prop="stock">
               <el-input placeholder="商品的库存数" v-model="tableList.stock" style="width: 40%"></el-input>
-              <label>不填则默认为：9999999</label>
+
             </el-form-item>
             <el-form-item label="商品生效日期 :" prop="date">
               <el-date-picker
@@ -78,7 +81,7 @@
             </el-form-item>
             <el-form-item label="商品排序  :" prop="sort">
               <el-input placeholder="商品顺序权重" style="width: 40%" v-model="tableList.sort"></el-input>
-              <label>必须是整数，不传默认为o，权重数字越大越靠前</label>
+              <label>必须是整数,权重数字越大越靠前</label>
             </el-form-item>
             <el-form-item>
               <el-button v-show="isadd" type="primary" style="margin-right: 3% " @click="goodsAdd()">新增</el-button>
@@ -158,13 +161,13 @@
         list: [
           {name: '上衣类', value: '1'},
           {name: '裤裙类', value: '2'},
-          {name: '装饰类', value: '3'},
-          {name: '皮草类', value: '4'},
+          {name: '皮草类', value: '3'},
+          {name: '装饰类', value: '4'},
           {name: '鞋包类', value: '5'},
         ],
         tableList: {
           name: '',
-          old_price: '',
+          oldPrice: '',
           price: '',
           logo: '',
           stock: '',
@@ -177,9 +180,9 @@
         rules: {
           name: [
             {required: true, message: '请输入名称', trigger: 'blur'},
-            {min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur'}
+            {min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'blur'}
           ],
-          old_price: [
+          oldPrice: [
             {required: true, message: '请输入原价',},
             {validator: oldprice, trigger: 'blur'}
           ],
@@ -220,7 +223,7 @@
           this.title1 = {};
           this.tableList = {
             name: '',
-            old_price: '',
+            oldPrice: '',
             price: '',
             logo: '',
             stock: '',
@@ -239,12 +242,12 @@
         }
       },
       goodsAdd() {
-        if (this.tableList.name && this.tableList.old_price && this.tableList.price &&
-          this.tableList.stock && this.tableList.date && this.tableList.stock ) {
+        if (this.tableList.name && this.tableList.oldPrice && this.tableList.price &&
+          this.tableList.stock && this.tableList.date && this.tableList.stock) {
 
           let a = {
             name: this.tableList.name,
-            old_price: this.tableList.old_price * 100,
+            oldPrice: this.tableList.oldPrice * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.img,
             stock: this.tableList.stock,
@@ -257,12 +260,12 @@
           laundryAdd(a).then((res) => {
             this.goodsSelect(this.category);
             this.$message({
-              message: '添加成功!',
+              message: `${res.data.msg}`,
               type: 'success'
             });
             this.tableList = {
               name: '',
-              old_price: '',
+              oldPrice: '',
               price: '',
               logo: '',
               stock: '',
@@ -272,7 +275,9 @@
               type: 2,
               status: 1,
             };
+            this.fileList = [];
             this.resetForm('tableList');
+
           })
         } else {
           this.$message({
@@ -282,12 +287,12 @@
         }
       },
       goodsAdd1() {
-        if (this.tableList.name && this.tableList.old_price && this.tableList.price &&
-          this.tableList.stock && this.tableList.date && this.tableList.stock ) {
+        if (this.tableList.name && this.tableList.oldPrice && this.tableList.price &&
+          this.tableList.stock && this.tableList.date && this.tableList.stock) {
 
           let a = {
             name: this.tableList.name,
-            old_price: this.tableList.old_price * 100,
+            oldPrice: this.tableList.oldPrice * 100,
             price: this.tableList.price * 100,
             logo: this.tableList.img,
             stock: this.tableList.stock,
@@ -339,9 +344,8 @@
         selectId(a).then((res) => {
           this.resetForm('tableList');
           this.tableList = res.data.data;
-          this.tableList.old_price = (this.tableList.old_price / 100);
+          this.tableList.oldPrice = (this.tableList.oldPrice / 100);
           this.tableList.price = (this.tableList.price / 100);
-
           this.fileList = [];
           if (res.data.data.logo != null) {
             let a = {
@@ -350,7 +354,6 @@
             };
             this.fileList.push(a);
           }
-
           this.isadd1 = true;
           this.isadd = false;
           if (this.tableList.status == 0) {
@@ -378,7 +381,6 @@
         })
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = `${this.imgUrl}${file.response.data}`;
@@ -405,7 +407,7 @@
         this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
       ipchange() {
-        if(this.isadd1===true){
+        if (this.isadd1 === true) {
           this.tableList.date = this.tableList.date.getTime();
         }
       }
@@ -432,6 +434,7 @@
 
   .aside {
     padding: 20px 100px 0 50px;
+    margin-top: 1%;
   }
 
   .router-link-active {
@@ -450,6 +453,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
 
   .NavMenu li {
@@ -468,8 +472,12 @@
 
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
-    line-height: 30px;
-    font-size: 16px;
+    position: absolute;
+    left: 152px;
+    top: 0;
+    width: 160px;
+    height: 370px;
+    overflow: auto;
 
   }
 
@@ -489,5 +497,14 @@
     margin-top: 3%;
     margin-left: 25%;
     text-align: left;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
+
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+  {
+    opacity: 0;
   }
 </style>
