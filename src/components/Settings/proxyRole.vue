@@ -27,10 +27,6 @@
         :data="tableData"
         style="width: 100%">
         <el-table-column
-          type="selection"
-          width="100">
-        </el-table-column>
-        <el-table-column
           prop="username"
           label="用户名">
         </el-table-column>
@@ -63,7 +59,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -148,7 +144,7 @@
         dialogVisible: false,
         dialogVisible1: false,
         dialogVisible2: false,
-        size: 5,
+        size: 10,
         page: 1,
         total: 10,
         tableList: {
@@ -260,6 +256,7 @@
             addProxy(a).then((res) => {
               if (res.data.code === 0) {
                 this.dialogVisible = false;
+                this.resetForm('tableList');
                 this.getList();
                 this.$message({
                   message: `${res.data.msg}`,
@@ -282,22 +279,31 @@
         });
       },
       del(row) {
-        let a = {
-          username: row.username,
-        };
-        delProxy(a).then((res) => {
-          if (res.data.code === 0) {
+        this.$confirm('此操作将永久删除是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let a = {
+            username: row.username,
+          };
+          delProxy(a).then((res) => {
             this.$message({
               message: `${res.data.msg}`,
               type: 'success'
             });
-          } else {
             this.$message({
-              message: `${res.data.msg}`,
-              type: 'warning'
+              type: 'success',
+              message: '删除成功!'
             });
-          }
-        })
+            this.getList();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       authority() {
         this.checkData = [];

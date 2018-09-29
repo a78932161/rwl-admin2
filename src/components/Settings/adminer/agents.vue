@@ -35,7 +35,7 @@
             label="省市">
           </el-table-column>
           <el-table-column
-            width="150"
+            width="200"
             prop="regionDistribution"
             label="区域">
           </el-table-column>
@@ -60,7 +60,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="5"
+          :page-size="10"
           :total="total">
         </el-pagination>
       </div>
@@ -92,6 +92,7 @@
             <el-cascader
               placeholder="试试搜索：浙江"
               :options="options"
+              ref="option"
               filterable
               change-on-select
               clearable
@@ -215,7 +216,7 @@
         cities: [],
         isStore: false,
         showFlag2: true,
-        size: 5,
+        size: 10,
         page: 1,
         total: 1,
         tableData: [],
@@ -260,6 +261,7 @@
       getList() {
         this.cities = [];
         this.allocation = [];
+
         let a = {
           size: this.size,
           page: this.page,
@@ -274,7 +276,7 @@
       },
 
       goIndex() {
-        this.$router.go(0);
+        this.$emit('goPt', true);
       },
       goIndex5() {
         this.$emit('goIndex5', true);
@@ -319,8 +321,13 @@
           this.tableList.region = this.allocation.join(',');
           addAgents(this.tableList).then((res) => {
             if (res.data.code === 0) {
-              this.getList();
+              this.resetForm('tableList');
               this.dialogVisible = false;
+              let obj = {};
+              obj.stopPropagation = () => {
+              };
+              this.$refs.option.clearValue(obj);
+              this.getList();
               this.$message({
                 message: `${res.data.msg}`,
                 type: 'success'
@@ -428,7 +435,8 @@
             if (res.data.code == 0) {
               this.dialogVisible2 = false;
               let obj = {};
-              obj.stopPropagation = () => {};
+              obj.stopPropagation = () => {
+              };
               this.$refs.option.clearValue(obj);
               this.getList();
             } else {
@@ -449,7 +457,7 @@
         this.areaId = {agentid: row.id};
         this.dialogVisible2 = true;
         this.cities = [];
-        this.allocation=[];
+        this.allocation = [];
         this.checkedCities2 = [];
       },
       handleCurrentChange(val) {

@@ -112,16 +112,6 @@
           callback();
         }
       };
-      let price = (rule, value, callback) => {
-        if (/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value) === false) {
-          callback(new Error('必须是正数'));
-        } else if (value > this.tableList.oldPrice) {
-          callback(new Error('现价不能高于原价'));
-        }
-        else {
-          callback();
-        }
-      };
       let stock = (rule, value, callback) => {
         if (/^[1-9]\d*$/.test(value) === false) {
           callback(new Error('必须是正整数'));
@@ -187,7 +177,6 @@
           ],
           price: [
             {required: true, message: '请输入现价',},
-            {validator: price, trigger: 'blur'}
           ],
           stock: [
             {required: true, message: '请输入库存',},
@@ -250,7 +239,7 @@
             logo: this.tableList.img,
             stock: this.tableList.stock,
             date: this.tableList.date.getTime(),
-            sort: this.tableList.stock,
+            sort: this.tableList.sort,
             category: this.category,
             type: 2,
             status: 1,
@@ -294,7 +283,7 @@
             logo: this.tableList.img,
             stock: this.tableList.stock,
             date: this.tableList.date,
-            sort: this.tableList.stock,
+            sort: this.tableList.sort,
             category: this.category,
             type: 2,
             status: this.tableList.status,

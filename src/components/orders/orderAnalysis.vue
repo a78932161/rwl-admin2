@@ -83,6 +83,7 @@
         value1: null,
         balance: 0,
         Wechat: 0,
+        cardPay: 0,
         province: '',
         city: '',
         zone: '',
@@ -119,10 +120,11 @@
       getList() {
         this.balance = 0;
         this.Wechat = 0;
+        this.cardPay = 0;
         if (this.value1 && this.province) {
           let b = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime() + 86400000,
             province: this.province,
             city: this.city,
             area: this.zone,
@@ -131,6 +133,7 @@
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
+              this.cardPay += value.cardPay;
             });
             this.tableData = res.data.data;
           });
@@ -144,6 +147,7 @@
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
+              this.cardPay += value.cardPay;
             });
             this.tableData = res.data.data;
           });
@@ -157,18 +161,20 @@
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
+              this.cardPay += value.cardPay;
             });
             this.tableData = res.data.data;
           });
         } else if (this.value1 && this.province === '') {
           let b = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime() + 86400000,
           };
           analysis(b).then((res) => {
             res.data.data.forEach((value) => {
               this.balance += value.balancePay;
               this.Wechat += value.weChatPay;
+              this.cardPay += value.cardPay;
             });
             this.tableData = res.data.data;
           });
@@ -187,6 +193,9 @@
           }
           if (index === 2) {
             sums[index] = '余额支付:' + this.balance;
+          }
+          if (index === 3) {
+            sums[index] = '卡支付:' + this.cardPay;
           }
         });
         return sums;
@@ -219,7 +228,7 @@
       goOrder(row) {
         let a = JSON.parse(localStorage.getItem("info"));
         switch (row.category) {
-          case "普通洗护":
+          case "洗衣":
             if (a.functionAuthority.indexOf('A1') > -1) {
               this.$router.push('newLaundry');
             } else {
@@ -239,7 +248,7 @@
               });
             }
             break;
-          case "家具":
+          case "小让家居":
             if (a.functionAuthority.indexOf('A3') > -1) {
               this.$router.push('newFurniture');
             } else {
@@ -249,7 +258,7 @@
               });
             }
             break;
-          case "商城":
+          case "小让商城":
             if (a.functionAuthority.indexOf('A4') > -1) {
               this.$router.push('newMall');
             } else {

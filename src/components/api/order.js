@@ -15,3 +15,13 @@ export function orderNumber(data) {
     params: data
   })
 }
+
+
+
+export function oldOrder(data) {
+  return axios({
+    url: "/oldorder/findall",
+    method: "post",
+    params: data
+  })
+}

@@ -11,7 +11,7 @@ const state = {
   rechargeId: '',
   refundId: '',
   vipId: 0,
-  orderFind: [],
+  orderFind: '',
   orderArea: [],
 };
 const mutations = {

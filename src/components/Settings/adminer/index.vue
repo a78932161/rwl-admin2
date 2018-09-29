@@ -13,9 +13,9 @@
         <el-button type="primary" @click="goPsw">修改密码</el-button>
       </div>
     </div>
-    <psw v-if="isPsw" @goIndex1="goIndex1"></psw>
-    <character v-if="isCharacter" @goIndex2="goIndex2" @goIndex3="goIndex3"></character>
-    <agents v-if="isAgents" @goIndex5="goIndex5" @goIndex6="goIndex6"></agents>
+    <psw v-if="isPsw" @goIndex1="goIndex1" @goPt="goIndex4"></psw>
+    <character v-if="isCharacter" @goIndex2="goIndex2" @goIndex3="goIndex3" @goPt="goIndex4"></character>
+    <agents v-if="isAgents" @goIndex5="goIndex5" @goIndex6="goIndex6" @goPt="goIndex4"></agents>
   </div>
 
 </template>

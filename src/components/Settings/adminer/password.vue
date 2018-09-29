@@ -98,7 +98,7 @@
         this.$refs[formName].resetFields();
       },
       goIndex(){
-        this.$router.go(0);
+        this.$emit('goPt',true);
       },
       goIndex1(){
         this.$emit('goIndex1',true);

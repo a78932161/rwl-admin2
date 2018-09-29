@@ -7,7 +7,7 @@
           <label>订单中心</label>
         </div>
         <div class="NavMenu">
-          <router-link to="/newFurniture"><span>|</span>新订单</router-link>
+          <router-link @click.native="goto()" to="/newFurniture"><span>|</span>新订单</router-link>
           <router-link to="/shipFurniture"><span>|</span>已派订单</router-link>
           <router-link to="/homeFurniture"><span>|</span>上门订单</router-link>
           <router-link to="/endFurniture"><span>|</span>完结订单</router-link>
@@ -29,6 +29,14 @@
   export default {
     components: {
       top,
+    },
+    methods: {
+      goto() {
+        if (this.$route.name === 'newFurniture') {
+          let a = new Date();
+          this.$router.push({path: '/newFurniture', query: {type: a}});
+        }
+      }
     },
   }
 </script>

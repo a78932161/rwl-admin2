@@ -7,7 +7,7 @@
           <label>订单中心</label>
         </div>
         <div class="NavMenu">
-          <router-link to="/newMall"><span>|</span>新订单</router-link>
+          <router-link @click.native="goto()"  to="/newMall"><span>|</span>新订单</router-link>
           <router-link to="/sentMall"><span>|</span>已派订单</router-link>
           <router-link to="/handsMall"><span>|</span>已发订单</router-link>
           <router-link to="/endMall"><span>|</span>完结订单</router-link>
@@ -30,6 +30,14 @@
   export default {
     components: {
       top,
+    },
+    methods: {
+      goto() {
+        if (this.$route.name === 'newMall') {
+          let a = new Date();
+          this.$router.push({path: '/newMall', query: {type: a}});
+        }
+      }
     },
   }
 </script>

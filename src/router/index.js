@@ -4,6 +4,7 @@ import home from '@/components/home'
 import a404 from '@/components/404'
 import login from '@/components/login'
 import orders from '@/components/orders/orders'
+
 import orderIndex from '@/components/orders/orderCenter/orderCenter-Laundry/index'
 import newLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/new'
 import cancelLaundry from '@/components/orders/orderCenter/orderCenter-Laundry/cancel'
@@ -93,7 +94,6 @@ export default new Router({
           name: 'basic',
           component: basic,
         }
-
       ]
     },
     {

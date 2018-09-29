@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">小让商城</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders',query:{type:1} }">小让商城</el-breadcrumb-item>
         <el-breadcrumb-item>新订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -50,7 +50,8 @@
               <el-form-item label="套餐选择">
                 <span>{{ props.row.goods }}</span>
               </el-form-item>
-<el-form-item label="已付金额">                <span>{{ props.row.amount/100 }}</span>              </el-form-item>              <el-form-item label="支付方式">                <span>{{ props.row.payMode}}</span>              </el-form-item>
+              <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
+              <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary" @click="quxiao(props.row)">取消订单</el-button>
@@ -58,7 +59,7 @@
             </el-form>
           </template>
         </el-table-column>
-<el-table-column
+        <el-table-column
           type="selection"
           width="55">
         </el-table-column>
@@ -89,7 +90,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -107,7 +108,7 @@
     data() {
       return {
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         tableData: [],
         options: [],
@@ -121,12 +122,28 @@
         this.tableData = [];
         this.$store.state.getieData = [];
         this.inquire = [];
-        if (this.$store.state.orderFind.length > 0) {
-          this.$store.state.orderFind.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.mallProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);
+        if (this.$store.state.orderFind.object != null) {
+          this.$store.state.orderFind.object.forEach((value) => {
+            value.total = value.items.length + '件';
+            if (value.payMode == 0) {
+              value.payMode = '微信支付'
+            } else if (value.payMode == 1) {
+              value.payMode = '余额支付'
+            } else if (value.payMode == 2) {
+              value.payMode = '卡支付'
+            }
+            if (value.items) {
+              let b = [];
+              value.items.forEach((value1) => {
+                b.push(value1.mallProduct.name);
+              });
+              value.goods1 = b[0];
+              value.goods = b.join(',');
+            }
+            value.createtime = this.getLocalTime(value.createtime);
 
           });
-          this.tableData = this.$store.state.orderFind;
+          this.tableData = this.$store.state.orderFind.object;
           this.total = this.$store.state.orderFind.length;
           this.inquire = {
             page: this.page,
@@ -137,7 +154,23 @@ value.total = value.items.length + '件';              if(value.payMode==0){    
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
           this.$store.state.orderArea.content.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.mallProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);
+            value.total = value.items.length + '件';
+            if (value.payMode == 0) {
+              value.payMode = '微信支付'
+            } else if (value.payMode == 1) {
+              value.payMode = '余额支付'
+            } else if (value.payMode == 2) {
+              value.payMode = '卡支付'
+            }
+            if (value.items) {
+              let b = [];
+              value.items.forEach((value1) => {
+                b.push(value1.mallProduct.name);
+              });
+              value.goods1 = b[0];
+              value.goods = b.join(',');
+            }
+            value.createtime = this.getLocalTime(value.createtime);
 
           });
           this.tableData = this.$store.state.orderArea.content;
@@ -159,7 +192,23 @@ value.total = value.items.length + '件';              if(value.payMode==0){    
           };
           getmall(a).then((res) => {
             res.data.data.content.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }            if (value.items) {              let b = [];              value.items.forEach((value1) => {                b.push(value1.mallProduct.name);              });              value.goods1 = b[0];              value.goods = b.join(',');            }            value.createtime = this.getLocalTime(value.createtime);
+              value.total = value.items.length + '件';
+              if (value.payMode == 0) {
+                value.payMode = '微信支付'
+              } else if (value.payMode == 1) {
+                value.payMode = '余额支付'
+              } else if (value.payMode == 2) {
+                value.payMode = '卡支付'
+              }
+              if (value.items) {
+                let b = [];
+                value.items.forEach((value1) => {
+                  b.push(value1.mallProduct.name);
+                });
+                value.goods1 = b[0];
+                value.goods = b.join(',');
+              }
+              value.createtime = this.getLocalTime(value.createtime);
 
             });
             this.tableData = res.data.data.content;
@@ -233,26 +282,26 @@ value.total = value.items.length + '件';              if(value.payMode==0){    
             orderid: idData.join(','),
             storeid: this.value,
           };
-          distributionMall(a).then((res) => {
-            this.$confirm('此操作将派送给门店, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              if(res.data.code==0){
+          this.$confirm('此操作将派送给门店, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            distributionMall(a).then((res) => {
+              if (res.data.code == 0) {
                 this.getMallList();
                 this.$message({
                   message: '派送成功',
                   type: 'success'
                 });
               }
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消'
-              });
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
             });
-          })
+          });
         } else {
           this.$message({
             message: '请选择需要派送的订单或选择门店',

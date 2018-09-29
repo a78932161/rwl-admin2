@@ -55,7 +55,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -73,7 +73,7 @@
         options: CityInfo,
         value1: '',
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
 
         pickerOptions2: {
@@ -111,7 +111,7 @@
         if (this.value1) {
           let a = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime()+86400000,
             size: this.size,
             page: this.page,
           };

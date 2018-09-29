@@ -8,7 +8,7 @@
         </el-breadcrumb>
       </div>
       <div class="ord-content2">
-        <el-button type="primary" v-if="D1" @click="goAccount">账号管理</el-button>
+        <el-button type="primary" v-if="D1" @click="goAccount">财务退款</el-button>
         <el-button type="primary" v-if="D2" @click="goclearing">商户结算</el-button>
         <el-button type="primary" v-if="D3" @click="goIncome">收支明细</el-button>
       </div>
@@ -120,7 +120,8 @@
     },
     mounted() {
       this.getList();
-    }
+    },
+
   }
 </script>
 

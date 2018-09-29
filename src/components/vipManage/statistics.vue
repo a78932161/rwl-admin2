@@ -101,7 +101,7 @@
         } else if (this.value1 && cityData[0] === undefined) {
           let a = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime()+86400000,
           };
           vipNumber(a).then((res) => {
             this.listData = res.data.data;
@@ -118,7 +118,7 @@
         } else if (this.value1 && cityData[0]) {
           let a = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime()+86400000,
             province: cityData[0] || '',
             city: cityData[1] || '',
             area: cityData[2] || '',

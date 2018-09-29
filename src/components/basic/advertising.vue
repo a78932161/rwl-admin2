@@ -40,7 +40,7 @@
           v-for="(domain, index) in fileList"
           :label="'图片地址' + index + ' :'"
           :key="domain.key">
-          <el-input v-model="domains[index]"></el-input>
+          <el-input v-model="domain.address"></el-input>
         </el-form-item>
         <el-form-item style="text-align: center">
           <el-button v-show="isok" type="primary" @click="tijiao">提交</el-button>
@@ -81,7 +81,8 @@
         getAd(a).then((res) => {
           if (res.data.data != null) {
             this.value1 = res.data.data.time / 1000;
-            this.fileList = this.tpjq(res.data.data.image);
+            this.fileList = this.tpjq(res.data.data.image, res.data.data.webAddress);
+            console.log(this.fileList);
             this.zhdz(res.data.data.webAddress);
             this.isok = false;
             this.isok1 = true;
@@ -119,7 +120,7 @@
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
-      tpjq(qaq) {
+      tpjq(qaq, dz) {
         let img = qaq;
         let imgjq = img.substring(0, img.length);
         let imgs = imgjq.split(',');
@@ -130,9 +131,12 @@
           geshi.push(qaa[qaa.length - 1]);
         }
         let images = [];
+        let ads = [];
+        ads = dz.split(',');
         for (let i = 0; i < imgs.length; i++) {
-          images.push({name: i + 1 + '.' + geshi[i], url: `${this.imgUrl}${imgs[i]}`});
+          images.push({name: i + 1 + '.' + geshi[i], url: `${this.imgUrl}${imgs[i]}`, address: ads[i]});
         }
+        console.log(images);
         return images;
       },
       zhdz(qaq) {
@@ -143,15 +147,17 @@
 
       tijiao() {
         let data = [];
-        if (this.value1 && this.fileList && this.domains) {
+        let ads = [];
+        if (this.value1 && this.fileList) {
           this.fileList.forEach((value) => {
-            data.push(value.response.data)
+            data.push(value.response.data);
+            ads.push(value.address);
           });
           let a = {
             type: parseInt(this.radio1),
             time: this.value1 * 1000,
             image: data.join(','),
-            webAddress: this.domains.join(','),
+            webAddress: ads.join(','),
           };
           saveAd(a).then((res) => {
             this.$message({
@@ -164,7 +170,9 @@
 
 
       save() {
+        console.log(this.fileList);
         let data = [];
+        let ads = [];
         if (this.value1 && this.fileList && this.domains) {
           this.fileList.forEach((value) => {
             if (value.response) {
@@ -172,12 +180,13 @@
             } else {
               data.push(value.url.substring(this.imgUrl.length, value.url.length));
             }
+            ads.push(value.address);
           });
           let a = {
             type: parseInt(this.radio1),
             time: this.value1 * 1000,
             image: data.join(','),
-            webAddress: this.domains.join(','),
+            webAddress: ads.join(','),
           };
           let b = {
             advertisementid: this.id,
@@ -207,6 +216,7 @@
       },
     },
     mounted() {
+
       if (this.radio1 == '0') {
         this.getlist(0);
       }
@@ -218,8 +228,13 @@
         } else if (curVal === '1') {
           this.getlist(1);
         }
-
-      }
+      },
+      fileList(curVal, oldVal) {
+        if (curVal[curVal.length - 1].response) {
+          curVal[curVal.length - 1]['address'] = 'https://rtest.rwlai.com/rwlmall/wechat/authorize?returnUrl=';
+          console.log(curVal);
+        }
+      },
     }
   }
 </script>

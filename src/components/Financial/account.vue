@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item><span @click="gofinancial">财务管理</span></el-breadcrumb-item>
-        <el-breadcrumb-item>账号管理</el-breadcrumb-item>
+        <el-breadcrumb-item>财务退款</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
@@ -145,7 +145,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="5"
+          :page-size="10"
           :total="total">
         </el-pagination>
       </div>
@@ -203,7 +203,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange1"
-          :page-size="5"
+          :page-size="10"
           :total="total1">
         </el-pagination>
       </div>
@@ -265,7 +265,7 @@
         isRadio1: true,
         total: 10,
         total1: 10,
-        size: 5,
+        size: 10,
         size1: 5,
         page: 1,
         page1: 1,

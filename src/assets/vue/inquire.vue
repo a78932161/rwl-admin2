@@ -20,7 +20,7 @@
 
 <script>
   import "@/assets/js/city-data"
-  import {xyinquire, jjinquire, scinquire, xycx, jjcx, sccx} from "@/components/api/inquire";
+  import {xyinquire, jjinquire, scinquire, xycx, jjcx, sccx, xycx1, jjcx1, sccx1} from "@/components/api/inquire";
   import {mapState} from "vuex"
 
   export default {
@@ -120,14 +120,25 @@
         this.$store.state.orderFind = [];
         if (this.value) {
           let type = this.ieData.type;
+
           if (type === 1 || type === 2) {
             let a = {
-              number: this.value
+              code: this.value,
+              page: this.ieData.page,
+              size: this.ieData.size,
+              type: type,
             };
-            xycx(a).then((res) => {
+            xycx1(a).then((res) => {
               if (res.data.code === 0) {
-                this.$store.state.orderFind.push(res.data.data);
-                this.$emit('orderData', true);
+                if (res.data.data.object != null) {
+                  this.$store.state.orderFind = (res.data.data);
+                  this.$emit('orderData', true);
+                } else {
+                  this.$message({
+                    message: '订单不存在',
+                    type: 'warning'
+                  });
+                }
               } else {
                 this.$message({
                   message: '订单不存在',
@@ -137,12 +148,21 @@
             })
           } else if (type === 3) {
             let b = {
-              number: this.value
+              code: this.value,
+              page: this.ieData.page,
+              size: this.ieData.size,
             };
-            jjcx(b).then((res) => {
+            jjcx1(b).then((res) => {
               if (res.data.code === 0) {
-                this.$store.state.orderFind.push(res.data.data);
-                this.$emit('orderData', true);
+                if (res.data.data.object != null) {
+                  this.$store.state.orderFind = (res.data.data);
+                  this.$emit('orderData', true);
+                } else {
+                  this.$message({
+                    message: '订单不存在',
+                    type: 'warning'
+                  });
+                }
               } else {
                 this.$message({
                   message: '订单不存在',
@@ -152,12 +172,21 @@
             })
           } else if (type === 4) {
             let c = {
-              number: this.value
+              code: this.value,
+              page: this.ieData.page,
+              size: this.ieData.size,
             };
-            sccx(c).then((res) => {
+            sccx1(c).then((res) => {
               if (res.data.code === 0) {
-                this.$store.state.orderFind.push(res.data.data);
-                this.$emit('orderData', true);
+                if (res.data.data.object != null) {
+                  this.$store.state.orderFind = (res.data.data);
+                  this.$emit('orderData', true);
+                } else {
+                  this.$message({
+                    message: '订单不存在',
+                    type: 'warning'
+                  });
+                }
               } else {
                 this.$message({
                   message: '订单不存在',

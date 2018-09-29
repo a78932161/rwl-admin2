@@ -17,10 +17,6 @@
         <el-table
           :data="tableData">
           <el-table-column
-            type="selection"
-            width="100">
-          </el-table-column>
-          <el-table-column
             prop="status"
             label="状态">
           </el-table-column>
@@ -78,7 +74,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="5"
+          :page-size="10"
           :total="total">
         </el-pagination>
       </div>
@@ -112,11 +108,12 @@
             placeholder="选择时间范围">
           </el-time-picker>
         </el-form-item>
-        <el-form-item label="所属地区 :">
+        <el-form-item label="所属地区 :" prop="region">
           <el-cascader
             placeholder="试试搜索：浙江"
             ref="cascader"
             :options="options"
+            v-model="tableList.region"
             filterable
             change-on-select
             clearable
@@ -178,6 +175,7 @@
     <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
       </span>
     </el-dialog>
+
     <el-dialog
       title="添加角色"
       :visible.sync="dialogVisible2"
@@ -236,7 +234,7 @@
         accountId: '',
         agentId: '',
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         time: '',
         rules: {
@@ -251,6 +249,9 @@
           ],
           people: [
             {required: true, message: '请输入收件人名', trigger: 'blur'},
+          ],
+          region: [
+            {required: true, message: '请选择区域', trigger: 'change'}
           ],
         },
         rules2: {

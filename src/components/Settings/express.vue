@@ -7,9 +7,6 @@
         <el-breadcrumb-item>运费设置</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="re-top1">
-
-    </div>
     <div>
       <el-table
         :data="money"

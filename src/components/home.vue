@@ -50,6 +50,7 @@
     },
     methods: {
       getList() {
+
         if (localStorage.getItem("info")) {
           let b = JSON.parse(localStorage.getItem("info"));
           if (b.functionAuthority.indexOf('A') > -1) {
@@ -74,6 +75,7 @@
     mounted() {
       this.getList();
     },
+
   }
 </script>
 

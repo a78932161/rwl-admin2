@@ -93,9 +93,9 @@
                 <img width="100%" :src="dialogImageUrl" alt="">
               </el-dialog>
             </el-form-item>
-            <el-form-item label="商品规格 :" prop="productParameters">
-              <el-input placeholder="商品规格" v-model="tableList.productParameters" style="width: 40%"></el-input>
-            </el-form-item>
+            <!--<el-form-item label="商品规格 :" prop="productParameters">-->
+              <!--<el-input placeholder="商品规格" v-model="tableList.productParameters" style="width: 40%"></el-input>-->
+            <!--</el-form-item>-->
 
             <el-form-item label="产品参数 :" prop="standard">
               <el-input type="textarea" v-model="tableList.standard" placeholder="请输入名称" style="width: 40%;"
@@ -150,16 +150,6 @@
           callback();
         }
       };
-      let price = (rule, value, callback) => {
-        if (/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/.test(value) === false) {
-          callback(new Error('必须是正数'));
-        } else if (value > this.tableList.oldPrice) {
-          callback(new Error('现价不能高于原价'));
-        }
-        else {
-          callback();
-        }
-      };
       let stock = (rule, value, callback) => {
         if (/^[1-9]\d*$/.test(value) === false) {
           callback(new Error('必须是正整数'));
@@ -203,7 +193,7 @@
         list: [
           {name: '生活用品类', value: '1'},
           {name: '服务类', value: '2'},
-          {name: '家电类', value: '3'},
+          {name: '爆款类', value: '3'},
           {name: '鞋服类', value: '4'},
         ],
 
@@ -217,7 +207,7 @@
           stock: '',
           date: '',
           sort: '',
-          productParameters: '',
+          //productParameters: '',
           status: 1,
         },
         rules: {
@@ -231,7 +221,6 @@
           ],
           price: [
             {required: true, message: '请输入现价',},
-            {validator: price, trigger: 'blur'}
           ],
           stock: [
             {required: true, message: '请输入库存',},
@@ -294,7 +283,7 @@
       goodsAdd() {
         if (this.tableList.name || this.tableList.oldPrice || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.standard || this.tableList.productParameters) {
+          this.tableList.standard) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
@@ -305,9 +294,9 @@
             price: this.tableList.price * 100,
             logo: this.tableList.logo,
             image: this.imgList.toString(),
-            productParameters: this.tableList.standard,
+            // productParameters: this.tableList.standard,
             sowingMap: this.imgList1.toString(),
-            standard: this.tableList.productParameters,
+            standard: this.tableList.standard,
             stock: this.tableList.stock,
             date: this.tableList.date.getTime(),
             sort: this.tableList.sort,
@@ -328,7 +317,7 @@
             logo: '',
             image: '',
             standard: '',
-            productParameters: '',
+            // productParameters: '',
             stock: '',
             date: '',
             sort: '',
@@ -347,7 +336,7 @@
       goodsAdd1() {
         if (this.tableList.name || this.tableList.oldPrice || this.tableList.price ||
           this.tableList.stock || this.tableList.date || this.tableList.stock ||
-          this.tableList.standard || this.tableList.productParameters) {
+          this.tableList.standard) {
           let c = this.imgUrl.length;
           let d = this.tableList.logo;
           this.tableList.logo = d.substring(c);
@@ -358,8 +347,8 @@
             logo: this.tableList.logo,
             image: this.imgay.toString(),
             sowingMap: this.imgay1.toString(),
-            productParameters: this.tableList.standard,
-            standard: this.tableList.productParameters,
+            // productParameters: this.tableList.standard,
+            standard: this.tableList.standard,
             stock: this.tableList.stock,
             date: this.tableList.date,
             sort: this.tableList.sort,

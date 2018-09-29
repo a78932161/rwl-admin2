@@ -70,17 +70,13 @@
       };
       return {
         options: CityInfo,
-        tableList: [{
+        tableList: {
           value1: '',
           value2: '',
-        }],
+        },
         dialogVisible: false,
         key: '',
-        money: [{
-          key: '',
-          payMoney: '',
-          rewardMoney: '',
-        }],
+        money: [],
 
         rules: {
           value1: [

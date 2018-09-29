@@ -31,11 +31,11 @@
         </el-table-column>
         <el-table-column
           prop="rechargeIncome"
-          label="充值">
+          label="微信充值">
         </el-table-column>
         <el-table-column
           prop="weChatAmount"
-          label="订单微信支付总额">
+          label="微信支付">
         </el-table-column>
         <el-table-column
           prop="accountBalance"
@@ -43,15 +43,15 @@
         </el-table-column>
         <el-table-column
           prop="refundAmount"
-          label="退款总额">
+          label="财务退款">
         </el-table-column>
         <el-table-column
           prop="rewardAmount"
-          label="赠送总额">
+          label="充值赠送">
         </el-table-column>
         <el-table-column
           prop="balanceAmount"
-          label="余额消费总额">
+          label="余额支付">
         </el-table-column>
         <el-table-column
           prop="consumeAmount"
@@ -59,7 +59,7 @@
         </el-table-column>
         <el-table-column
           prop="cardAmount"
-          label="会员卡消费总额">
+          label="会员卡支付">
         </el-table-column>
       </el-table>
     </div>
@@ -111,7 +111,7 @@
         if (this.value1) {
           a = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime()+86400000,
           }
         } else {
           a = '';

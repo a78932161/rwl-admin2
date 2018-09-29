@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">洗衣</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders',query:{type:1} }">洗衣</el-breadcrumb-item>
         <el-breadcrumb-item>送还订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -85,7 +85,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -104,7 +104,7 @@
     data() {
       return {
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         tableData: [],
         options: [],
@@ -117,8 +117,8 @@
         this.tableData = [];
         this.$store.state.getieData = [];
         this.inquire = [];
-        if (this.$store.state.orderFind.length > 0) {
-          this.$store.state.orderFind.forEach((value) => {
+        if (this.$store.state.orderFind.object != null) {
+          this.$store.state.orderFind.object.forEach((value) => {
             value.total = value.items.length + '件';
             if (value.payMode == 0) {
               value.payMode = '微信支付'
@@ -138,7 +138,7 @@
             value.createtime = this.getLocalTime(value.createtime);
 
           });
-          this.tableData = this.$store.state.orderFind;
+          this.tableData = this.$store.state.orderFind.object;
           this.total = this.$store.state.orderFind.length;
           this.inquire = {
             page: this.page,

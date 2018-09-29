@@ -69,7 +69,7 @@
             background
             layout="prev, pager, next"
             @current-change="handleCurrentChange"
-            :page-size="5"
+            :page-size="10"
             :total="total">
           </el-pagination>
         </div>
@@ -92,9 +92,10 @@
         name: '',
         id: '',
         phone: '',
-        size: 5,
+        size: 10,
         page: 1,
         total: 10,
+        balance: '',
         value1: '',
         pickerOptions2: {
           shortcuts: [{
@@ -132,12 +133,11 @@
         };
         let b;
         getvip1(a).then((res) => {
-          console.log(res);
           if (res.data.code === 0) {
             this.name = res.data.data.name;
             this.id = res.data.data.number;
             this.phone = res.data.data.phone;
-            this.balance = res.data.data.balance;
+            this.balance = res.data.data.balance / 100;
           }
         });
         if (this.value1) {
@@ -146,7 +146,7 @@
             page: this.page,
             userid: this.$route.query.id,
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime()+86400000,
           };
         } else {
           b = {

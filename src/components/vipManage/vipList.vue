@@ -43,10 +43,11 @@
         style="width: 100%">
         <el-table-column
           prop="number"
-          label="会员ID">
+          label="会员ID"
+          width="150">
         </el-table-column>
         <el-table-column
-          prop="cid"
+          prop="cno"
           label="会员卡">
         </el-table-column>
         <el-table-column
@@ -84,7 +85,7 @@
           background
           layout="prev, pager, next"
           @current-change="handleCurrentChange"
-          :page-size="5"
+          :page-size="10"
           :total="total">
         </el-pagination>
       </div>
@@ -131,7 +132,7 @@
         options: CityInfo,
         value1: null,
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         value: '',
       }
@@ -149,7 +150,7 @@
           } else if (this.value1 && cityData[0] === undefined) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               page: this.page,
               size: this.size,
             };
@@ -166,7 +167,7 @@
           } else if (this.value1 && cityData[0]) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               province: cityData[0] || '',
               city: cityData[1] || '',
               area: cityData[2] || '',
@@ -197,7 +198,7 @@
           } else if (this.value1 && cityData[0] === undefined) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               page: this.page,
               size: this.size,
               status: this.$store.state.vipId,
@@ -215,7 +216,7 @@
           } else if (this.value1 && cityData[0]) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               province: cityData[0] || '',
               city: cityData[1] || '',
               area: cityData[2] || '',
@@ -247,7 +248,7 @@
           } else if (this.value1 && cityData[0] === undefined) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               page: this.page,
               size: this.size,
               status: this.$store.state.vipId,
@@ -266,7 +267,7 @@
           } else if (this.value1 && cityData[0]) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               province: cityData[0] || '',
               city: cityData[1] || '',
               area: cityData[2] || '',
@@ -297,7 +298,7 @@
           } else if (this.value1 && cityData[0] === undefined) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               page: this.page,
               size: this.size,
               status: this.$store.state.vipId,
@@ -316,7 +317,7 @@
           } else if (this.value1 && cityData[0]) {
             a = {
               starttime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               province: cityData[0] || '',
               city: cityData[1] || '',
               area: cityData[2] || '',

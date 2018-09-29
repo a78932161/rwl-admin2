@@ -124,7 +124,7 @@
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
@@ -135,7 +135,7 @@
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               area: this.$refs.cascader.currentLabels[0],
               province: this.$refs.cascader.currentLabels[1],
               city: this.$refs.cascader.currentLabels[2],
@@ -194,7 +194,7 @@
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
@@ -205,7 +205,7 @@
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               area: this.$refs.cascader.currentLabels[0],
               province: this.$refs.cascader.currentLabels[1],
               city: this.$refs.cascader.currentLabels[2],
@@ -263,7 +263,7 @@
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
@@ -274,7 +274,7 @@
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               area: this.$refs.cascader.currentLabels[0],
               province: this.$refs.cascader.currentLabels[1],
               city: this.$refs.cascader.currentLabels[2],
@@ -321,7 +321,7 @@
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
@@ -332,7 +332,7 @@
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
               startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime(),
+              endtime: this.value1[1].getTime()+86400000,
               area: this.$refs.cascader.currentLabels[0],
               province: this.$refs.cascader.currentLabels[1],
               city: this.$refs.cascader.currentLabels[2],

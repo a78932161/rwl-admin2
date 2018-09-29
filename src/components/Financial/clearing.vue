@@ -72,7 +72,7 @@
             </el-table-column>
             <el-table-column
               prop="furnitureTotal"
-              label="小让家具">
+              label="小让家居">
             </el-table-column>
             <el-table-column
               prop="mallTotal"
@@ -85,6 +85,10 @@
             <el-table-column
               prop="platformIncome"
               label="平台佣金">
+            </el-table-column>
+            <el-table-column
+              prop="expressIncome"
+              label="物流佣金">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -100,7 +104,7 @@
             background
             layout="prev, pager, next"
             @current-change="handleCurrentChange"
-            :page-size="5"
+            :page-size="10"
             :total="total">
           </el-pagination>
         </div>
@@ -124,7 +128,7 @@
       return {
         options: CityInfo,
         value1: null,
-        size: 5,
+        size: 10,
         page: 1,
         total: 10,
         province: '',
@@ -171,7 +175,7 @@
         if (this.value1 && cityData[0]) {
           let b = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime() + 86400000,
             province: cityData[0] || '',
             city: cityData[1] || '',
             area: cityData[2] || '',
@@ -187,6 +191,7 @@
               value.mallTotal = (value.mallTotal / 100).toFixed(1);
               value.agentIncome = (value.agentIncome / 100).toFixed(1);
               value.platformIncome = (value.platformIncome / 100).toFixed(1);
+              value.expressIncome = (value.expressIncome / 100).toFixed(1);
             });
             this.total = res.data.data.length;
             let arr = res.data.data;
@@ -220,6 +225,7 @@
               value.mallTotal = (value.mallTotal / 100).toFixed(1);
               value.agentIncome = (value.agentIncome / 100).toFixed(1);
               value.platformIncome = (value.platformIncome / 100).toFixed(1);
+              value.expressIncome = (value.expressIncome / 100).toFixed(1);
             });
             this.total = res.data.data.length;
             let arr = res.data.data;
@@ -236,10 +242,10 @@
             }
             this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 && cityData[0]===undefined) {
+        } else if (this.value1 && cityData[0] === undefined) {
           let b = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime(),
+            endtime: this.value1[1].getTime() + 86400000,
           };
           getclearing(b).then((res) => {
             res.data.data.forEach((value) => {
@@ -252,6 +258,7 @@
               value.mallTotal = (value.mallTotal / 100).toFixed(1);
               value.agentIncome = (value.agentIncome / 100).toFixed(1);
               value.platformIncome = (value.platformIncome / 100).toFixed(1);
+              value.expressIncome = (value.expressIncome / 100).toFixed(1);
             });
             this.total = res.data.data.length;
             let arr = res.data.data;
@@ -268,7 +275,7 @@
             }
             this.tableData = currentArr;//显示的数据
           })
-        } else if (this.value1 === null && cityData[0]===undefined) {
+        } else if (this.value1 === null && cityData[0] === undefined) {
           let a = new Date();
           let b = {
             starttime: 0,
@@ -285,6 +292,7 @@
               value.mallTotal = (value.mallTotal / 100).toFixed(1);
               value.agentIncome = (value.agentIncome / 100).toFixed(1);
               value.platformIncome = (value.platformIncome / 100).toFixed(1);
+              value.expressIncome = (value.expressIncome / 100).toFixed(1);
             });
             this.total = res.data.data.length;
             let arr = res.data.data;

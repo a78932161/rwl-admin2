@@ -65,6 +65,9 @@
               <div>
                 <label>{{data.name}}</label>
               </div>
+              <div>
+                <label>{{data.barCode}}</label>
+              </div>
             </div>
           </div>
         </div>
@@ -76,7 +79,6 @@
               <div style="width: 70%"><label>衣物瑕疵 :{{this.ywData.flaw}}</label></div>
               <div style="width: 70%"><label>洗后效果 :{{this.ywData.washingEffect}}</label></div>
               <div style="width: 70%"><label>衣物备注 :{{this.ywData.remark}}</label></div>
-
             </div>
           </div>
         </div>
@@ -126,12 +128,13 @@
                     this.imgData.push({
                       src: `${this.imgUrl}${value1}`,
                       id: value.id,
+                      barCode: value.barCode,
                       name: value.laundryProduct.name,
                       problemImage: true,
                       xq: {
                         flaw: value.flaw,
                         remark: value.remark,
-                        washingEffect:value.washingEffect,
+                        washingEffect: value.washingEffect,
                         src: `${this.imgUrl}${value1}`,
                       }
                     });
@@ -143,12 +146,13 @@
                     this.imgData.push({
                       src: `${this.imgUrl}${value1}`,
                       id: value.id,
+                      barCode: value.barCode,
                       name: value.laundryProduct.name,
                       problemImage: false,
                       xq: {
                         flaw: value.flaw,
                         remark: value.remark,
-                        washingEffect:value.washingEffect,
+                        washingEffect: value.washingEffect,
                         src: `${this.imgUrl}${value1}`,
                       }
                     });
@@ -200,7 +204,7 @@
                       xq: {
                         flaw: value.flaw,
                         remark: value.remark,
-                        washingEffect:value.washingEffect,
+                        washingEffect: value.washingEffect,
                         src: `${this.imgUrl}${value1}`,
                       }
                     });
@@ -217,7 +221,7 @@
                       xq: {
                         flaw: value.flaw,
                         remark: value.remark,
-                        washingEffect:value.washingEffect,
+                        washingEffect: value.washingEffect,
                         src: `${this.imgUrl}${value1}`,
                       }
                     });
@@ -270,7 +274,6 @@
             }
           })
         }
-        console.log(this.imgData);
       },
       goDetails(data) {
         if (data.problemImage === false) {

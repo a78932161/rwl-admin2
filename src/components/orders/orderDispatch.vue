@@ -1,39 +1,48 @@
 <template>
   <div>
-    <div class="ord-top">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item><span @click="aa()">订单管理</span></el-breadcrumb-item>
-        <el-breadcrumb-item>订单派单</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div class="ord-content">
-      <div>
-        <el-cascader
-          placeholder="试试搜索：浙江"
-          :options="options"
-          ref="cascader"
-          filterable
-          change-on-select
-          clearable
-        ></el-cascader>
-        <el-button type="primary" @click="getList()">查询</el-button>
+    <div v-if="!old">
+      <div class="ord-top">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item><span @click="aa()">订单管理</span></el-breadcrumb-item>
+          <el-breadcrumb-item>订单派单</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="ord-content">
+        <div>
+          <el-cascader
+            placeholder="试试搜索：浙江"
+            :options="options"
+            ref="cascader"
+            filterable
+            change-on-select
+            clearable
+          ></el-cascader>
+          <el-button type="primary" @click="getList()">查询</el-button>
+        </div>
+      </div>
+      <div class="ord-content4">
+        <el-button type="primary" v-if="A1" @click="goLaundry">洗衣<br>{{items.洗衣}}</el-button>
+        <el-button type="primary" v-if="A2" @click="goDesigner">高端洗护<br>{{items.高端洗护}}</el-button>
+        <el-button type="primary" v-if="A3" @click="goFurniture">小让家居<br>{{items.家具}}</el-button>
+        <el-button type="primary" v-if="A4" @click="goMall">小让商城<br>{{items.商城}}</el-button>
+        <el-button type="primary" @click="goOld">旧订单</el-button>
       </div>
     </div>
-    <div class="ord-content4">
-      <el-button type="primary" v-if="A1" @click="goLaundry">洗衣<br>{{items.洗衣}}</el-button>
-      <el-button type="primary" v-if="A2" @click="goDesigner">高端洗护<br>{{items.高端洗护}}</el-button>
-      <el-button type="primary" v-if="A3" @click="goFurniture">小让家居<br>{{items.家具}}</el-button>
-      <el-button type="primary" v-if="A4" @click="goMall">小让商城<br>{{items.商城}}</el-button>
-    </div>
+    <order-old v-if="old" @goIndex1="goindex"></order-old>
   </div>
+
 </template>
 
 <script>
   import "@/assets/js/city-data"
   import {orderNumber} from "@/components/api/order";
+  import orderOld from "@/components/orders/orderCenter/orderCenter-Old/index"
 
   export default {
+    components: {
+      orderOld
+    },
     data() {
       return {
         a: 10,
@@ -44,6 +53,7 @@
         A2: false,
         A3: false,
         A4: false,
+        old: false,
       }
     },
     methods: {
@@ -88,9 +98,11 @@
 
       },
 
-
       aa() {
         this.$emit('goIndex', true);
+      },
+      goindex(data) {
+        this.old = false;
       },
       goLaundry() {
         this.$router.push('/newLaundry');
@@ -103,7 +115,10 @@
       },
       goMall() {
         this.$router.push('/newMall');
-      }
+      },
+      goOld() {
+        this.old = true;
+      },
     },
     mounted() {
       this.getList();

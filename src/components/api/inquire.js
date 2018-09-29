@@ -50,6 +50,26 @@ export function sccx(data) {
 }
 
 
+export function xycx1(data) {
+  return axios({
+    url: "/laundryorder/findbytypeandcode",
+    method: "post",
+    params: data
+  })
+}
 
 
-
+export function jjcx1(data) {
+  return axios({
+    url: "/furnitureorder/findbycode",
+    method: "post",
+    params: data
+  })
+}
+export function sccx1(data) {
+  return axios({
+    url: "/mallorder/findbycode",
+    method: "post",
+    params: data
+  })
+}

@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">高端洗护</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders',query:{type:1} }">高端洗护</el-breadcrumb-item>
         <el-breadcrumb-item>超时订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -82,7 +82,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -102,7 +102,7 @@
       return {
 
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         tableData: [],
         options: [],

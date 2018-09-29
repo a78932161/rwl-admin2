@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ path: '/orders' }">订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">高端洗护</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders',query:{type:1} }">高端洗护</el-breadcrumb-item>
         <el-breadcrumb-item>新订单</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -87,7 +87,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleCurrentChange"
-        :page-size="5"
+        :page-size="10"
         :total="total">
       </el-pagination>
     </div>
@@ -113,7 +113,7 @@
       return {
         value: '',
         page: 1,
-        size: 5,
+        size: 10,
         total: 10,
         tableData: [],
         options: [],
@@ -130,8 +130,8 @@
         this.tableData = [];
         this.$store.state.getieData = [];
         this.inquire = [];
-        if (this.$store.state.orderFind.length > 0) {
-          this.$store.state.orderFind.forEach((value) => {
+        if (this.$store.state.orderFind.object != null) {
+          this.$store.state.orderFind.object.forEach((value) => {
             value.total = value.items.length + '件';
             if (value.payMode == 0) {
               value.payMode = '微信支付'
@@ -151,8 +151,8 @@
             value.createtime = this.getLocalTime(value.createtime);
 
           });
-          this.tableData = this.$store.state.orderFind;
-          this.total = this.$store.state.orderFind.length;
+          this.tableData = this.$store.state.orderFind.object;
+          this.total = this.$store.state.orderFind.totalsize;
           this.inquire = {
             page: this.page,
             size: this.size,
@@ -326,12 +326,12 @@
             orderid: idData.join(','),
             storeid: this.value,
           };
-          distributionlaundry(a).then((res) => {
-            this.$confirm('此操作将派送给门店, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
+          this.$confirm('此操作将派送给门店, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            distributionlaundry(a).then((res) => {
               if (res.data.code == 0) {
                 this.getLaundryList();
                 this.$message({
@@ -339,13 +339,14 @@
                   type: 'success'
                 });
               }
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消'
-              });
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
             });
-          })
+          });
+
         } else {
           this.$message({
             message: '请选择需要派送的订单或选择门店',
@@ -370,6 +371,11 @@
       this.$store.state.orderFind = [];
       this.$store.state.orderArea = [];
       this.getLaundryList();
+    },
+    watch: {
+      '$route'(to, from) {
+        this.getLaundryList();
+      }
     }
   }
 </script>

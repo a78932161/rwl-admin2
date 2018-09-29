@@ -80,11 +80,11 @@
       };
       return {
         options: CityInfo,
-        tableList: [{
+        tableList: {
           value1: '',
           value2: '',
           value3: '',
-        }],
+        },
         dialogVisible: false,
         dialogVisible1: false,
         tableData: [],
