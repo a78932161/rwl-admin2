@@ -127,7 +127,7 @@
     data() {
       return {
         options: CityInfo,
-        value1: null,
+        value1: [(new Date(new Date().getFullYear(), new Date().getMonth(), 1)), new Date()],
         size: 10,
         page: 1,
         total: 10,
@@ -170,7 +170,7 @@
         this.$router.push({name: 'clearingds', query: {id: a}});
       },
       getList() {
-
+        console.log(this.value1);
         let cityData = this.$refs.cascader.currentLabels;
         if (this.value1 && cityData[0]) {
           let b = {

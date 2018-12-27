@@ -48,9 +48,12 @@
               <el-form-item label="套餐选择">
                 <span>{{ props.row.goods }}</span>
               </el-form-item>
-<el-form-item label="已付金额">                <span>{{ props.row.amount/100 }}</span>              </el-form-item>              <el-form-item label="支付方式">                <span>{{ props.row.payMode}}</span>              </el-form-item>
+              <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
+              <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
+              <el-form-item label="更新时间"><span>{{props.row.statusUpdateTime}}</span></el-form-item>
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
+                <el-button type="primary" @click="withdraw(props.row)">撤回订单</el-button>
               </el-form-item>
             </el-form>
           </template>
@@ -63,22 +66,14 @@
           label="ID"
           prop="number">
         </el-table-column>
-        <el-table-column
-          label="时间"
-          prop="createtime">
-        </el-table-column>
-        <el-table-column
-          label="地址"
-          prop="address">
-        </el-table-column>
+        <el-table-column width="150" label="时间" prop="createtime"></el-table-column>
+        <el-table-column width="250" label="地址" prop="address"></el-table-column>
         <el-table-column
           label="商品"
           prop="goods1">
         </el-table-column>
-        <el-table-column
-          label="件数"
-          prop="total">
-        </el-table-column>
+        <el-table-column width="80" label="件数" prop="total"></el-table-column>
+        <el-table-column label="门店" prop="receiptPeople"></el-table-column>
       </el-table>
     </div>
     <div style="text-align: center;margin: 5% 0 5% 0;">
@@ -95,7 +90,7 @@
 
 <script>
 
-  import {getmall} from "@/components/api/ordermall";
+  import {getmall, recallOrder} from "@/components/api/ordermall";
   import inquire from '@/assets/vue/inquire'
 
   export default {
@@ -120,16 +115,24 @@
         this.inquire = [];
         if (this.$store.state.orderFind.object != null) {
           this.$store.state.orderFind.object.forEach((value) => {
-            value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }
+            value.total = value.items.length + '件';
+            if (value.payMode == 0) {
+              value.payMode = '微信支付'
+            } else if (value.payMode == 1) {
+              value.payMode = '余额支付'
+            } else if (value.payMode == 2) {
+              value.payMode = '卡支付'
+            }
             if (value.items) {
               let b = [];
               value.items.forEach((value1) => {
-                b.push(value1.mallProduct.name);
+                b.push(`${value1.mallProduct.name}*${value1.count}`);
               });
               value.goods1 = b[0];
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderFind.object;
@@ -143,16 +146,24 @@
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
           this.$store.state.orderArea.content.forEach((value) => {
-            value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }
+            value.total = value.items.length + '件';
+            if (value.payMode == 0) {
+              value.payMode = '微信支付'
+            } else if (value.payMode == 1) {
+              value.payMode = '余额支付'
+            } else if (value.payMode == 2) {
+              value.payMode = '卡支付'
+            }
             if (value.items) {
               let b = [];
               value.items.forEach((value1) => {
-                b.push(value1.mallProduct.name);
+                b.push(`${value1.mallProduct.name}*${value1.count}`);
               });
               value.goods1 = b[0];
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderArea.content;
@@ -174,16 +185,24 @@
           };
           getmall(a).then((res) => {
             res.data.data.content.forEach((value) => {
-              value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }
+              value.total = value.items.length + '件';
+              if (value.payMode == 0) {
+                value.payMode = '微信支付'
+              } else if (value.payMode == 1) {
+                value.payMode = '余额支付'
+              } else if (value.payMode == 2) {
+                value.payMode = '卡支付'
+              }
               if (value.items) {
                 let b = [];
                 value.items.forEach((value1) => {
-                  b.push(value1.mallProduct.name);
+                  b.push(`${value1.mallProduct.name}*${value1.count}`);
                 });
                 value.goods1 = b[0];
                 value.goods = b.join(',');
               }
               value.createtime = this.getLocalTime(value.createtime);
+              value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
             });
             this.tableData = res.data.data.content;
@@ -218,6 +237,33 @@
       details(row) {
         let a = row.id;
         this.$router.push({name: 'userOrders', query: {id: a}});
+      },
+      withdraw(row) {
+        let a = {
+          orderid: row.id
+        };
+        recallOrder(a).then((res) => {
+          this.$confirm('此操作将撤回订单, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            if (res.data.code == 0) {
+              this.$message({
+                message: '撤回成功!',
+                type: 'success'
+              });
+              this.getMallList();
+            } else {
+              this.$message.error('撤回失败!');
+            }
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
+        })
       },
     },
     mounted() {

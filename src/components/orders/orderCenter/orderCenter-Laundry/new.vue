@@ -50,6 +50,8 @@
               </el-form-item>
               <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
               <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
+              <el-form-item label="更新时间"><span>{{props.row.statusUpdateTime}}</span></el-form-item>
+              <el-form-item label="客户备注"><span>{{props.row.remark}}</span></el-form-item>
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary" @click="quxiao(props.row)">取消订单</el-button>
@@ -66,23 +68,13 @@
           label="ID"
           prop="number">
         </el-table-column>
-        <el-table-column
-          label="时间"
-          prop="createtime">
-        </el-table-column>
-        <el-table-column
-          label="地址"
-          prop="address">
-        </el-table-column>
+        <el-table-column width="150" label="时间" prop="createtime"></el-table-column>
+        <el-table-column width="250" label="地址" prop="address"></el-table-column>
         <el-table-column
           label="商品"
           prop="goods1">
         </el-table-column>
-        <el-table-column
-          label="件数"
-          prop="total">
-        </el-table-column>
-
+        <el-table-column width="80" label="件数" prop="total"></el-table-column>
       </el-table>
     </div>
     <div style="text-align: center;margin: 5% 0 5% 0;">
@@ -136,9 +128,7 @@
         this.tableData = [];
         this.$store.state.getieData = [];
         this.inquire = [];
-        console.log(this.$store.state.orderFind);
         if (this.$store.state.orderFind.object) {
-          console.log(1);
           this.$store.state.orderFind.object.forEach((value) => {
             value.total = value.items.length + '件';
             if (value.payMode == 0) {
@@ -157,6 +147,7 @@
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
           });
           this.tableData = this.$store.state.orderFind.object;
           this.total = this.$store.state.orderFind.totalsize;
@@ -168,7 +159,6 @@
           };
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
-          console.log(2);
           this.$store.state.orderArea.content.forEach((value) => {
             value.total = value.items.length + '件';
             if (value.payMode == 0) {
@@ -187,6 +177,7 @@
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
           });
           this.tableData = this.$store.state.orderArea.content;
           this.total = this.$store.state.orderArea.totalElements;
@@ -198,7 +189,6 @@
           };
           this.$store.commit('getieData', this.inquire);
         } else {
-          console.log(3);
           let a = {
             type: 1,
             status: 0,
@@ -225,6 +215,7 @@
                 value.goods = b.join(',');
               }
               value.createtime = this.getLocalTime(value.createtime);
+              value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
             });
             this.tableData = res.data.data.content;
             this.total = res.data.data.totalElements;
@@ -420,8 +411,4 @@
   }
 
 </style>
-<style>
-  .el-form-item__content {
-    width: 80%;
-  }
-</style>
+

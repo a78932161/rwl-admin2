@@ -72,7 +72,36 @@ export function findRecharge(data) {
   })
 }
 
+export function deduction(data) {
+  return axios({
+    url: "/chargeback/save",
+    method: "post",
+    data
+  })
+}
+
+export function deductionFindall(data) {
+  return axios({
+    url: "/chargeback/findall",
+    method: "post",
+    params:data
+  })
+}
 
 
+export function deductionPhone(data) {
+  return axios({
+    url: "/chargeback/findbyphone",
+    method: "post",
+    params:data
+  })
+}
 
+export function deductionId(data) {
+  return axios({
+    url: "/chargeback/findone",
+    method: "post",
+    params:data
+  })
+}
 

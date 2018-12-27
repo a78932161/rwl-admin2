@@ -10,8 +10,8 @@ let baseURL = 'https://rtest.rwlai.com/rwlmall';
 let URL = window.location.origin;
 let URL1 = '';
 if (window.location.pathname == '/') {
-  URL1='/';
-}else{
+  URL1 = '/';
+} else {
   URL1 = window.location.pathname;
 }
 
@@ -44,6 +44,7 @@ service.interceptors.request.use(config => {
   }
 
   loadinginstace = Loading.service({fullscreen: true})
+
   return config
 }, error => {
   loadinginstace.close()
@@ -56,9 +57,7 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
   response => {
-
-    loadinginstace.close()
-
+    loadinginstace.close();
     let request = response.request;
     // console.log(request.responseURL);
     // console.log(config.loginApi)

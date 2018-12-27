@@ -11,14 +11,22 @@
                 <li :class="['item', bgSelected(index)]">{{item.name}}</li>
               </a>
               <transition name="fade">
-              <div v-if="NavMenu[index]" class="NavMenudiv">
-                <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
-                  <span v-if="title1[index1]" class="el-icon-caret-right"></span>
-                  <el-button type="text" style="color: rgb(106, 119, 127)" @click="goodsUp(index1,item1)">
-                    {{item1.name}}
-                  </el-button>
+                <div v-if="NavMenu[index]" class="NavMenudiv">
+                  <div style="margin: 5px">
+                    <el-input
+                      placeholder="请输入内容"
+                      prefix-icon="el-icon-search"
+                      @change="find()"
+                      v-model="findData">
+                    </el-input>
+                  </div>
+                  <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
+                    <span v-if="title1[index1]" class="el-icon-caret-right"></span>
+                    <el-button type="text" @click="goodsUp(index1,item1)" :class="upDown(item1.status)">
+                      {{item1.name}}
+                    </el-button>
+                  </div>
                 </div>
-              </div>
               </transition>
             </div>
           </ul>
@@ -147,6 +155,7 @@
         category: '',
         fileList: [],
         imgUrl: 'https://image.rwlai.com/',
+        findData: '',
         list: [
           {name: '上衣类', value: '1'},
           {name: '裤裙类', value: '2'},
@@ -257,14 +266,14 @@
               logo: '',
               stock: '',
               date: '',
-              img:'',
+              img: '',
               sort: '',
               category: '',
               type: 2,
               status: 1,
             };
             this.resetForm('tableList');
-            this.fileList=[];
+            this.fileList = [];
           })
         } else {
           this.$message({
@@ -361,6 +370,7 @@
         shelf(a).then((res) => {
           if (res.data.msg == '成功') {
             this.goodsUp(this.goodsId.index1, this.goodsId.item1);
+            this.goodsSelect(this.category);
             this.$message({
               message: '操作成功!',
               type: 'success'
@@ -397,9 +407,25 @@
         this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
       ipchange() {
-        if(this.isadd1===true){
+        if (this.isadd1 === true) {
           this.tableList.date = this.tableList.date.getTime();
         }
+      },
+      find() {
+        if (this.findData) {
+          let newData = this.title.filter((item, index) => {
+            console.log(item.name.includes(this.findData));
+            return item.name.includes(this.findData);
+          });
+          this.title = newData;
+          this.title1 = {};
+        } else {
+          this.goodsSelect(this.category);
+          this.title1 = {};
+        }
+      },
+      upDown(data) {
+        return data === 0 ? 'upcolor' : 'downcolor'
       }
     },
     computed: {
@@ -463,7 +489,7 @@
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
     position: absolute;
-    left: 152px;
+    left: 185px;
     top: 0;
     width: 160px;
     height: 370px;
@@ -488,6 +514,7 @@
     margin-left: 25%;
     text-align: left;
   }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s;
   }
@@ -495,5 +522,12 @@
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
   {
     opacity: 0;
+  }
+  .upcolor {
+    color: red;
+  }
+
+  .downcolor {
+    color: rgb(106, 119, 127);
   }
 </style>

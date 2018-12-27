@@ -82,7 +82,6 @@
           if (res.data.data != null) {
             this.value1 = res.data.data.time / 1000;
             this.fileList = this.tpjq(res.data.data.image, res.data.data.webAddress);
-            console.log(this.fileList);
             this.zhdz(res.data.data.webAddress);
             this.isok = false;
             this.isok1 = true;
@@ -170,7 +169,6 @@
 
 
       save() {
-        console.log(this.fileList);
         let data = [];
         let ads = [];
         if (this.value1 && this.fileList && this.domains) {

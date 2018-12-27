@@ -47,3 +47,11 @@ export function endMall(data) {
     params: data
   })
 }
+
+export function recallOrder(data) {
+  return axios({
+    url: "/mallorder/canceldispatch",
+    method: "post",
+    params: data
+  })
+}

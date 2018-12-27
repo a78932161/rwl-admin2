@@ -118,7 +118,7 @@
           feedback(a).then((res) => {
             this.tableData = res.data.data.content;
             this.tableData.forEach((value) => {
-              value.createtime = this.getLocalTime(value.createtime);
+              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
             });
             this.total = res.data.data.totalElements;
           })
@@ -130,7 +130,7 @@
           feedback(a).then((res) => {
             this.tableData = res.data.data.content;
             this.tableData.forEach((value) => {
-              value.createtime = this.getLocalTime(value.createtime);
+              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
             });
             this.total = res.data.data.totalElements;
           })

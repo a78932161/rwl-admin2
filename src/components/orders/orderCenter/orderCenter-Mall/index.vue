@@ -87,3 +87,8 @@
 
 
 </style>
+<style>
+  .el-form-item__content {
+    width: 70%;
+  }
+</style>

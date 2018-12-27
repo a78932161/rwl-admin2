@@ -12,10 +12,17 @@
               </a>
               <transition name="fade">
                 <div v-if="NavMenu[index]" class="NavMenudiv">
-                  <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
+                  <div style="margin: 5px">
+                    <el-input
+                      placeholder="请输入内容"
+                      prefix-icon="el-icon-search"
+                      @change="find()"
+                      v-model="findData">
+                    </el-input>
+                  </div>
+                  <div v-for="(item1,index1) in title">
                     <span v-if="title1[index1]" class="el-icon-caret-right"></span>
-                    <el-button type="text" style="color: rgb(106, 119, 127);max-width: 140px;overflow:hidden"
-                               @click="goodsUp(index1,item1)">
+                    <el-button type="text" @click="goodsUp(index1,item1)" :class="upDown(item1.status)">
                       {{item1.name}}
                     </el-button>
                   </div>
@@ -147,6 +154,8 @@
         goodsId: {},
         category: '',
         fileList: [],
+        findData: '',
+        composing: false,
         imgUrl: 'https://image.rwlai.com/',
         list: [
           {name: '上衣类', value: '1'},
@@ -155,6 +164,7 @@
           {name: '装饰类', value: '4'},
           {name: '鞋包类', value: '5'},
         ],
+        listIndex: '',
         tableList: {
           name: '',
           oldPrice: '',
@@ -361,6 +371,7 @@
         shelf(a).then((res) => {
           if (res.data.msg == '成功') {
             this.goodsUp(this.goodsId.index1, this.goodsId.item1);
+            this.goodsSelect(this.category);
             this.$message({
               message: '操作成功!',
               type: 'success'
@@ -371,7 +382,7 @@
       handleRemove(file, fileList) {
       },
       handlePictureCardPreview(file) {
-        this.dialogImageUrl = `${this.imgUrl}${file.response.data}`;
+        this.dialogImageUrl = `${this.imgUrl}${file.name}`;
         this.dialogVisible = true;
       },
       handleChange(file, fileList) {
@@ -398,6 +409,22 @@
         if (this.isadd1 === true) {
           this.tableList.date = this.tableList.date.getTime();
         }
+      },
+      find() {
+        if (this.findData) {
+          let newData = this.title.filter((item, index) => {
+            console.log(item.name.includes(this.findData));
+            return item.name.includes(this.findData);
+          });
+          this.title = newData;
+          this.title1 = {};
+        } else {
+          this.goodsSelect(this.category);
+          this.title1 = {};
+        }
+      },
+      upDown(data) {
+        return data === 0 ? 'upcolor' : 'downcolor'
       }
     },
     computed: {
@@ -407,6 +434,7 @@
         }
       }
     },
+
   }
 </script>
 
@@ -429,6 +457,10 @@
     background: rebeccapurple;
   }
 
+  .NavMenu {
+    position: relative;
+  }
+
   .NavMenu a:hover {
     background: rgb(56, 200, 243);
     color: white;
@@ -441,7 +473,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
   }
 
   .NavMenu li {
@@ -461,12 +492,21 @@
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
     position: absolute;
-    left: 152px;
+    left: 185px;
     top: 0;
     width: 160px;
     height: 370px;
     overflow: auto;
+  }
 
+  .NavMenudiv div {
+    text-align: center;
+    text-overflow: ellipsis
+  }
+
+  .NavMenudiv button {
+    max-width: 120px;
+    overflow: hidden;
   }
 
   .ly-content {
@@ -494,5 +534,13 @@
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
   {
     opacity: 0;
+  }
+
+  .upcolor {
+    color: red;
+  }
+
+  .downcolor {
+    color: rgb(106, 119, 127);
   }
 </style>

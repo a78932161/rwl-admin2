@@ -159,7 +159,7 @@
           if (res1.data.code === 0) {
             this.total = res1.data.data.totalElements;
             res1.data.data.content.forEach((value) => {
-              value.createtime = this.getLocalTime(value.createtime);
+              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
               value.balance = value.balance / 100;
               value.money = value.money / 100;
             });

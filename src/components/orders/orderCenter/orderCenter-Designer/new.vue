@@ -48,6 +48,8 @@
               <el-form-item label="套餐选择"><span>{{ props.row.goods }}</span></el-form-item>
               <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
               <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
+              <el-form-item label="更新时间"><span>{{props.row.statusUpdateTime}}</span></el-form-item>
+              <el-form-item label="客户备注"><span>{{props.row.remark}}</span></el-form-item>
               <el-form-item style="text-align: center;width:100%">
                 <el-button type="primary" @click="details(props.row)">查看详情</el-button>
                 <el-button type="primary" @click="quxiao(props.row)">取消订单</el-button>
@@ -64,22 +66,13 @@
           label="ID"
           prop="number">
         </el-table-column>
-        <el-table-column
-          label="时间"
-          prop="createtime">
-        </el-table-column>
-        <el-table-column
-          label="地址"
-          prop="address">
-        </el-table-column>
+        <el-table-column width="150" label="时间" prop="createtime"></el-table-column>
+        <el-table-column width="250" label="地址" prop="address"></el-table-column>
         <el-table-column
           label="商品"
           prop="goods1">
         </el-table-column>
-        <el-table-column
-          label="件数"
-          prop="total">
-        </el-table-column>
+        <el-table-column width="80" label="件数" prop="total"></el-table-column>
       </el-table>
     </div>
     <div style="text-align: center;margin: 5% 0 5% 0;">
@@ -149,6 +142,7 @@
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderFind.object;
@@ -179,6 +173,7 @@
               value.goods = b.join(',');
             }
             value.createtime = this.getLocalTime(value.createtime);
+            value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderArea.content;
@@ -217,6 +212,7 @@
                 value.goods = b.join(',');
               }
               value.createtime = this.getLocalTime(value.createtime);
+              value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
             });
             this.tableData = res.data.data.content;

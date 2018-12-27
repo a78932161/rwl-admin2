@@ -70,7 +70,7 @@ export function upproblem(data) {
 
 export function getExpress(data) {
   return axios({
-    url: "/freightset/get",
+    url: "/freightset/getall",
     method: "post",
     params: data,
   })

@@ -146,7 +146,7 @@
   const cityOptions = ['A1-洗衣', 'A2-高端洗护', 'A3-小让家居', 'A4-小让商城', 'A5-订单分析'];
   const cityOptions1 = ['B1-用户统计', 'B2-消费统计', 'B3-反馈'];
   const cityOptions2 = ['C1-广告设置', 'C2-洗衣设置', 'C3-高端洗护设置', 'C4-家居设置', 'C5-商城设置'];
-  const cityOptions3 = ['D1-财务管理', 'D2-商户管理', 'D3-收支明细'];
+  const cityOptions3 = ['D1-财务管理', 'D2-商户管理', 'D3-收支明细', 'D4-财务扣款'];
   const cityOptions4 = ['E1-充值设置', 'E2-提成设置', 'E3-账号管理', 'E4-平台编辑', 'E5-运费设置'];
 
   export default {
@@ -225,7 +225,7 @@
     },
     methods: {
       goIndex() {
-        this.$emit('goPt',true);
+        this.$emit('goPt', true);
       },
       goIndex2() {
         this.$emit('goIndex2', true);

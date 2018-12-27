@@ -59,22 +59,13 @@
           label="ID"
           prop="number">
         </el-table-column>
-        <el-table-column
-          label="时间"
-          prop="createtime">
-        </el-table-column>
-        <el-table-column
-          label="地址"
-          prop="address">
-        </el-table-column>
+<el-table-column           width="150"           label="时间"           prop="createtime">         </el-table-column>
+<el-table-column           width="250"           label="地址"           prop="address">         </el-table-column>
         <el-table-column
           label="商品"
           prop="goods1">
         </el-table-column>
-        <el-table-column
-          label="件数"
-          prop="total">
-        </el-table-column>
+<el-table-column           width="80"           label="件数"           prop="total">         </el-table-column>
       </el-table>
     </div>
     <div style="text-align: center;margin: 5% 0 5% 0;">
@@ -115,7 +106,7 @@
         this.inquire = [];
         if (this.$store.state.orderFind.object != null) {
           this.$store.state.orderFind.object.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.laundryProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);
+value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.laundryProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderFind.object;
@@ -129,7 +120,7 @@ value.total = value.items.length + '件';              if(value.payMode==0){    
           this.$store.commit('getieData', this.inquire);
         } else if (this.$store.state.orderArea.content) {
           this.$store.state.orderArea.content.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.laundryProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);
+value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }              if (value.items) {                let b = [];                value.items.forEach((value1) => {                  b.push(value1.laundryProduct.name);                });                value.goods1=b[0];                value.goods = b.join(',');              }              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderArea.content;
@@ -151,7 +142,7 @@ value.total = value.items.length + '件';              if(value.payMode==0){    
           };
           getlaundry(a).then((res) => {
             res.data.data.content.forEach((value) => {
-value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }            if (value.items) {              let b = [];              value.items.forEach((value1) => {                b.push(value1.laundryProduct.name);              });              value.goods1 = b[0];              value.goods = b.join(',');            }            value.createtime = this.getLocalTime(value.createtime);
+value.total = value.items.length + '件';              if(value.payMode==0){                value.payMode='微信支付'              }else if(value.payMode==1){                value.payMode='余额支付'              }else if(value.payMode==2){                value.payMode='卡支付'              }            if (value.items) {              let b = [];              value.items.forEach((value1) => {                b.push(value1.laundryProduct.name);              });              value.goods1 = b[0];              value.goods = b.join(',');            }            value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
             });
             this.tableData = res.data.data.content;

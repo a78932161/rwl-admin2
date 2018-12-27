@@ -178,7 +178,7 @@
           getvip(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
-                value.createtime = this.getLocalTime(value.createtime);
+                value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.balance = value.balance / 100;
               });
               this.tableData = res.data.data.content;
@@ -228,7 +228,7 @@
           vipConsumption(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
-                value.createtime = this.getLocalTime(value.createtime);
+                value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.balance = value.balance / 100;
               });
               this.tableData = res.data.data.content;
@@ -279,7 +279,7 @@
           getvips(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
-                value.createtime = this.getLocalTime(value.createtime);
+                value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.balance = value.balance / 100;
               });
               this.tableData = res.data.data.content;
@@ -329,7 +329,7 @@
           Consumption(a).then((res) => {
             if (res.data.data.content) {
               res.data.data.content.forEach((value) => {
-                value.createtime = this.getLocalTime(value.createtime);
+                value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.balance = value.balance / 100;
               });
               this.tableData = res.data.data.content;

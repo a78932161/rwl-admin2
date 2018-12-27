@@ -12,29 +12,20 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="120px"
                class="demo-ruleForm">
         <el-form-item label="转账类型 :">
-          <!--<el-radio v-model="radio" label="1">导卡</el-radio>-->
-          <el-radio v-model="radio" label="2">退款</el-radio>
+          <!--<el-radio v-model="radio" v-if="" label="1" @change="changeRadio('1')">扣款</el-radio>-->
+          <el-radio v-model="radio"  label="2" @change="changeRadio('2')">退款</el-radio>
         </el-form-item>
         <div v-show="isRadio">
-          <el-form-item label="莫好克卡号 :" prop="cardId">
-            <el-input v-model="ruleForm.cardId"></el-input>
-          </el-form-item>
-          <el-form-item label="会员卡类型 :" prop="cardType">
-            <el-select v-model="ruleForm.cardType" placeholder="请选择卡类型" style="width: 100%" clearable>
-              <el-option label="折扣卡" value="折扣卡"></el-option>
-              <el-option label="无折扣卡" value="无折扣卡"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="充值金额 :" prop="money">
+          <el-form-item label="扣款金额 :" prop="money">
             <el-input v-model="ruleForm.money"></el-input>
           </el-form-item>
-          <el-form-item label="实际存转金额 :">
+          <el-form-item label="实际扣款金额 :">
             <label>¥{{ruleForm.money}}</label>
           </el-form-item>
-          <el-form-item label="持卡人姓名 :" prop="name">
+          <el-form-item label="姓名 :" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="持卡人手机 :" prop="phone">
+          <el-form-item label="手机 :" prop="phone">
             <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
           <el-form-item label="注册手机号 :" prop="userPhone">
@@ -51,11 +42,11 @@
             <el-input type="textarea" v-model="ruleForm.remark" :autosize="{ minRows: 4, maxRows: 6}"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">确认转存</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">确认扣款</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
         </div>
-        <div v-show="isRadio1">
+        <div v-show="!isRadio">
           <el-form-item label="充值金额 :" prop="money">
             <el-input v-model="ruleForm.money"></el-input>
           </el-form-item>
@@ -82,7 +73,7 @@
             <el-input type="textarea" v-model="ruleForm.remark" :autosize="{ minRows: 4, maxRows: 6}"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm1()">确认退款</el-button>
+            <el-button type="primary" @click="submitForm1('ruleForm')">确认退款</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
         </div>
@@ -90,9 +81,9 @@
     </div>
     <div v-show="isRadio">
       <div class="ord-content3">
-        <div><label>导卡记录</label></div>
+        <div><label>扣款记录</label></div>
         <div style="text-align: right;">
-          <label>导卡记录查询 :</label>
+          <label>扣款记录查询 :</label>
           <el-input placeholder="请输入手机号" style="width: 52%" v-model="phone"></el-input>
           <el-button type="primary" @click="phoneRefund">查询</el-button>
         </div>
@@ -111,16 +102,12 @@
             label="操作人">
           </el-table-column>
           <el-table-column
-            prop="cardId"
-            label="转出卡号">
-          </el-table-column>
-          <el-table-column
             prop="money"
-            label="转存金额">
+            label="扣款金额">
           </el-table-column>
           <el-table-column
             prop="userNumber"
-            label="转入账号">
+            label="转出账号">
           </el-table-column>
           <el-table-column
             prop="name"
@@ -150,7 +137,7 @@
         </el-pagination>
       </div>
     </div>
-    <div v-show="isRadio1">
+    <div v-show="!isRadio">
       <div class="ord-content3">
         <div><label>退款记录</label></div>
         <div style="text-align: right;">
@@ -209,7 +196,6 @@
       </div>
     </div>
 
-
   </div>
 </template>
 
@@ -222,12 +208,23 @@
     addRefund,
     getRefund,
     findRecharge,
-    findRefund
+    findRefund,
+    deductionFindall,
+    deduction,
+    deductionPhone
   } from "@/components/api/financialdk";
 
   export default {
     components: {},
     data() {
+      let money = (rule, value, callback) => {
+        if (/^[1-9]\d*$/.test(value) === false) {
+          callback(new Error('必须是正数'));
+        } else {
+          callback();
+        }
+      };
+
       return {
         pickerOptions2: {
           shortcuts: [{
@@ -260,9 +257,8 @@
         value1: '',
         a: 10,
         showFlag: true,
-        radio: '2',
+        radio:'2',
         isRadio: false,
-        isRadio1: true,
         total: 10,
         total1: 10,
         size: 10,
@@ -272,9 +268,7 @@
         phone: '',
         phone1: '',
         ruleForm: {
-          cardId: '',
-          cardType: '',
-          money: 0,
+          money: 1,
           name: '',
           phone: '',
           userPhone: '',
@@ -296,6 +290,7 @@
           ],
           money: [
             {required: true, message: '请输入充值金额', trigger: 'blur'},
+            {validator: money, trigger: 'blur'}
           ],
 
           phone: [
@@ -320,10 +315,11 @@
             let a = {
               phone: this.phone,
             };
-            findRecharge(a).then((res) => {
+            deductionPhone(a).then((res) => {
               if (res.data.data.content.length > 0) {
                 res.data.data.content.forEach((value) => {
                   value.createtime = this.getLocalTime(value.createtime);
+                  value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                   value.money = value.money / 100;
                 });
                 this.total = res.data.data.totalElements;
@@ -340,9 +336,11 @@
               size: this.size,
               page: this.page
             };
-            getAll(a).then((res) => {
+            deductionFindall(a).then((res) => {
+              console.log(res);
               res.data.data.content.forEach((value) => {
                 value.createtime = this.getLocalTime(value.createtime);
+                value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.money = value.money / 100;
               });
               this.total = res.data.data.totalElements;
@@ -350,7 +348,7 @@
             })
           }
 
-        } else if (this.isRadio1 === true) {
+        } else if (this.isRadio === false) {
           if (this.phone1) {
             let a = {
               phone: this.phone1,
@@ -359,6 +357,7 @@
               if (res.data.data.content.length > 0) {
                 res.data.data.content.forEach((value) => {
                   value.createtime = this.getLocalTime(value.createtime);
+                  value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                   value.money = value.money / 100;
                 });
                 this.total1 = res.data.data.totalElements;
@@ -379,6 +378,7 @@
             getRefund(b).then((res1) => {
               res1.data.data.content.forEach((value) => {
                 value.createtime = this.getLocalTime(value.createtime);
+                value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
                 value.money = value.money / 100;
               });
               this.total1 = res1.data.data.totalElements;
@@ -409,7 +409,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.ruleForm.money = this.ruleForm.money * 100;
-            addRecharge(this.ruleForm).then((res) => {
+            deduction(this.ruleForm).then((res) => {
               if (res.data.code === 0) {
                 this.resetForm('ruleForm');
                 this.getList();
@@ -419,6 +419,7 @@
                   type: 'success'
                 });
               } else {
+                this.ruleForm.money = this.ruleForm.money / 100;
                 this.$message({
                   showClose: true,
                   message: `${res.data.msg}`,
@@ -436,35 +437,37 @@
           }
         });
       },
-      submitForm1() {
-        if (this.ruleForm.money || this.ruleForm.name || this.ruleForm.phone || this.ruleForm.userPhone || this.ruleForm.remark) {
-          this.ruleForm.money = this.ruleForm.money * 100;
-          addRefund(this.ruleForm).then((res) => {
-            if (res.data.code === 0) {
-              this.resetForm('ruleForm');
-              this.getList();
-              this.$message({
-                showClose: true,
-                message: '充值成功!',
-                type: 'success'
-              });
-            } else {
-              this.$message({
-                showClose: true,
-                message: '注册人手机号不存在!',
-                type: 'warning'
-              });
-            }
-          })
-        } else {
-          this.$message({
-            showClose: true,
-            message: '请填写完整!',
-            type: 'warning'
-          });
-          return false;
-        }
-
+      submitForm1(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.ruleForm.money = this.ruleForm.money * 100;
+            addRefund(this.ruleForm).then((res) => {
+              if (res.data.code === 0) {
+                this.resetForm('ruleForm');
+                this.getList();
+                this.$message({
+                  showClose: true,
+                  message: `${res.data.msg}`,
+                  type: 'success'
+                });
+              } else {
+                this.ruleForm.money = this.ruleForm.money / 100;
+                this.$message({
+                  showClose: true,
+                  message: `${res.data.msg}`,
+                  type: 'warning'
+                });
+              }
+            })
+          } else {
+            this.$message({
+              showClose: true,
+              message: '请填写完整!',
+              type: 'warning'
+            });
+            return false;
+          }
+        });
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
@@ -497,6 +500,9 @@
       phoneRefund() {
         this.getList();
       },
+      changeRadio(data) {
+        this.$store.commit('changeRadio', data);
+      },
     },
     mounted() {
       this.getList();
@@ -505,19 +511,15 @@
       radio(newValue) {
         if (newValue === '1') {
           this.isRadio = true;
-          this.isRadio1 = false;
+          this.getList();
           this.resetForm('ruleForm');
         } else if (newValue === '2') {
-          this.isRadio1 = true;
           this.isRadio = false;
           this.getList();
           this.resetForm('ruleForm');
         }
-
-
       }
     }
-
   }
 </script>
 

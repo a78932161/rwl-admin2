@@ -11,18 +11,27 @@
                 <li :class="['item', bgSelected(index)]">{{item.name}}</li>
               </a>
               <transition name="fade">
-              <div v-if="NavMenu[index]" class="NavMenudiv">
-                <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
-                  <span v-if="title1[index1]" class="el-icon-caret-right"></span>
-                  <el-button type="text" style="color: rgb(106, 119, 127)" @click="goodsUp(index1,item1)">
-                    {{item1.name}}
-                  </el-button>
+                <div v-if="NavMenu[index]" class="NavMenudiv">
+                  <div style="margin: 5px">
+                    <el-input
+                      placeholder="请输入内容"
+                      prefix-icon="el-icon-search"
+                      @change="find()"
+                      v-model="findData">
+                    </el-input>
+                  </div>
+                  <div v-for="(item1,index1) in title">
+                    <span v-if="title1[index1]" class="el-icon-caret-right"></span>
+                    <el-button type="text" @click="goodsUp(index1,item1)" :class="upDown(item1.status)">
+                      {{item1.name}}
+                    </el-button>
+                  </div>
                 </div>
-              </div>
               </transition>
             </div>
           </ul>
         </div>
+
       </el-col>
       <el-col :span="15" class="main" v-show="isok">
         <div class="ly-top">
@@ -94,13 +103,21 @@
               </el-dialog>
             </el-form-item>
             <!--<el-form-item label="商品规格 :" prop="productParameters">-->
-              <!--<el-input placeholder="商品规格" v-model="tableList.productParameters" style="width: 40%"></el-input>-->
+            <!--<el-input placeholder="商品规格" v-model="tableList.productParameters" style="width: 40%"></el-input>-->
             <!--</el-form-item>-->
-
-            <el-form-item label="产品参数 :" prop="standard">
-              <el-input type="textarea" v-model="tableList.standard" placeholder="请输入名称" style="width: 40%;"
-                        :autosize="{ minRows: 4, maxRows: 8}"></el-input>
+            <el-form-item label="产品参数 :">
+              <el-upload
+                class="avatar-uploader"
+                action="https://rtest.rwlai.com/rwlmall/file/uploadimage"
+                :show-file-list="false"
+                :headers="headers"
+                :on-success="handleAvatarSuccess1"
+                :before-upload="beforeAvatarUpload">
+                <img v-if="tableList.standard" :src="tableList.standard" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
             </el-form-item>
+
 
             <el-form-item label="商品库存数目 :" prop="stock">
               <el-input placeholder="商品的库存数" v-model="tableList.stock" style="width: 40%"></el-input>
@@ -188,13 +205,14 @@
         imgList: [],
         imgList1: [],
         imgUrl: 'https://image.rwlai.com/',
+        findData: "",
         imgay: [],
         imgay1: [],
         list: [
-          {name: '生活用品类', value: '1'},
-          {name: '服务类', value: '2'},
-          {name: '爆款类', value: '3'},
-          {name: '鞋服类', value: '4'},
+          {name: '日用百货', value: '1'},
+          {name: '洗护用品', value: '2'},
+          {name: '食品', value: '3'},
+          {name: '洋酒', value: '4'},
         ],
 
         tableList: {
@@ -213,7 +231,7 @@
         rules: {
           name: [
             {required: true, message: '请输入名称', trigger: 'blur'},
-            {min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'blur'}
+            {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur'}
           ],
           oldPrice: [
             {required: true, message: '请输入原价',},
@@ -445,6 +463,7 @@
         mallhelf(a).then((res) => {
           if (res.data.msg == '成功') {
             this.goodsUp(this.goodsId.index1, this.goodsId.item1);
+            this.goodsSelect(this.category);
             this.$message({
               message: '操作成功!',
               type: 'success'
@@ -541,6 +560,10 @@
       handleAvatarSuccess(res, file) {
         this.tableList.logo = `${this.imgUrl}${res.data}`;
       },
+      handleAvatarSuccess1(res, file) {
+        this.tableList.standard = `${this.imgUrl}${res.data}`;
+      },
+
       tpjq(qaq) {
         let img = qaq;
         let imgjq = img.substring(0, img.length);
@@ -557,7 +580,22 @@
         }
         return images;
       },
-
+      find() {
+        if (this.findData) {
+          let newData = this.title.filter((item, index) => {
+            console.log(item.name.includes(this.findData));
+            return item.name.includes(this.findData);
+          });
+          this.title = newData;
+          this.title1 = {};
+        } else {
+          this.goodsSelect(this.category);
+          this.title1 = {};
+        }
+      },
+      upDown(data) {
+        return data === 0 ? 'upcolor' : 'downcolor'
+      }
     },
     computed: {
       headers() {
@@ -620,11 +658,21 @@
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
     position: absolute;
-    left: 152px;
+    left: 185px;
     top: 0;
     width: 160px;
     height: 370px;
     overflow: auto;
+  }
+
+  .NavMenudiv div {
+    text-align: center;
+    text-overflow: ellipsis
+  }
+
+  .NavMenudiv button {
+    max-width: 120px;
+    overflow: hidden;
   }
 
   .ly-content {
@@ -672,6 +720,7 @@
     height: 148px;
     display: block;
   }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s;
   }
@@ -681,4 +730,11 @@
     opacity: 0;
   }
 
+  .upcolor {
+    color: red;
+  }
+
+  .downcolor {
+    color: rgb(106, 119, 127);
+  }
 </style>

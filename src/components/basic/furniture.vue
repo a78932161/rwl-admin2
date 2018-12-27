@@ -12,9 +12,17 @@
               </a>
               <transition name="fade">
                 <div v-if="NavMenu[index]" class="NavMenudiv">
+                  <div style="margin: 5px">
+                    <el-input
+                      placeholder="请输入内容"
+                      prefix-icon="el-icon-search"
+                      @change="find()"
+                      v-model="findData">
+                    </el-input>
+                  </div>
                   <div v-for="(item1,index1) in title" style="text-align: center;text-overflow: ellipsis">
                     <span v-if="title1[index1]" class="el-icon-caret-right"></span>
-                    <el-button type="text" style="color: rgb(106, 119, 127)" @click="goodsUp(index1,item1)">
+                    <el-button type="text"  @click="goodsUp(index1,item1)" :class="upDown(item1.status)">
                       {{item1.name}}
                     </el-button>
                   </div>
@@ -192,6 +200,7 @@
         imgList: [],
         imgList1: [],
         imgUrl: 'https://image.rwlai.com/',
+        findData: '',
         imgay: [],
         imgay1: [],
         list: [
@@ -433,6 +442,7 @@
         furnitureshelf(a).then((res) => {
           if (res.data.msg == '成功') {
             this.goodsUp(this.goodsId.index1, this.goodsId.item1);
+            this.goodsSelect(this.category);
             this.$message({
               message: '操作成功!',
               type: 'success'
@@ -550,6 +560,23 @@
         if (this.isadd1 === true) {
           this.tableList.date = this.tableList.date.getTime();
         }
+      },
+      find() {
+        if (this.findData) {
+
+          let newData = this.title.filter((item, index) => {
+            console.log(item.name.includes(this.findData));
+            return item.name.includes(this.findData);
+          });
+          this.title = newData;
+          this.title1 = {};
+        } else {
+          this.goodsSelect(this.category);
+          this.title1 = {};
+        }
+      },
+      upDown(data) {
+        return data === 0 ? 'upcolor' : 'downcolor'
       }
     },
     computed: {
@@ -613,7 +640,7 @@
   .NavMenudiv {
     border: 1px solid rgb(205, 210, 212);
     position: absolute;
-    left: 152px;
+    left: 185px;
     top: 0;
     width: 160px;
     height: 370px;
@@ -666,6 +693,7 @@
     height: 148px;
     display: block;
   }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s;
   }
@@ -674,5 +702,11 @@
   {
     opacity: 0;
   }
+  .upcolor {
+    color: red;
+  }
 
+  .downcolor {
+    color: rgb(106, 119, 127);
+  }
 </style>

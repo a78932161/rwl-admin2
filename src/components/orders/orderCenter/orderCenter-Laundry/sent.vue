@@ -45,7 +45,7 @@
               </el-form-item>
               <el-form-item label="套餐选择"><span>{{ props.row.goods }}</span></el-form-item>
               <el-form-item label="已付金额"><span>{{ props.row.amount/100 }}</span></el-form-item>
-              <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>
+              <el-form-item label="支付方式"><span>{{ props.row.payMode}}</span></el-form-item>               <el-form-item label="更新时间"><span>{{props.row.statusUpdateTime}}</span></el-form-item>
               <el-form-item label="门店">
                 <span>{{ props.row.receiptPeople}}</span>
               </el-form-item>
@@ -67,10 +67,12 @@
           prop="number">
         </el-table-column>
         <el-table-column
+          width="150"
           label="时间"
           prop="createtime">
         </el-table-column>
         <el-table-column
+          width="250"
           label="地址"
           prop="address">
         </el-table-column>
@@ -79,8 +81,13 @@
           prop="goods1">
         </el-table-column>
         <el-table-column
+          width="80"
           label="件数"
           prop="total">
+        </el-table-column>
+        <el-table-column
+          label="门店"
+          prop="receiptPeople">
         </el-table-column>
       </el-table>
     </div>
@@ -139,7 +146,7 @@
               value.goods1 = b[0];
               value.goods = b.join(',');
             }
-            value.createtime = this.getLocalTime(value.createtime);
+            value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderFind.object;
@@ -169,7 +176,7 @@
               value.goods1 = b[0];
               value.goods = b.join(',');
             }
-            value.createtime = this.getLocalTime(value.createtime);
+            value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
           });
           this.tableData = this.$store.state.orderArea.content;
@@ -207,7 +214,7 @@
                 value.goods1 = b[0];
                 value.goods = b.join(',');
               }
-              value.createtime = this.getLocalTime(value.createtime);
+              value.createtime = this.getLocalTime(value.createtime);             value.statusUpdateTime = statusUpdateTime(value.statusUpdateTime);
 
             });
             this.tableData = res.data.data.content;

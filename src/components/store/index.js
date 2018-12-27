@@ -13,8 +13,12 @@ const state = {
   vipId: 0,
   orderFind: '',
   orderArea: [],
+  deductionRadio: '1',
 };
 const mutations = {
+  changeRadio(state, n) {
+    state.deductionRadio = n;
+  },
   changeRadio1(state, n) {
     state.radio1 = n;
   },

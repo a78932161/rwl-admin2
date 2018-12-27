@@ -89,5 +89,9 @@
     color: rgb(56, 200, 243);
   }
 
-
+</style>
+<style>
+  .el-form-item__content {
+    width: 70%;
+  }
 </style>

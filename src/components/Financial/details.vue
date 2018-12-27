@@ -9,11 +9,9 @@
       </el-breadcrumb>
     </div>
     <el-card class="box-card" v-show="rechargeId">
-      <div><label>莫好克卡号 : {{listData.cardId}}</label></div>
-      <div><label>会员卡类型 : {{listData.cardType}}</label></div>
-      <div><label>实际转存额 : {{listData.money}}</label></div>
-      <div><label>持卡人姓名 : {{listData.name}}</label></div>
-      <div><label>持卡人手机 : {{listData.phone}}</label></div>
+      <div><label>实际扣款金额 : {{listData.money}}</label></div>
+      <div><label>姓名 : {{listData.name}}</label></div>
+      <div><label>手机 : {{listData.phone}}</label></div>
       <div><label>备注 : {{listData.remark}}</label></div>
       <div>
         <label>注册信息 : </label>
@@ -50,7 +48,7 @@
 </template>
 
 <script>
-  import {idRecharge, idRefund} from "@/components/api/financialdk";
+  import {idRecharge, idRefund,deductionId} from "@/components/api/financialdk";
 
   export default {
     name: "details",
@@ -66,9 +64,9 @@
       getList() {
         if (this.$store.state.rechargeId) {
           let a = {
-            guidecardid: this.$store.state.rechargeId,
+            chargebackId: this.$store.state.rechargeId,
           };
-          idRecharge(a).then((res) => {
+          deductionId(a).then((res) => {
             res.data.data.userCreateTime=this.getLocalTime(res.data.data.userCreateTime);
             res.data.data.createtime=this.getLocalTime(res.data.data.createtime);
             res.data.data.money=res.data.data.money/100;
