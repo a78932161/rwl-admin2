@@ -136,14 +136,8 @@
 
           });
           this.tableData = this.$store.state.orderFind.object;
-          this.total = this.$store.state.orderFind.length;
-          this.inquire = {
-            page: this.page,
-            size: this.size,
-            type: 4,
-            status: 1,
-          };
-          this.$store.commit('getieData', this.inquire);
+          this.total = this.$store.state.orderFind.totalSize;
+
         } else if (this.$store.state.orderArea.content) {
           this.$store.state.orderArea.content.forEach((value) => {
             value.total = value.items.length + '件';
@@ -168,13 +162,7 @@
           });
           this.tableData = this.$store.state.orderArea.content;
           this.total = this.$store.state.orderArea.totalElements;
-          this.inquire = {
-            page: this.page,
-            size: this.size,
-            type: 4,
-            status: 1,
-          };
-          this.$store.commit('getieData', this.inquire);
+
 
         } else {
           let a = {
@@ -207,13 +195,7 @@
             });
             this.tableData = res.data.data.content;
             this.total = res.data.data.totalElements;
-            this.inquire = {
-              page: this.page,
-              size: this.size,
-              type: 4,
-              status: 1,
-            };
-            this.$store.commit('getieData', this.inquire);
+
           });
         }
       },
@@ -229,6 +211,13 @@
       },
       handleCurrentChange(val) {
         this.page = val;
+        this.inquire = {
+          page: this.page,
+          size: this.size,
+          type: 4,
+          status: 1,
+        };
+        this.$store.commit('getieData', this.inquire);
         this.getMallList();
       },
       daochu() {
@@ -269,6 +258,13 @@
     mounted() {
       this.$store.state.orderFind = [];
       this.$store.state.orderArea = [];
+      this.inquire = {
+        page: 1,
+        size: 10,
+        type: 4,
+        status: 1,
+      };
+      this.$store.commit('getieData', this.inquire);
       this.getMallList();
     }
   }
