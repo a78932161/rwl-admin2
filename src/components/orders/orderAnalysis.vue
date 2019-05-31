@@ -140,7 +140,7 @@
         } else if (this.value1 === null && this.province === '') {
           let a = new Date();
           let b = {
-            starttime: 0,
+            starttime: a.getTime() - 3600 * 1000 * 24 * 30,
             endtime: a.getTime(),
           };
           analysis(b).then((res) => {

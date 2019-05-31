@@ -111,10 +111,14 @@
         if (this.value1) {
           a = {
             starttime: this.value1[0].getTime(),
-            endtime: this.value1[1].getTime()+86400000,
+            endtime: this.value1[1].getTime() + 86400000,
           }
         } else {
-          a = '';
+          let time = new Date;
+          a = {
+            starttime: time.getTime() - 3600 * 1000 * 24 * 30,
+            endtime: time.getTime() + 86400000,
+          }
         }
         getIncome(a).then((res) => {
           res.data.data.weChatIncome = (res.data.data.weChatIncome / 100).toFixed(1);

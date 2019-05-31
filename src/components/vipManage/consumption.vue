@@ -214,25 +214,29 @@
         if (index == '1') {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
-            data = {};
+            let time = new Date();
+            data = {
+              starttime: time.getTime() - 3600 * 1000 * 24 * 30,
+              endtime: time.getTime(),
+            };
           }
           xyConsumption(data).then((res) => {
             let a;
@@ -290,25 +294,29 @@
         } else if (index == '2') {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
-            data = {};
+            let time = new Date();
+            data = {
+              starttime: time.getTime() - 3600 * 1000 * 24 * 30,
+              endtime: time.getTime(),
+            };
           }
           gdxhConsumption(data).then((res) => {
             let a;
@@ -365,25 +373,29 @@
         } else if (index == '3') {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
-            data = {};
+            let time = new Date();
+            data = {
+              starttime: time.getTime() - 3600 * 1000 * 24 * 30,
+              endtime: time.getTime(),
+            };
           }
           xrjjConsumption(data).then((res) => {
             let a;
@@ -440,25 +452,29 @@
         } else if (index == '4') {
           if (this.value1 != null && this.$refs.cascader.currentLabels.length === 0) {//有时间
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length > 0) {//有地区
             data = {
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 && this.$refs.cascader.currentLabels.length > 0) {//都有
             data = {
-              startime: this.value1[0].getTime(),
-              endtime: this.value1[1].getTime()+86400000,
-              area: this.$refs.cascader.currentLabels[0],
-              province: this.$refs.cascader.currentLabels[1],
-              city: this.$refs.cascader.currentLabels[2],
+              starttime: this.value1[0].getTime(),
+              endtime: this.value1[1].getTime() + 86400000,
+              province: this.$refs.cascader.currentLabels[0],
+              city: this.$refs.cascader.currentLabels[1],
+              area: this.$refs.cascader.currentLabels[2],
             }
           } else if (this.value1 === null && this.$refs.cascader.currentLabels.length === 0) {//都没有
-            data = {};
+            let time = new Date();
+            data = {
+              starttime: time.getTime() - 3600 * 1000 * 24 * 30,
+              endtime: time.getTime(),
+            };
           }
           xrscConsumption(data).then((res) => {
             let a;
